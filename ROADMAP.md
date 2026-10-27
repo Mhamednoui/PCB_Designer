@@ -101,6 +101,15 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | MV-T1 | Reference complex board built through the platform only: PCBA, e.g. ESP32-S3 module + USB-C (power + data) + 3V3 LDO + ESD + I2C sensor + status LEDs + buttons | `projects/ref-esp32/` (new) | high | MP, MS | every stage green; fab zip + BOM + CPL pass JLCPCB upload checks | ⬜ |
 | MV-T2 | Rebuild the 3 fixtures from their `netlist.py` with all new gates | `projects/*` | medium | MD, MP | all green or written waivers | ⬜ |
 
+### PA Architecture for scale (PLATFORM_PLAN §10) - between P1 and P2
+| ID | Task | St |
+|---|---|---|
+| PA-1 design IR + `ir` stage | ⬜ |
+| PA-2 stage registry + incremental runner | ⬜ |
+| PA-3 port checks to the IR | ⬜ |
+| PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |
+| PA-5 parallel + tiered mutation runner | ⬜ |
+
 ### Independent verification (PLATFORM_PLAN §9) - queued
 | ID | Task | Phase | St |
 |---|---|---|---|

@@ -252,3 +252,32 @@ PCB wiring defects to train on, and its errors are unexplainable. A 98 %-accurat
 50 with a green light. ML/LLM is used where it is strong - *finding* candidate problems (design review,
 datasheet extraction) - and **every confirmed finding is converted into a deterministic rule + mutation**,
 so the platform's guarantees only ever come from checks that are exact, explainable and tested.
+
+---
+
+## 10. Architecture for scale (decided 2026-10-27) - phase **PA**, runs between P1 and P2
+
+Scaling axes and the change each needs:
+- **More checks/features** → stages declare themselves (name, order, applies-when, interpreter, inputs, outputs)
+  in a stage registry; `pipeline.py` becomes a generic runner. A new feature = a new file, no core edit.
+- **Every stage re-parses netlist.py / KiCad files on its own** → one **design IR** (`out/design.json`): parts
+  (registry id, pins by function → pad), nets (NET_SPEC v/i, class), board (layers, stackup, outline, zones,
+  pads, holes), requirements, assembly mode, fab profile. Built once by an `ir` stage; every checker reads the
+  IR. KiCad API calls are confined to adapters (`ir_from_kicad.py`) - the R16 (KiCad API change) firewall.
+- **Bigger boards / more checks = slower runs** → incremental execution: each stage's inputs are hashed;
+  unchanged inputs skip the stage (`--no-cache` forces). Mutation suite runs in parallel workers, with a
+  fast tier (<60 s, every change) and a full tier (before release).
+- **More layers** → audit `pcb.py` for any hard-coded F_Cu/B_Cu (pours, stitching, fan-out, keepouts) and
+  make them layer-list driven from the stackup; 4-layer plane assignment from NET_SPEC (MS-T2).
+- **More rules** → P2 rule engine: each rule a registered function with id, severity, doc, fixture, mutation;
+  `docs/RULES.md` generated from the registry of rules.
+- **More fabs** → fab profiles as data (`fab_profiles/*.json`, P5).
+
+| ID | Task | Effort | Deps |
+|---|---|---|---|
+| PA-1 | Design IR schema + `ir` stage (`ir_from_netlist` + `ir_from_kicad` adapters); IR validated against a JSON Schema | high | P1-T9 |
+| PA-2 | Stage registry + generic runner; incremental (input-hash) caching; existing stages declared, behaviour identical | high | - |
+| PA-3 | Port `lint`, `parts`, `decap_check`, `lvs` to read the IR (one at a time; outputs must be byte-identical) | medium | PA-1 |
+| PA-4 | Layer-agnostic audit of `pcb.py` + 4-layer fixture (blinky-4L) through the full pipeline | high | MD-T11 |
+| PA-5 | Parallel + tiered mutation runner | medium | - |
+**Exit:** adding a new check touches only its own file + its mutation entries; blinky-4L green; fast-tier suite <60 s.
