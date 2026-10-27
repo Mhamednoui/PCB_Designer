@@ -199,3 +199,10 @@ Parallel groups (disjoint files, max 3): T1 first; then T2, T3, T4; then T5, T6,
 8. **Fixture fixes folded into P1-T9:** electrolytics (blinky C1, reflex C2/C6) move from `Device:C` to `Device:C_Polarized` so the
    schematic shows +; consumers skip `kind=mechanical` records for BOM/symbols. **P1-T8 must datasheet-crosscheck the K7805-2000R3
    pin order** (1 IN, 2 GND, 3 OUT is only KiCad-RECOM-derived; a swap destroys the module and the Mega) and reconcile its record id.
+9. **Pins by FUNCTION, not number (decided 2026-10-27, from P1-T4's M-libpin-swap known-gap):** for registry parts, `netlist.py`
+   connects pins by the record's pin NAME/function (`pins={"B": "BASE", "E": "GND", "C": "LED_K"}`); `registry_part` derives the
+   pad numbers from the (crosschecked) record. Swapping a part for one with a different pinout then renumbers correctly by
+   construction - the wrong-library-pinout class (R1) becomes structurally impossible for registry parts. Numbers stay accepted
+   for generics (2-pin passives) and connectors. Ambiguous names (two pins both "GND", NC) resolve by name+index or explicit number.
+   Also in P1-T9: `PARTS_RECORDS_DIR` env override in `parts.py` (replaces the test sitecustomize hook) and an explicit
+   registered-refs API (replaces lint's monkeypatch). When done, flip M-libpin-swap from `known-gap` to an expected catch/no-op.
