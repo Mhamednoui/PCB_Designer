@@ -1,0 +1,257 @@
+[
+  {
+    "id": "CTRL-blinky",
+    "fixture": "blinky-555",
+    "description": "NEGATIVE CONTROL: no mutation; the whole design-to-fab chain must pass on an untouched copy",
+    "op": {"type": "none"},
+    "stages": ["lint", "sch", "sch-check", "place", "route", "finish", "check", "review", "outputs", "lvs", "fabreport", "connections", "spice"],
+    "expect_stage": null,
+    "expect_text": "pipeline complete"
+  },
+  {
+    "id": "CTRL-uno",
+    "fixture": "uno-toggle",
+    "description": "NEGATIVE CONTROL: no mutation; lint, schematic and firmware pin map must pass on an untouched copy",
+    "op": {"type": "none"},
+    "stages": ["lint", "sch", "sch-check", "pinmap"],
+    "expect_stage": null,
+    "expect_text": "pipeline complete"
+  },
+  {
+    "id": "M-pin",
+    "fixture": "blinky-555",
+    "description": "non-existent pin: U1 pin 5 (CONT) becomes pin 9, which DIP-8 / NE555 does not have (lint pads sees it first)",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "5: \"CONT\"", "new": "9: \"CONT\""},
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "pads"
+  },
+  {
+    "id": "M-pin-sch",
+    "fixture": "blinky-555",
+    "description": "same non-existent pin with lint skipped: the schematic netlist compare must still see it",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "5: \"CONT\"", "new": "9: \"CONT\""},
+    "stages": ["sch", "sch-check"],
+    "expect_stage": "sch-check",
+    "expect_text": "NET MISMATCH"
+  },
+  {
+    "id": "M-swap",
+    "fixture": "blinky-555",
+    "description": "valid pins swapped: U1 OUT (3) and DISCH (7) exchanged; electrically legal, only simulation sees the dead timer",
+    "op": [
+      {"type": "replace", "file": "gen/netlist.py", "old": "3: \"OUT\"", "new": "3: \"DISCH\""},
+      {"type": "replace", "file": "gen/netlist.py", "old": "7: \"DISCH\"", "new": "7: \"OUT\""}
+    ],
+    "stages": ["spice"],
+    "expect_stage": "spice",
+    "expect_text": "freq_hz"
+  },
+  {
+    "id": "M-swap-pwr",
+    "fixture": "blinky-555",
+    "description": "supply pins swapped: U1 GND (1) and VCC (8) exchanged",
+    "op": [
+      {"type": "replace", "file": "gen/netlist.py", "old": "1: \"GND\", 2: \"TRIG\"", "new": "1: \"VCC\", 2: \"TRIG\""},
+      {"type": "replace", "file": "gen/netlist.py", "old": "7: \"DISCH\", 8: \"VCC\"", "new": "7: \"DISCH\", 8: \"GND\""}
+    ],
+    "stages": ["lint", "sch", "sch-check", "spice"],
+    "expect_stage": "sch-check",
+    "expect_text": "ground_pin_not_ground"
+  },
+  {
+    "id": "M-fp-family",
+    "fixture": "blinky-555",
+    "description": "wrong footprint with the same pad numbers: LED D1 placed on a disc-capacitor footprint",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "FP_LED5 = \"LED_THT:LED_D5.0mm\"", "new": "FP_LED5 = \"Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm\""},
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "wrong family"
+  },
+  {
+    "id": "M-fp-pads",
+    "fixture": "blinky-555",
+    "description": "wrong package: U1 (DIP-8 NE555) on a 3-pad TO-92 footprint",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "FP_DIP8 = \"Package_DIP:DIP-8_W7.62mm\"", "new": "FP_DIP8 = \"Package_TO_SOT_THT:TO-92_Inline\""},
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "pads"
+  },
+  {
+    "id": "M-split",
+    "fixture": "blinky-555",
+    "description": "net split by a typo: U1 pin 7 on DISCHH while R1/R2 stay on DISCH",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "7: \"DISCH\"", "new": "7: \"DISCHH\""},
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "single-pin"
+  },
+  {
+    "id": "M-merge",
+    "fixture": "blinky-555",
+    "description": "nets merged: R3 and the LED collapsed onto OUT, so R3 is shorted and the LED has no series resistor",
+    "op": [
+      {"type": "replace", "file": "gen/netlist.py", "old": "R(\"R3\", \"470R\", \"OUT\", \"LED_A\", G)", "new": "R(\"R3\", \"470R\", \"OUT\", \"OUT\", G)"},
+      {"type": "replace", "file": "gen/netlist.py", "old": "2: \"LED_A\"}", "new": "2: \"OUT\"}"}
+    ],
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "short"
+  },
+  {
+    "id": "M-decap",
+    "fixture": "blinky-555",
+    "description": "missing decoupling: C3 (100nF across the U1 supply) deleted",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "C(\"C3\", \"100nF\", \"VCC\", \"GND\", G)", "new": "pass"},
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "no capacitor to GND"
+  },
+  {
+    "id": "M-decap-far",
+    "fixture": "blinky-555",
+    "description": "decap too far: C3 moved from 4.8 mm to ~25 mm from U1 pin 8 by a placement override (full place -> check)",
+    "op": {"type": "placements", "set": {"C3": [60.0, 36.0, 0]}},
+    "stages": ["place", "route", "finish", "check"],
+    "expect_stage": "check",
+    "expect_text": "FAIL  U1 pin 8 (VCC)"
+  },
+  {
+    "id": "M-pol",
+    "fixture": "blinky-555",
+    "description": "polarity reversed: electrolytic C1 + pin on GND, - pin on TRIG",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "C(\"C1\", \"10uF\", \"TRIG\", \"GND\", G, fp=FP_CP)", "new": "C(\"C1\", \"10uF\", \"GND\", \"TRIG\", G, fp=FP_CP)"},
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "reversed"
+  },
+  {
+    "id": "M-led-reversed",
+    "fixture": "blinky-555",
+    "description": "LED reversed: D1 anode on GND, cathode on LED_A",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "{1: \"GND\", 2: \"LED_A\"}", "new": "{1: \"LED_A\", 2: \"GND\"}"},
+    "stages": ["lint"],
+    "expect_stage": "lint",
+    "expect_text": "reversed"
+  },
+  {
+    "id": "M-led-reversed-spice",
+    "fixture": "blinky-555",
+    "description": "LED reversed with lint skipped: the SPICE forward/reverse current limits must trip",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "{1: \"GND\", 2: \"LED_A\"}", "new": "{1: \"LED_A\", 2: \"GND\"}"},
+    "stages": ["spice"],
+    "expect_stage": "spice",
+    "expect_text": "FAIL"
+  },
+  {
+    "id": "M-width",
+    "fixture": "blinky-555",
+    "description": "over-current track: OUT declared 2 A (IPC-2221 needs ~0.8 mm) but routed at 0.2 mm",
+    "op": {"type": "net_spec", "net": "OUT", "set": {"i_max": 2.0}},
+    "stages": ["check"],
+    "expect_stage": "check",
+    "expect_text": "track_width"
+  },
+  {
+    "id": "M-hole",
+    "fixture": "blinky-555",
+    "description": "fab limit: R1 pad drill 0.8 -> 1.4 mm leaves a 0.1 mm annular ring (JLCPCB needs 0.18)",
+    "op": {"type": "replace", "file": "{prj}.kicad_pcb", "old": "(drill 0.8)", "new": "(drill 1.4)"},
+    "stages": ["check"],
+    "expect_stage": "check",
+    "expect_text": "annular_width: PTH pad",
+    "note": "FINDING (open): fab_rules.py writes jlc_annular_preferred (warning, 0.25) AFTER jlc_annular_min (error, 0.18); KiCad evaluates later rules first, so the warning shadows the error and a 0.1 mm ring only warns. Fix: emit the preferred rule BEFORE the min rule (verified with kicad-cli: then 'annular_width error')."
+  },
+  {
+    "id": "M-hole-fabreport",
+    "fixture": "blinky-555",
+    "description": "same too-big drill, secondary gate: fabreport must flag the 0.1 mm annular ring as a CHECK row",
+    "op": {"type": "replace", "file": "{prj}.kicad_pcb", "old": "(drill 0.8)", "new": "(drill 1.4)"},
+    "stages": ["fabreport"],
+    "expect_stage": "fabreport",
+    "expect_text": "Smallest annular ring"
+  },
+  {
+    "id": "M-hole-gap",
+    "fixture": "blinky-555",
+    "description": "fab limit: R3 moved so its first hole is 0.3 mm from R2's second hole (JLCPCB wants 0.45 mm hole-to-hole)",
+    "op": {"type": "replace", "file": "{prj}.kicad_pcb", "old": "(at 148 62)", "new": "(at 139.26 62)"},
+    "stages": ["check"],
+    "expect_stage": "check",
+    "expect_text": "hole_to_hole"
+  },
+  {
+    "id": "M-edge",
+    "fixture": "blinky-555",
+    "description": "part off outline: LED D1 moved 16 mm right so its pads sit on the board edge",
+    "op": {"type": "replace", "file": "{prj}.kicad_pcb", "old": "(at 152 74)", "new": "(at 168 74)"},
+    "stages": ["check"],
+    "expect_stage": "check",
+    "expect_text": "edge"
+  },
+  {
+    "id": "M-cut",
+    "fixture": "blinky-555",
+    "description": "copper open in the fab files: the first LED_A track segment removed from B_Cu inside the gerber zip",
+    "op": {
+      "type": "zip_replace", "zip": "out/fab/{prj}_gerbers_JLCPCB.zip", "member": "*B_Cu.gbl", "regex": true,
+      "old": "(%TO\\.N,/LED_A\\*%\\r?\\n)X\\d+Y-?\\d+D02\\*\\r?\\nX\\d+Y-?\\d+D01\\*\\r?\\n", "new": "\\1"
+    },
+    "stages": ["lvs"],
+    "expect_stage": "lvs",
+    "expect_text": "OPEN"
+  },
+  {
+    "id": "M-bridge",
+    "fixture": "blinky-555",
+    "description": "copper short in the fab files: a stray F_Cu track drawn between R1 pad 1 (VCC) and pad 2 (DISCH)",
+    "op": {
+      "type": "zip_append", "zip": "out/fab/{prj}_gerbers_JLCPCB.zip", "member": "*F_Cu.gtl",
+      "text": "D17*\nX8000000Y-12000000D02*\nX18160000Y-12000000D01*"
+    },
+    "stages": ["lvs"],
+    "expect_stage": "lvs",
+    "expect_text": "SHORT"
+  },
+  {
+    "id": "M-fw",
+    "fixture": "uno-toggle",
+    "description": "firmware != board: LED1 moved from header D8 to D7 in netlist.py while the sketch still drives pin 8",
+    "op": {"type": "replace", "file": "gen/netlist.py", "old": "\"D8\": \"LED1\"", "new": "\"D7\": \"LED1\""},
+    "stages": ["pinmap"],
+    "expect_stage": "pinmap",
+    "expect_text": "firmware pin 8    board pad D8   net --"
+  },
+  {
+    "id": "M-disabled",
+    "fixture": "blinky-555",
+    "description": "check suppressed: annular_width set to ignore in .kicad_pro AND a too-big drill. DRC goes blind to the whole class (an 'ignore' there beats the generated rules' explicit severity); fabreport, which measures the board itself, is the gate that still has to stop it",
+    "op": [
+      {"type": "json_set", "file": "{prj}.kicad_pro", "path": ["board", "design_settings", "rule_severities", "annular_width"], "value": "ignore"},
+      {"type": "replace", "file": "{prj}.kicad_pcb", "old": "(drill 0.8)", "new": "(drill 1.4)"}
+    ],
+    "stages": ["check", "fabreport"],
+    "expect_stage": "fabreport",
+    "expect_text": "Smallest annular ring",
+    "note": "KNOWN GAP in `check`: nothing reports that a rule is switched off in .kicad_pro (D-X: uno-toggle and reflex-machine already ignore footprint_symbol_field_mismatch). If check learns to flag suppressed rules this entry will turn WRONG-STAGE: change expect_stage to check."
+  },
+  {
+    "id": "M-disabled-unconnected",
+    "fixture": "blinky-555",
+    "description": "check suppressed: unconnected_items set to ignore in .kicad_pro AND one LED_A track segment deleted from the .kicad_pcb; the gate must still see the open",
+    "op": [
+      {"type": "json_set", "file": "{prj}.kicad_pro", "path": ["board", "design_settings", "rule_severities", "unconnected_items"], "value": "ignore"},
+      {"type": "replace", "file": "{prj}.kicad_pcb", "regex": true, "old": "\\t\\(segment\\r?\\n(?:\\t\\t[^\\n]*\\n)*?\\t\\t\\(net \"/LED_A\"\\)\\r?\\n(?:\\t\\t[^\\n]*\\n)*?\\t\\)\\r?\\n", "new": ""}
+    ],
+    "stages": ["check", "outputs", "lvs"],
+    "expect_stage": "lvs",
+    "expect_text": "OPEN",
+    "note": "KNOWN GAP in `check`: with unconnected_items ignored the DRC gate PASSES a board with an open (only a track_dangling warning); `connections` and `outputs` pass too. Only gerber LVS (needs fresh fab files, hence outputs, ~45 s) stops it. Same root cause as M-disabled: suppressed rules are not reported. If check starts flagging suppressed rules, change expect_stage to check."
+  },
+  {"id": "M-libpin", "fixture": "blinky-555", "description": "wrong pinout in a library symbol", "op": {"type": "none"}, "stages": [], "expect_stage": "registry", "expect_text": "", "status": "planned", "needs": "P1-T1 parts registry pin-map evidence"},
+  {"id": "M-volt", "fixture": "blinky-555", "description": "over-voltage on a pin", "op": {"type": "none"}, "stages": [], "expect_stage": "rules", "expect_text": "", "status": "planned", "needs": "P2 ratings check"},
+  {"id": "M-strap", "fixture": "blinky-555", "description": "strap/boot pin wrong", "op": {"type": "none"}, "stages": [], "expect_stage": "rules", "expect_text": "", "status": "planned", "needs": "P3 block rule"},
+  {"id": "M-pullup", "fixture": "blinky-555", "description": "missing pull-up on an open-drain pin", "op": {"type": "none"}, "stages": [], "expect_stage": "rules", "expect_text": "", "status": "planned", "needs": "P2 rules engine"},
+  {"id": "M-cpl", "fixture": "blinky-555", "description": "CPL rotation wrong", "op": {"type": "none"}, "stages": [], "expect_stage": "outputs", "expect_text": "", "status": "planned", "needs": "P5 rotation DB"},
+  {"id": "M-stale", "fixture": "blinky-555", "description": "stale fab files shipped", "op": {"type": "none"}, "stages": [], "expect_stage": "release", "expect_text": "", "status": "planned", "needs": "P5 release hash chain"}
+]
