@@ -46,8 +46,9 @@
   (severity warning)
   (condition "A.NetName == '+12V'")
   (constraint track_width (min 7.2mm)))
+# +12V_IN: i_max 10 A, poured on F.Cu -> warning
 (rule "current__12V_IN"
-  (severity error)
+  (severity warning)
   (condition "A.NetName == '/+12V_IN'")
   (constraint track_width (min 7.2mm)))
 (rule "current__12V_REG"
