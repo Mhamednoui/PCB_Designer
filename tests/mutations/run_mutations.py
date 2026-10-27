@@ -41,7 +41,7 @@ turn a mutation into a no-op):
      "old": "..", "new": "..", "regex": false}                    edit text inside one member of the fab zip
     {"type": "records", "from": "tests/parts/records"}            copy that records dir into the project as `records/`
                                                                   and point the parts registry at it (env
-                                                                  PARTS_RECORDS_DIR + the hook tests/parts/hook), so a
+                                                                  PARTS_RECORDS_DIR, read by boardgen/parts.py), so a
                                                                   later `replace` on `records/<id>.json` mutates a
                                                                   TEST record, never parts/records
     {"type": "zip_append", "zip": "..", "member": "*F_Cu.gtl", "text": "..."}
@@ -200,9 +200,7 @@ def op_records(dst, pid, op):
     if not os.path.isdir(src):
         raise SetupError("records dir %s does not exist" % src)
     shutil.copytree(src, os.path.join(dst, "records"))
-    hook = os.path.join(ROOT, "tests", "parts", "hook")
-    ENV_EXTRA[pid] = {"PARTS_RECORDS_DIR": os.path.join(dst, "records"),
-                      "PYTHONPATH": hook + os.pathsep + os.environ.get("PYTHONPATH", "")}
+    ENV_EXTRA[pid] = {"PARTS_RECORDS_DIR": os.path.join(dst, "records")}     # honoured by boardgen/parts.py
 
 
 OPS = {"none": lambda *a: None, "replace": op_replace, "placements": op_placements, "net_spec": op_net_spec,
