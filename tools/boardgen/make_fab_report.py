@@ -287,7 +287,12 @@ def verdict(value, limit, higher_is_better=True):
 def build(project):
     pcb_path = find_pcb(project)
     pdir = os.path.dirname(pcb_path)
-    board = pcbnew.LoadBoard(pcb_path)
+    try:
+        board = pcbnew.LoadBoard(pcb_path)
+    except Exception as e:
+        raise SystemExit("FAILED: cannot read board %s: %s" % (pcb_path, e))
+    if board is None:
+        raise SystemExit("FAILED: cannot read board %s" % pcb_path)
     ds = board.GetDesignSettings()
     nc = ds.m_NetSettings.GetDefaultNetclass()
     stack = read_stackup(pcb_path)
@@ -599,9 +604,14 @@ def build(project):
         drl_total = sum(r["holes"] + r["slots"] for r in d["rows"])
         print("  drill file %s: %d holes (%s)" % (d["file"], drl_total,
                                                   "matches" if drl_total == total_holes else "MISMATCH"))
+    return [d["file"] for d in drl
+            if sum(r["holes"] + r["slots"] for r in d["rows"]) != total_holes]
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         raise SystemExit("usage: make_fab_report.py <project-id>")
-    build(sys.argv[1])
+    bad = build(sys.argv[1])
+    if bad:
+        raise SystemExit("FAILED: drill hole count disagrees with the design in %s "
+                         "(see MANUFACTURING.md)" % ", ".join(bad))

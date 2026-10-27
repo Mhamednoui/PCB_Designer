@@ -28,8 +28,13 @@ DOCS = os.path.join(NL.PRJ_DIR, "out", "docs")
 GERB = os.path.join(FAB, "gerbers")
 
 
+FAILED = []
+
+
 def run(args):
     r = subprocess.run([CLI] + args, capture_output=True, text=True)
+    if r.returncode != 0:
+        FAILED.append(" ".join(args[:3]))
     status = "ok" if r.returncode == 0 else "FAILED (%d) %s" % (r.returncode, (r.stdout + r.stderr).strip()[-400:])
     print("%-12s %s" % (args[1] if args[0] == "sch" else args[2], status))
     return r
@@ -121,3 +126,5 @@ for name, extra in (("top", ["--side", "top"]), ("bottom", ["--side", "bottom"])
     run(["pcb", "render", "-o", os.path.join(DOCS, "render_%s.png" % name), "-w", "2000", "-h", "1800",
          "--quality", "high", "--floor"] + extra + [PCB])
 print("done ->", FAB, "and", DOCS)
+if FAILED:
+    sys.exit("FAILED: %d export(s) failed: %s" % (len(FAILED), "; ".join(FAILED)))

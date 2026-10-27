@@ -19,15 +19,21 @@ OUT = os.path.join(NL.PRJ_DIR, "out")
 os.makedirs(OUT, exist_ok=True)
 
 
+FAILURES = []
+
+
 def run(args):
     r = subprocess.run([CLI] + args, capture_output=True, text=True)
     if r.returncode not in (0, 5):
         print("CMD FAILED", args, r.returncode, r.stdout[-2000:], r.stderr[-2000:])
+        FAILURES.append("kicad-cli %s exited %d" % (" ".join(args[:3]), r.returncode))
     return r
 
 
 net_path = os.path.join(OUT, "netlist.net")
 run(["sch", "export", "netlist", "--format", "kicadsexpr", "-o", net_path, SCH])
+if not os.path.isfile(net_path):
+    sys.exit("FAILED: kicad-cli produced no netlist at %s" % net_path)
 with open(net_path, encoding="utf-8") as f:
     exported = parse(f.read())
 
@@ -51,6 +57,8 @@ print("netlist compare: %d nets expected, %d exported, %d mismatches" % (len(wan
 
 erc_path = os.path.join(OUT, "erc.json")
 run(["sch", "erc", "--format", "json", "--severity-all", "-o", erc_path, SCH])
+if not os.path.isfile(erc_path):
+    sys.exit("FAILED: kicad-cli produced no ERC report at %s" % erc_path)
 with open(erc_path, encoding="utf-8") as f:
     erc = json.load(f)
 counts = {}
@@ -62,3 +70,12 @@ for sheet in erc.get("sheets", []):
             print("ERC %s %s: %s | %s" % (v["severity"], v["type"], v["description"],
                                          "; ".join(i.get("description", "") for i in v.get("items", []))))
 print("ERC summary:", {"%s/%s" % k: c for k, c in sorted(counts.items())})
+erc_errors = sum(c for (sev, _), c in counts.items() if sev == "error")
+erc_warnings = sum(c for (sev, _), c in counts.items() if sev == "warning")
+print("ERC: %d errors, %d warnings" % (erc_errors, erc_warnings))
+if bad:
+    FAILURES.append("%d netlist mismatches" % bad)
+if erc_errors:
+    FAILURES.append("%d ERC errors" % erc_errors)
+if FAILURES:
+    sys.exit("FAILED: " + "; ".join(FAILURES))
