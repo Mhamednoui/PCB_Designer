@@ -1,0 +1,38 @@
+{
+  "id": "74hc595n-dip16",
+  "kind": "part",
+  "mpn": "74HC595N",
+  "manufacturer": "HGSEMI",
+  "status": "draft",
+  "verification": "crosschecked",
+  "lcsc": {"id": "C507175", "class": "extended"},
+  "package": {"name": "DIP-16", "mount": "tht", "lcsc_package": "DIP-16", "body_mm": [19.56, 6.68]},
+  "kicad": {"symbol": "74xx:74HC595", "footprint": "Package_DIP:DIP-16_W7.62mm"},
+  "tht": {"lead_d_mm": 0.5},
+  "polarity": {"polarised": true, "pin1": "notch/dot end of the package, pin 1 = QB on the left of the notch; pins count anticlockwise", "pin1_footprint_marker": "rounded-rect pad 1 (KiCad DIP-16_W7.62mm)"},
+  "ratings": {"v_op": [3.2, 6], "t_op_c": [-40, 85]},
+  "pins": {
+    "1": {"name": "QB", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "2": {"name": "QC", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "3": {"name": "QD", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "4": {"name": "QE", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "5": {"name": "QF", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "6": {"name": "QG", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "7": {"name": "QH", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "8": {"name": "GND", "class": "power_in", "abs_max": {"i_ma": 70}},
+    "9": {"name": "QH'", "alias": "SQH,QH", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "10": {"name": "SRCLR", "alias": "SCLR,RESET", "class": "input", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5"}},
+    "11": {"name": "SRCLK", "alias": "SCK,SHIFT_CLOCK", "class": "input", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5"}},
+    "12": {"name": "RCLK", "alias": "RCK,LATCH_CLOCK", "class": "input", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5"}},
+    "13": {"name": "OE", "alias": "G,OUTPUT_ENABLE", "class": "input", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5"}},
+    "14": {"name": "SER", "alias": "A", "class": "input", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5"}},
+    "15": {"name": "QA", "class": "output", "abs_max": {"v_min": -0.5, "v_max": "pin:16+0.5", "i_ma": 35}},
+    "16": {"name": "VCC", "class": "power_in", "abs_max": {"v_max": 6.5, "i_ma": 70}}
+  },
+  "evidence": [
+    {"section": "pins,ratings,tht", "doc_url": "https://datasheet.lcsc.com/datasheet/pdf/a3fbc4f7888fd390190e6295c01a3aa8.pdf?productCode=C507175", "page": 3, "rev": "HGSEMI (HuaGuan) 74HC595 datasheet VER:V1.3, 13 pages", "method": "agent read the datasheet and viewed the page images: p3 DIP-16 pinout drawing + pin function table (1 QB, 2 QC, 3 QD, 4 QE, 5 QF, 6 QG, 7 QH, 8 GND, 9 Q'H, 10 SCLR, 11 SCK, 12 RCK, 13 G (output enable), 14 SER, 15 QA, 16 VCC); p4 absolute maximum ratings (VCC -0.5..6.5 V, VIN/VOUT -0.5..VCC+0.5 V, IIK/IOK +-20 mA, IOUT +-35 mA, ICC/IGND +-70 mA, PD 500 mW, TA -40..85 C); recommended VCC 3.2-6 V; p10 DIP-16 outline (pitch 2.54 BSC, row spacing D1 7.42-7.82, lead dimension c 0.40-0.50, b 0.85-0.90, L 0.50-0.70)", "verified_by": "agent-P1-T8", "date": "2026-10-27", "notes": "Agent read, a person has not. The pin function table in the HGSEMI datasheet says '1~7 QB~QG' (7 pins, 6 names) but its own pinout drawing shows pin 7 = QH, the standard 74HC595 order, so the table is a vendor typo and the drawing was used. Pin NAMES differ per source (KiCad SRCLK/RCLK/~{OE}/SER, HGSEMI SCK/RCK/G/SER, EasyEDA SHIFT_CLOCK/LATCH_CLOCK/OUTPUT_ENABLE/A, RESET/SRCLR/SCLR for pin 10, SQH/Q'H for pin 9); the functions agree pin by pin and are stored as aliases. The alias 'A' on pin 14 (serial data) is the EasyEDA name and is loose; do not reuse it elsewhere. The alias 'QH' on pin 9 (Q'H, the serial-out) exists only because the page-text check tokenises on [A-Z0-9] and so can never find a name with an apostrophe: for pin 9 that part of the check is vacuous (pin 7 is also QH); pin 9 was verified by eye on the TI and HGSEMI page images (9 = Q'H on both). lead_d_mm 0.5 is ILLUSTRATIVE: the outline lettering is ambiguous, 0.5 is the datasheet 'c' maximum (0.40-0.50) read as the lead in the hole; the 0.85-0.90 'b' is the shoulder above the board. The TI SN74HC595 datasheet (SCLS041J rev J, https://www.ti.com/lit/ds/symlink/sn74hc595.pdf, p3 pinout drawing + Table 5-1) was also read and shows the identical pin table (16 pins, same numbers). The registry's automatic page-text check cites that TI page 3 because the HGSEMI page-3 text layer is garbled (subscripted Q names), so the machine check could not read it; the HGSEMI page 3 was verified by eye from the page image. Abs-max VCC differs: TI 7 V, HGSEMI 6.5 V; the stricter HGSEMI 6.5 V (the actual LCSC part) is recorded. Same package as the reflex fixture's FP_DIP16 (KiCad DIP-16_W7.62mm: 2.54 pitch, 7.62 rows)."},
+    {"section": "pins", "doc_url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf", "page": 3, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T22:11:23Z (C507175). page 3 of sn74hc595.pdf names all 16 pins. A person has not read the datasheet.", "rev": "SCLS041J (TI SN74HC595 rev J, Oct 2021); HGSEMI V1.3 p3 identical"}
+  ],
+  "signed_hash": "c9ca3019103e10a8cd27f9462257ce56c2a3864c0738815488c55349bbde7cd9",
+  "notes": "Machine data: EasyEDA C507175 (title 74HC595N, Manufacturer Part 74HC595N, Manufacturer HGSEMI, class Extended Part, package DIP-16) + LCSC product page (HGSEMI 74HC595N, DIP-16). FINDING: jlcsearch has NO entry for C507175 (exact-id lookup returns 0 results; same for the alternatives C78711 TI SN74HC595N, C6622703 NTE, C112387 AIP74HC595-DIP), so `parts new` refuses it and stock / price are unverified (sourcing block deliberately omitted, PR-STOCK/PR-MPN against jlcsearch cannot judge it; LCSC product pages exist). The fixture (reflex U3, value '74HC595N') points at C507175. Hand-written record. Reflex U3 7-segment driver: pins 14 SER=SEG_DATA, 12 RCLK=SEG_LATCH, 11 SRCLK=SEG_CLOCK, 10 SRCLR=+5V, 13 OE=GND, 8 GND, 16 VCC, 1-7 QB..QH, 15 QA unused. class values: 'output' for the tri-state Qx (the registry vocabulary has no tri_state). Tier covers pin numbers/names/pads only; class, abs_max, lead_d_mm, ratings are agent-read, owner sign-off needed."
+}

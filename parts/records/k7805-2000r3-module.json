@@ -2,44 +2,25 @@
   "id": "k7805-2000r3-module",
   "kind": "part",
   "mpn": "K7805-2000R3",
-  "package": {
-    "name": "SIP-3 DC-DC module (R-78 style)",
-    "mount": "tht"
-  },
-  "kicad": {
-    "symbol": "Converter_DCDC:R-785.0-1.0",
-    "footprint": "Converter_DCDC:Converter_DCDC_RECOM_R-78B-2.0_THT"
-  },
-  "pins": {
-    "1": {
-      "name": "IN",
-      "class": "power_in"
-    },
-    "2": {
-      "name": "GND",
-      "class": "power_in"
-    },
-    "3": {
-      "name": "OUT",
-      "class": "power_out"
-    }
-  },
-  "polarity": {
-    "polarised": true,
-    "pin1": "pin 1 = IN (verify on the module marking)",
-    "pin1_footprint_marker": "rect pad 1"
-  },
-  "evidence": [
-    {
-      "section": "pins",
-      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
-      "verified_by": "agent-P1-T7",
-      "date": "2026-10-27",
-      "notes": "Scope: KiCad symbol pins vs KiCad footprint pads by number only (1 IN, 2 GND, 3 OUT). The symbol/footprint are for the RECOM R-78 family; that the K7805-2000R3 is pin-compatible is NOT checked against its datasheet."
-    }
-  ],
-  "notes": "Reflex U1 (5V 2A buck module). THT drop-in for a 7805. A REVERSED connection (swapping IN/GND/OUT) destroys the module and the Mega: the pinout and the claim of compatibility with the RECOM footprint MUST be signed from the K7805-2000R3 datasheet (P1-T8). No LCSC id or manufacturer recorded here (not verified).",
+  "manufacturer": "YLPTEC",
   "status": "draft",
-  "verification": "unverified",
-  "signed_hash": null
+  "verification": "crosschecked",
+  "lcsc": {"id": "C18212380", "class": "extended"},
+  "sourcing": {"stock": 1644, "price_1": 3.1045, "snapshot_date": "2026-10-27"},
+  "package": {"name": "SIP-3 DC-DC module (R-78 style)", "mount": "tht", "lcsc_package": "SIP,11.5x9mm", "body_mm": [11.5, 9.0, 17.5]},
+  "kicad": {"symbol": "Converter_DCDC:R-785.0-1.0", "footprint": "Converter_DCDC:Converter_DCDC_RECOM_R-78B-2.0_THT"},
+  "tht": {"lead_mm": [0.8, 0.4]},
+  "pins": {
+    "1": {"name": "IN", "alias": "VIN", "class": "power_in"},
+    "2": {"name": "GND", "class": "power_in"},
+    "3": {"name": "OUT", "alias": "VOUT,+Vo", "class": "power_out"}
+  },
+  "polarity": {"polarised": true, "pin1": "pin 1 = Vin, 2 = GND, 3 = +Vo (positive-output K7805; the negative-output variants use a different table). Datasheet bottom view numbers the pins 1 2 3 left to right", "pin1_footprint_marker": "rect pad 1"},
+  "ratings": {"v_op": [8, 36], "i_max": 2.0, "t_op_c": [-40, 85]},
+  "evidence": [
+    {"section": "pins,ratings,tht", "doc_url": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380", "page": 5, "rev": "YLPTEC K78xx-2000R3 Series (English, the datasheet LCSC links for C18212380)", "method": "agent read BOTH datasheets and viewed the page images: YLPTEC p5 'Pin-Out' table (pin 1 Vin, 2 GND, 3 +Vo for positive output; 3 Vin/-Vo/GND for negative) and the identical table on the ORIGINAL Mornsun K78xx-2000R3 datasheet (https://www.mornsun.cn/public/uploads/pdf/K78xx-2000R3.pdf, 2023.06.25-A/8, p5, 引脚方式: 1 Vin, 2 GND, 3 +Vo). Typical-circuit figure p4 of both shows +Vin on pin 1, GND on pin 2, +Vout on pin 3. Selection table p1: K7805-2000R3 = 5 V, 2000 mA, Vin 8-36 V (24 V nominal), efficiency 92/89 %, -40..+85 C. Recommended layout p5: grid 2.54 mm, hole dia 1.20 mm.", "verified_by": "agent-P1-T8", "date": "2026-10-27", "notes": "Agent read, a person has not. KiCad Converter_DCDC:R-785.0-1.0 (1 IN, 2 GND, 3 OUT) AGREES with the datasheet pin table; KiCad footprint pads 1,2,3 at 2.54 mm pitch, drill 1.20 mm = datasheet layout hole 1.20 mm. Datasheet says 'Pin compatible with LM78xx' (1 IN, 2 GND, 3 OUT is also the LM7805 TO-220 order). NOT in the datasheets: any absolute-maximum input voltage (only the recommended 8-36 V range and 'for Vin > 30 V add a 22uF/50V input cap'), so abs_max is left empty. 'Reverse Polarity at Input: Avoid / Not protected': a reversed supply destroys it. lead_mm is ILLUSTRATIVE: read from the dimension drawing (0.70 x 0.30 mm, terminal cross-section tolerance +-0.10 mm, so max 0.80 x 0.40 used); which of the 0.70/0.30 labels is width vs thickness comes from a low-resolution drawing. Provenance: the LCSC listing C18212380 is manufactured by YLPTEC (Zhongshan Yichuan); the K7805-2000R3 name is Mornsun's original product (other LCSC listings of the same MPN exist, e.g. C2931187 DEXU). The two datasheets agree on the pin table, but a clone's real pinout is only proven by the part in hand: check the module marking before powering."},
+    {"section": "pins", "doc_url": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380", "page": 4, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T22:06:54Z (C18212380). page 4 of 06ea2024fc53108821a9233280dee56e.pdf_productCode_C18212380 names all 3 pins. A person has not read the datasheet.", "rev": "YLPTEC K78xx-2000R3 (LCSC C18212380); Mornsun 2023.06.25-A/8 agrees"}
+  ],
+  "notes": "Reflex U1 (5V 2A buck module, 12 V in). THT drop-in for a 7805. Datasheet pin order 1=Vin 2=GND 3=+Vo MATCHES the KiCad symbol and footprint (see evidence). The EasyEDA symbol (VIN, GND, +Vo) is the second machine source. Record id kept as k7805-2000r3-module (fixture reflex U1 will reference this id); the registry id carries no manufacturer because Mornsun, YLPTEC and DEXU all sell the same-named part. class is from the datasheet pin names. LCSC C18212380 verified by exact-id lookup: jlcsearch mfr 'K7805-2000R3', package 'SIP,11.5x9mm', stock 1644. NB: `parts new` refuses this id because EasyEDA's component TITLE is 'K7805-2000R3_C18212380' (EasyEDA appends the LCSC id) although its 'Manufacturer Part' field is K7805-2000R3.",
+  "signed_hash": "6d93b676f0b57022899dc2369b34b1e4718f177ae30d47ca10f6114434f9a238"
 }
