@@ -47,3 +47,8 @@ projects/**/test/spice/*.raw
 projects/**/test/spice/*.log
 .claude/settings.local.json
 .history/
+
+# volatile check outputs (rewritten by every check run)
+projects/*/out/drc.json
+projects/*/out/erc.json
+projects/*/out/netlist.net
