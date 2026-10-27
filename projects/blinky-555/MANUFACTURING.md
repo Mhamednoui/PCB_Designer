@@ -1,6 +1,6 @@
 # blinky-555 - manufacturing details
 
-_Generated 2026-10-27 18:56 by `tools/boardgen/make_fab_report.py` from `blinky-555.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py blinky-555 --only fabreport`._
+_Generated 2026-10-27 22:55 by `tools/boardgen/make_fab_report.py` from `blinky-555.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py blinky-555 --only fabreport`._
 
 ## Quick answers (what a PCB price calculator asks)
 
@@ -9,7 +9,7 @@ _Generated 2026-10-27 18:56 by `tools/boardgen/make_fab_report.py` from `blinky-
 | Width | **7 cm** (70 mm) |
 | Height | **4.5 cm** (45 mm) |
 | Layers | **2** (copper on: F.Cu, B.Cu) |
-| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 162 vias. A one-layer fab can't make it without a redesign. |
+| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 165 vias. A one-layer fab can't make it without a redesign. |
 | Solder mask | **Yes, both sides** (colour not set in design - green is the cheap default) |
 | Silkscreen | Yes, top only (white) |
 | Board thickness | 1.6 mm |
@@ -17,7 +17,7 @@ _Generated 2026-10-27 18:56 by `tools/boardgen/make_fab_report.py` from `blinky-
 | Surface finish | not set in design - **HASL lead-free** is the cheap default and fine for hand soldering |
 | Material | FR-4 (KiCad default) |
 | Board area | 31.5 cm² (outline rectangle) |
-| Total holes to drill | 190 (28 component/mounting + 162 vias) |
+| Total holes to drill | 193 (28 component/mounting + 165 vias) |
 | Components | 9 (9 through-hole, 0 SMD) + 4 mechanical (mounting holes etc.) |
 | Assembly needed from the fab? | No - all through-hole, hand solderable |
 
@@ -54,13 +54,13 @@ What is on each copper layer:
 | Copper layer | Tracks | Track length | Track widths used | Pour zones | Poured area | Pads |
 |---|---|---|---|---|---|---|
 | F.Cu | 5 | 40.84 mm | 0.2 mm | 1 | 2872.27 mm² (91.18% of board) | 28 |
-| B.Cu | 26 | 142.6 mm | 0.2 mm | 1 | 2801.76 mm² (88.94% of board) | 28 |
+| B.Cu | 26 | 142.6 mm | 0.2 mm | 1 | 2800.96 mm² (88.92% of board) | 28 |
 
 Silkscreen: 26 text items (smallest 0.9 mm high), 183 lines/shapes (thinnest 0.12 mm).
 
 ## Holes
 
-From the design (190 holes in total):
+From the design (193 holes in total):
 
 | Diameter (mm) | Plated? | Shape | Count |
 |---|---|---|---|
@@ -68,16 +68,16 @@ From the design (190 holes in total):
 | 0.9 | yes (PTH) | round | 2 |
 | 1.3 | yes (PTH) | round | 2 |
 | 3.2 | no (NPTH) | round | 4 |
-| 0.4 | yes (via, 0.8 mm pad) | round | 162 |
+| 0.4 | yes (via, 0.8 mm pad) | round | 165 |
 
 - Plated pads: 24 through-hole, 0 SMD; non-plated holes: 4; slots: 0
 - Smallest hole 0.4 mm, largest 3.2 mm
 
-Cross-check against the drill file the fab receives, `out/fab/gerbers/blinky-555.drl`: **190 holes**, matches the design.
+Cross-check against the drill file the fab receives, `out/fab/gerbers/blinky-555.drl`: **193 holes**, matches the design.
 
 | Tool | Diameter (mm) | Plating | Holes | Slots |
 |---|---|---|---|---|
-| T1 | 0.4 | Plated | 162 | 0 |
+| T1 | 0.4 | Plated | 165 | 0 |
 | T2 | 0.8 | Plated | 20 | 0 |
 | T3 | 0.9 | Plated | 2 | 0 |
 | T4 | 1.3 | Plated | 2 | 0 |
@@ -96,14 +96,18 @@ Limits are typical JLCPCB standard 2-layer values - confirm on the fab's capabil
 | Largest hole | 3.2 mm | <= 6.3 mm | OK |
 | Smallest via drill | 0.4 mm | >= 0.3 mm | OK |
 | Smallest annular ring | 0.2 mm | >= 0.13 mm | OK |
-| Closest two holes (edge to edge, measured) | 0.893 mm | >= 0.5 mm | OK |
+| Closest two holes (edge to edge, measured) | 0.893 mm | >= 0.45 mm | OK |
 | Copper to board edge (DRC rule) | 0.5 mm | >= 0.3 mm | OK |
-| Smallest silkscreen text | 0.9 mm | >= 1 mm | **CHECK** |
-| Thinnest silkscreen line | 0.12 mm | >= 0.153 mm | **CHECK** |
+| Smallest silkscreen text | 0.9 mm | >= 1 mm | advisory |
+| Thinnest silkscreen line | 0.12 mm | >= 0.153 mm | advisory |
 
 Closest two holes: H3 hole (103.50, 91.00) and via on GND (106.00, 92.00).
 
-How to read a **CHECK**: a copper or hole row is a real risk - fix it or ask the fab. A *silkscreen* row is cosmetic: the fab still prints it, just fainter or blurrier (KiCad's own footprint outlines are 0.12 mm, so nearly every KiCad board shows that one). A *DRC rule* row only means the rule would allow something tighter than the fab; the measured rows show what the board really uses.
+## Current-carrying nets (copper 1 oz, temp rise 10 C, IPC-2221 external layer)
+
+No net needs more than the default 0.15 mm track (NET_SPEC i_max).
+
+How to read a **CHECK**: a copper or hole row is a real risk - fix it or ask the fab (the fabreport stage exits 1 while any is left). A *silkscreen* row is marked *advisory* instead: it is cosmetic, the fab still prints it, just fainter or blurrier (KiCad's own footprint outlines are 0.12 mm, so nearly every KiCad board shows that one). A *DRC rule* row only means the rule would allow something tighter than the fab; the measured rows show what the board really uses.
 
 ## Components
 
@@ -137,7 +141,7 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3), H3 (Mounting
 | Check | Result |
 |---|---|
 | DRC errors | **0** |
-| DRC warnings | 3 |
+| DRC warnings | 4 |
 | Unconnected items | 0 |
 | Schematic vs board differences | 0 |
 
@@ -172,5 +176,5 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3), H3 (Mounting
 |---|---|---|
 | `out/fab/BOM_JLCPCB.csv` | 0.04 KB | assembly only |
 | `out/fab/CPL_JLCPCB.csv` | 0.04 KB | assembly only |
-| `out/fab/blinky-555_gerbers_JLCPCB.zip` | 48.85 KB | **upload this** - gerbers + drill |
+| `out/fab/blinky-555_gerbers_JLCPCB.zip` | 48.96 KB | **upload this** - gerbers + drill |
 | `out/fab/positions_raw.csv` | 0.04 KB | raw placement data (not needed for bare boards) |

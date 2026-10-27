@@ -160,7 +160,7 @@
     "stages": ["check"],
     "expect_stage": "check",
     "expect_text": "annular_width: PTH pad",
-    "note": "FINDING (open): fab_rules.py writes jlc_annular_preferred (warning, 0.25) AFTER jlc_annular_min (error, 0.18); KiCad evaluates later rules first, so the warning shadows the error and a 0.1 mm ring only warns. Fix: emit the preferred rule BEFORE the min rule (verified with kicad-cli: then 'annular_width error')."
+    "note": "Fixed in MD-T11: fab_rules.py now emits jlc_annular_preferred (warning) BEFORE jlc_annular_min (error); KiCad evaluates later rules first, so the error is no longer shadowed."
   },
   {
     "id": "M-hole-fabreport",
@@ -230,10 +230,10 @@
       {"type": "json_set", "file": "{prj}.kicad_pro", "path": ["board", "design_settings", "rule_severities", "annular_width"], "value": "ignore"},
       {"type": "replace", "file": "{prj}.kicad_pcb", "old": "(drill 0.8)", "new": "(drill 1.4)"}
     ],
-    "stages": ["check", "fabreport"],
-    "expect_stage": "fabreport",
-    "expect_text": "Smallest annular ring",
-    "note": "KNOWN GAP in `check`: nothing reports that a rule is switched off in .kicad_pro (D-X: uno-toggle and reflex-machine already ignore footprint_symbol_field_mismatch). If check learns to flag suppressed rules this entry will turn WRONG-STAGE: change expect_stage to check."
+    "stages": ["check"],
+    "expect_stage": "check",
+    "expect_text": "IGNORED RULE",
+    "note": "MD-T11: check now fails on any .kicad_pro rule set to ignore beyond KiCad's defaults unless waived (waivers.json rule ignored-<rule>)."
   },
   {
     "id": "M-disabled-unconnected",
@@ -243,10 +243,10 @@
       {"type": "json_set", "file": "{prj}.kicad_pro", "path": ["board", "design_settings", "rule_severities", "unconnected_items"], "value": "ignore"},
       {"type": "replace", "file": "{prj}.kicad_pcb", "regex": true, "old": "\\t\\(segment\\r?\\n(?:\\t\\t[^\\n]*\\n)*?\\t\\t\\(net \"/LED_A\"\\)\\r?\\n(?:\\t\\t[^\\n]*\\n)*?\\t\\)\\r?\\n", "new": ""}
     ],
-    "stages": ["check", "outputs", "lvs"],
-    "expect_stage": "lvs",
-    "expect_text": "OPEN",
-    "note": "KNOWN GAP in `check`: with unconnected_items ignored the DRC gate PASSES a board with an open (only a track_dangling warning); `connections` and `outputs` pass too. Only gerber LVS (needs fresh fab files, hence outputs, ~45 s) stops it. Same root cause as M-disabled: suppressed rules are not reported. If check starts flagging suppressed rules, change expect_stage to check."
+    "stages": ["check"],
+    "expect_stage": "check",
+    "expect_text": "IGNORED RULE",
+    "note": "MD-T11: check flags the suppressed unconnected_items rule (gerber LVS would also catch the open, later)."
   },
   {"id": "M-libpin", "fixture": "blinky-555", "description": "wrong pinout in a library symbol", "op": {"type": "none"}, "stages": [], "expect_stage": "registry", "expect_text": "", "status": "planned", "needs": "P1-T1 parts registry pin-map evidence"},
   {"id": "M-volt", "fixture": "blinky-555", "description": "over-voltage on a pin", "op": {"type": "none"}, "stages": [], "expect_stage": "rules", "expect_text": "", "status": "planned", "needs": "P2 ratings check"},

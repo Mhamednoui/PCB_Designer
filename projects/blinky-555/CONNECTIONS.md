@@ -1,6 +1,6 @@
 # blinky-555 - every connection, in plain words
 
-_Generated 2026-10-27 18:56 by `tools/boardgen/make_connections.py` from the real board copper (`blinky-555.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py blinky-555 --only connections`._
+_Generated 2026-10-27 22:55 by `tools/boardgen/make_connections.py` from the real board copper (`blinky-555.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py blinky-555 --only connections`._
 
 ## How to use this file
 

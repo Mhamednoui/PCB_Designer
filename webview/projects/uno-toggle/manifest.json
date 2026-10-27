@@ -187,5 +187,6 @@
     }
   ],
   "actions": [],
-  "live_sim": true
+  "live_sim": true,
+  "spice_sim": false
 }

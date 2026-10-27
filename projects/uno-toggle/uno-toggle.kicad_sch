@@ -2504,17 +2504,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "Arduino_Uno_R3_Shield"
-			(at 60.96 73.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "3V3" (uuid "d5a91162-1124-5f71-8d5c-fe32ac294044"))
 		(pin "5V1" (uuid "0e267f67-e139-5b64-a4e6-045596823964"))
 		(pin "5V2" (uuid "b36a785c-a534-54df-92c3-adee55d6189e"))
@@ -3156,17 +3145,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 104.14 149.86 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "b8cf2c4d-7a75-542f-ad94-d06e866cf71c"))
 		(pin "2" (uuid "4cc8ca9f-55e8-58ea-9331-b74503317953"))
 		(instances (project "uno-toggle" (path "/fd59619f-c1c5-5938-9614-d718bf64babe" (reference "C1") (unit 1))))
@@ -3300,17 +3278,6 @@
 			)
 		)
 		(property "ki_keywords" "cap capacitor"
-			(at 119.38 149.86 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "C_*"
 			(at 119.38 149.86 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3465,17 +3432,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 27.94 208.28 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "b75d7090-4d1c-5d0c-9aab-f824c2e4710c"))
 		(pin "2" (uuid "cf911a10-8f69-57a6-86ae-0540aa7a5f65"))
 		(instances (project "uno-toggle" (path "/fd59619f-c1c5-5938-9614-d718bf64babe" (reference "R1") (unit 1))))
@@ -3552,17 +3508,6 @@
 			)
 		)
 		(property "ki_keywords" "LED diode"
-			(at 50.8 195.58 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
 			(at 50.8 195.58 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3727,17 +3672,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 76.2 208.28 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "ad8cf680-f644-599f-8930-59e7f20e38c4"))
 		(pin "2" (uuid "fa1a96fb-b3cb-5df1-b803-098b57c9afa5"))
 		(instances (project "uno-toggle" (path "/fd59619f-c1c5-5938-9614-d718bf64babe" (reference "R2") (unit 1))))
@@ -3814,17 +3748,6 @@
 			)
 		)
 		(property "ki_keywords" "LED diode"
-			(at 99.06 195.58 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
 			(at 99.06 195.58 0)
 			(show_name no)
 			(do_not_autoplace no)
