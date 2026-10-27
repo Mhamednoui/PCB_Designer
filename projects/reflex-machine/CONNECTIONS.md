@@ -1,6 +1,6 @@
 # reflex-machine - every connection, in plain words
 
-_Generated 2026-09-18 15:55 by `tools/boardgen/make_connections.py` from the real board copper (`reflex-machine.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py reflex-machine --only connections`._
+_Generated 2026-10-27 19:00 by `tools/boardgen/make_connections.py` from the real board copper (`reflex-machine.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py reflex-machine --only connections`._
 
 ## How to use this file
 

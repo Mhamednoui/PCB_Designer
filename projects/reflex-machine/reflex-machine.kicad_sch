@@ -4,7 +4,7 @@
 	(generator_version "10.0")
 	(uuid "9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3")
 	(paper "User" 1160 840.74)
-	(title_block (title "Reflex Machine Controller Shield") (date "2026-09-11") (rev "1.0") (comment 1 "Arduino Mega 2560 R3 shield + ESP32 DevKit V1 (30 pin)") (comment 2 "Generated from gen/netlist.py - firmware pin map unchanged"))
+	(title_block (title "reflex-machine") (date "2026-10-27") (rev "1.0") (comment 1 "") (comment 2 "Generated from gen/netlist.py - firmware pin map unchanged"))
 	(lib_symbols
 		(symbol "74xx:74HC595"
 			(exclude_from_sim no)
@@ -8168,17 +8168,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
-			(at 43.18 45.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "7b93b038-709f-5ddb-abd6-babdf1f8f845"))
 		(pin "2" (uuid "6b8a071b-5679-5fd8-9d3f-e993f5244c7b"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "J1") (unit 1))))
@@ -8322,17 +8311,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "*Fuse*"
-			(at 55.88 58.42 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "855db956-2302-5fbc-a964-ef57270d370c"))
 		(pin "2" (uuid "ce3f43b4-0982-57ba-ae5f-24838088640f"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "F1") (unit 1))))
@@ -8466,17 +8444,6 @@
 			)
 		)
 		(property "ki_keywords" "diode"
-			(at 78.74 45.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 78.74 45.72 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8699,17 +8666,6 @@
 			)
 		)
 		(property "ki_keywords" "cap capacitor"
-			(at 104.14 55.88 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "CP_*"
 			(at 104.14 55.88 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8964,17 +8920,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
-			(at 132.08 45.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2985028"
 			(at 132.08 45.72 0)
 			(show_name no)
@@ -9121,17 +9066,6 @@
 			)
 		)
 		(property "ki_keywords" "dc-dc recom Step-Down DC/DC-Regulator"
-			(at 175.26 45.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "Converter*DCDC*RECOM*R*78E*0.5*"
 			(at 175.26 45.72 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9367,17 +9301,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 203.2 58.42 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C47344177"
 			(at 203.2 58.42 0)
 			(show_name no)
@@ -9532,17 +9455,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 218.44 58.42 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "145e971c-e5c1-56ad-8077-afae059fbeaf"))
 		(pin "2" (uuid "93a301c7-ea4a-5c37-8f63-c519d139ea4a"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "C3") (unit 1))))
@@ -9676,17 +9588,6 @@
 			)
 		)
 		(property "ki_keywords" "cap capacitor"
-			(at 233.68 55.88 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "C_*"
 			(at 233.68 55.88 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9919,17 +9820,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 248.92 55.88 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "cbbdb42c-ab84-5756-a963-569692c49d7a"))
 		(pin "2" (uuid "5e764fdd-aee8-56d5-8ac5-6b19963e7243"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "C7") (unit 1))))
@@ -10141,17 +10031,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 261.62 55.88 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "66d86240-86b6-5f18-a243-843cd6db1912"))
 		(pin "2" (uuid "2825f08b-9b27-5e93-9785-c72299b3a8e2"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R1") (unit 1))))
@@ -10306,17 +10185,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 284.48 45.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "4b1373e1-ff73-5ca5-bbcd-7c250e01a300"))
 		(pin "2" (uuid "27ea6f90-a8c9-5eaa-ae23-bcbf4de0fc48"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "D3") (unit 1))))
@@ -10450,17 +10318,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 312.42 55.88 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 312.42 55.88 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10625,17 +10482,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 335.28 45.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "9a214603-1606-5036-a81d-ca64de90cf2f"))
 		(pin "2" (uuid "bfacc997-1dfb-5523-b00b-946e6d5be699"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "D4") (unit 1))))
@@ -10770,17 +10616,6 @@
 			)
 		)
 		(property "ki_keywords" "Arduino MPU Shield"
-			(at 73.66 172.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "Arduino_Mega2560_R3_Shield"
 			(at 73.66 172.72 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12028,17 +11863,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 27.94 279.4 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "0f7460ec-1d31-569d-b6cf-7c2814d69d61"))
 		(pin "2" (uuid "f680fa18-3f2f-5413-9374-90ae96114e37"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R62") (unit 1))))
@@ -12104,17 +11928,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 40.64 279.4 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 40.64 279.4 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12269,17 +12082,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
-			(at 45.72 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "8e11d9de-37fb-5943-90b9-2472142e8d84"))
 		(pin "2" (uuid "2ba29b12-75bb-52f1-8b20-900b00ab8dd4"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "J2") (unit 1))))
@@ -12416,17 +12218,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 73.66 345.44 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 73.66 345.44 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12595,17 +12386,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 88.9 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "343b26f2-a755-5c21-b7dd-61e5825a9f70"))
 		(pin "2" (uuid "cac70466-04ab-50d3-a8ca-6481e3fa65bc"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R11") (unit 1))))
@@ -12671,17 +12451,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 101.6 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 101.6 342.9 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12836,17 +12605,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 124.46 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 124.46 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13022,17 +12780,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 167.64 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 167.64 327.66 0)
 			(show_name no)
@@ -13187,17 +12934,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 190.5 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "6db60412-70d1-53b1-89fe-09cdd3335269"))
 		(pin "2" (uuid "2daf4da1-b7c6-5967-a3db-d8928f369b35"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R31") (unit 1))))
@@ -13263,17 +12999,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 218.44 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 218.44 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13420,17 +13145,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 246.38 345.44 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 246.38 345.44 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13599,17 +13313,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 261.62 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "c1e048f8-496f-5621-b863-10cd70061eb6"))
 		(pin "2" (uuid "7d729ea2-fd70-5b66-9844-63d584c343ed"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R12") (unit 1))))
@@ -13675,17 +13378,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 274.32 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 274.32 342.9 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13840,17 +13532,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 297.18 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 297.18 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14026,17 +13707,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 340.36 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 340.36 327.66 0)
 			(show_name no)
@@ -14191,17 +13861,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 363.22 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "1eef3f88-dbfe-5507-b1ff-5fc238583d70"))
 		(pin "2" (uuid "a08dfc9e-8a22-567c-9d5f-1375b3780674"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R32") (unit 1))))
@@ -14267,17 +13926,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 391.16 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 391.16 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14424,17 +14072,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 419.1 345.44 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 419.1 345.44 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14603,17 +14240,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 434.34 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "65edbeed-672e-5030-bf6b-1ceffdccae13"))
 		(pin "2" (uuid "28515000-5043-5be0-baef-5bad851bb499"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R13") (unit 1))))
@@ -14679,17 +14305,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 447.04 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 447.04 342.9 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14844,17 +14459,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 469.9 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 469.9 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15030,17 +14634,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 513.08 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 513.08 327.66 0)
 			(show_name no)
@@ -15195,17 +14788,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 535.94 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "6e53ea2f-7a42-5411-90eb-b16023871b04"))
 		(pin "2" (uuid "7e4c0f46-bf4e-5175-a187-96abdbacdd9f"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R33") (unit 1))))
@@ -15271,17 +14853,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 563.88 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 563.88 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15428,17 +14999,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 591.82 345.44 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 591.82 345.44 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15607,17 +15167,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 607.06 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "b90ca98f-65c2-5128-a244-513c7437c0ce"))
 		(pin "2" (uuid "39176373-8be2-5438-86fe-f137785b2779"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R14") (unit 1))))
@@ -15683,17 +15232,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 619.76 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 619.76 342.9 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15848,17 +15386,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 642.62 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 642.62 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16034,17 +15561,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 685.8 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 685.8 327.66 0)
 			(show_name no)
@@ -16199,17 +15715,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 708.66 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "cb1bf192-34de-5a4d-8004-e902ae916c26"))
 		(pin "2" (uuid "55442302-60f6-595c-9f9e-df5a2b64dff0"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R34") (unit 1))))
@@ -16275,17 +15780,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 736.6 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 736.6 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16432,17 +15926,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 764.54 345.44 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 764.54 345.44 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16611,17 +16094,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 779.78 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "3e7efa5d-ea19-5b53-aac2-d9efa649f088"))
 		(pin "2" (uuid "43602ee4-696b-5381-9ecf-2e40e9d77136"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R15") (unit 1))))
@@ -16687,17 +16159,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 792.48 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 792.48 342.9 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16852,17 +16313,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 815.34 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 815.34 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17038,17 +16488,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 858.52 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 858.52 327.66 0)
 			(show_name no)
@@ -17203,17 +16642,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 881.38 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "63e9d6b9-4268-5f8a-a55b-7c43c1cdf872"))
 		(pin "2" (uuid "c9a10ad5-3ada-550a-a3f8-eb1ebb4a6016"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R35") (unit 1))))
@@ -17279,17 +16707,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 909.32 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 909.32 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17436,17 +16853,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 937.26 345.44 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 937.26 345.44 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17615,17 +17021,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 952.5 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "8e6ed72f-103b-5ece-a3f3-4fcd9d02e7c3"))
 		(pin "2" (uuid "ef09b935-7de6-5d12-93ed-811b807aecb0"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R16") (unit 1))))
@@ -17691,17 +17086,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 965.2 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 965.2 342.9 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17856,17 +17240,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 988.06 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 988.06 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18042,17 +17415,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 1031.24 327.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 1031.24 327.66 0)
 			(show_name no)
@@ -18207,17 +17569,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 1054.1 342.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "612802e2-ebc4-5194-af48-f29b8a1437ae"))
 		(pin "2" (uuid "b3f95673-daf2-5bfa-9532-9d8d4d0be1a0"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R36") (unit 1))))
@@ -18283,17 +17634,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 45.72 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 45.72 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18440,17 +17780,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 73.66 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 73.66 391.16 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18619,17 +17948,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 88.9 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "686ec586-95f7-5110-bd13-45ed650d87e5"))
 		(pin "2" (uuid "e37e7dd0-2214-5d88-90f7-45ab8b75f273"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R17") (unit 1))))
@@ -18695,17 +18013,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 101.6 388.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 101.6 388.62 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18860,17 +18167,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 124.46 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 124.46 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19046,17 +18342,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 167.64 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 167.64 375.92 0)
 			(show_name no)
@@ -19211,17 +18496,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 190.5 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "7d9a6af2-9b24-5596-a57a-14f554c3f4c2"))
 		(pin "2" (uuid "d88f7860-088e-57e2-9df7-947302d26a82"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R37") (unit 1))))
@@ -19287,17 +18561,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 218.44 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 218.44 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19444,17 +18707,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 246.38 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 246.38 391.16 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19623,17 +18875,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 261.62 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "77b19a8f-e3cc-503d-a54d-3c786c0ff7e2"))
 		(pin "2" (uuid "30360e8c-b6a4-52cf-b436-76504e11da49"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R18") (unit 1))))
@@ -19699,17 +18940,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 274.32 388.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 274.32 388.62 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19864,17 +19094,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 297.18 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 297.18 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20050,17 +19269,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 340.36 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 340.36 375.92 0)
 			(show_name no)
@@ -20215,17 +19423,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 363.22 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "27148412-9af6-5490-abf2-c9d42148f821"))
 		(pin "2" (uuid "f76f4cb2-3a18-5b31-b645-36be504f481f"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R38") (unit 1))))
@@ -20291,17 +19488,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 391.16 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 391.16 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20448,17 +19634,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 419.1 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 419.1 391.16 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20627,17 +19802,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 434.34 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "1ca9bab8-0aa5-5c33-82ad-0274f03cd0b0"))
 		(pin "2" (uuid "24d4f049-39fe-53e6-8a91-4b02b9142dab"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R19") (unit 1))))
@@ -20703,17 +19867,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 447.04 388.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 447.04 388.62 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20868,17 +20021,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 469.9 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 469.9 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21054,17 +20196,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 513.08 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 513.08 375.92 0)
 			(show_name no)
@@ -21219,17 +20350,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 535.94 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "21c03120-43a1-5b76-8fc0-528a487a650f"))
 		(pin "2" (uuid "6d1796b9-71c8-565c-9091-28ee3fea12b5"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R39") (unit 1))))
@@ -21295,17 +20415,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 566.42 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 566.42 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21452,17 +20561,6 @@
 			)
 		)
 		(property "ki_keywords" "N-Channel HEXFET MOSFET Logic-Level"
-			(at 594.36 393.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO?220*"
 			(at 594.36 393.7 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21631,17 +20729,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 609.6 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "b53ecff7-189f-5d4a-b01a-68ae821fbb58"))
 		(pin "2" (uuid "74e069d1-f345-5104-b85f-c4353836285f"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R20") (unit 1))))
@@ -21707,17 +20794,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 622.3 388.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 622.3 388.62 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21872,17 +20948,6 @@
 			)
 		)
 		(property "ki_keywords" "diode Schottky"
-			(at 645.16 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
 			(at 645.16 375.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22058,17 +21123,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 690.88 375.92 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2895470"
 			(at 690.88 375.92 0)
 			(show_name no)
@@ -22223,17 +21277,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 713.74 391.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "0fc809c3-28f6-5035-8cef-446eb1cb71cf"))
 		(pin "2" (uuid "21c38735-c2d9-5672-8c7e-c99d446985ab"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R40") (unit 1))))
@@ -22300,17 +21343,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 45.72 444.5 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 45.72 444.5 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22535,17 +21567,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 58.42 454.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "22e885eb-2ac7-51c5-afbe-9f8fd6ab8dfa"))
 		(pin "2" (uuid "c8460a4c-c5b9-56c0-83f7-b7f69721567b"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R41") (unit 1))))
@@ -22682,17 +21703,6 @@
 			)
 		)
 		(property "ki_keywords" "NPN DC Optocoupler"
-			(at 93.98 444.5 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "DIP*W7.62mm*"
 			(at 93.98 444.5 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22864,17 +21874,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 124.46 454.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC" "C2649453"
 			(at 124.46 454.66 0)
 			(show_name no)
@@ -23019,17 +22018,6 @@
 			)
 		)
 		(property "ki_keywords" "cap capacitor"
-			(at 137.16 457.2 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "C_*"
 			(at 137.16 457.2 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23195,17 +22183,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 27.94 525.78 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "9cfe81f0-730d-59b1-8daf-86b19ef910da"))
 		(pin "2" (uuid "40473e4a-156f-5842-9bf8-72020bb424c8"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R43") (unit 1))))
@@ -23271,17 +22248,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 40.64 520.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 40.64 520.7 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23446,17 +22412,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 53.34 520.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "c4c6cb94-1c57-51bb-a2ca-9ceed4d91318"))
 		(pin "2" (uuid "ca8191f2-6ca7-5a2b-9a37-10b96c06f0e6"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "C9") (unit 1))))
@@ -23600,17 +22555,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 66.04 525.78 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "20bec63b-6b50-56e8-a3ee-49b7323a2779"))
 		(pin "2" (uuid "03172f9b-e24f-55e1-922c-211bae063640"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R44") (unit 1))))
@@ -23676,17 +22620,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 78.74 520.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 78.74 520.7 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23851,17 +22784,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 91.44 520.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "34fc73d0-0008-54e4-93f3-6faa65081cf9"))
 		(pin "2" (uuid "e7638f96-db05-50d7-9441-4c95e5990641"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "C10") (unit 1))))
@@ -24005,17 +22927,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 104.14 525.78 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "c5eae5ce-90a8-5aa1-a0e2-c7abc30a1364"))
 		(pin "2" (uuid "8fc9a6f9-aebb-5e84-b0b9-883381261060"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R45") (unit 1))))
@@ -24081,17 +22992,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 116.84 520.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 116.84 520.7 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24256,17 +23156,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 129.54 520.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "daaab20c-489e-51db-93be-e69b35549399"))
 		(pin "2" (uuid "d000128c-3839-536e-9210-37df8e4a09cb"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "C11") (unit 1))))
@@ -24410,17 +23299,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 142.24 525.78 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "e0b18f0b-9b7a-5b63-bea7-c0af6febe5a6"))
 		(pin "2" (uuid "6d11afef-b5f2-549c-9ed3-922c4669b792"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R46") (unit 1))))
@@ -24486,17 +23364,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 154.94 520.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 154.94 520.7 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24661,17 +23528,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 167.64 523.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "5af2f3b1-d4d6-5beb-8f41-d412223890bb"))
 		(pin "2" (uuid "b8ed0d03-0a55-53e4-9434-cc4002a6cdb2"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "C12") (unit 1))))
@@ -24805,17 +23661,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 200.66 515.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 200.66 515.62 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25192,17 +24037,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 27.94 586.74 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "99b02ba7-457c-51a7-98f5-7009e51350ff"))
 		(pin "2" (uuid "24f14e0c-5a43-5329-9cf0-daa477f670df"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R51") (unit 1))))
@@ -25268,17 +24102,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 40.64 586.74 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 40.64 586.74 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25364,17 +24187,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 53.34 586.74 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "dbecc66a-98fa-5c38-ad20-257e0a08882e"))
 		(pin "2" (uuid "81295541-8c67-5d7b-aa3d-c28a05c21585"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R53") (unit 1))))
@@ -25450,17 +24262,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 66.04 586.74 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "9454381e-2c74-523a-8852-3fc720ececbe"))
 		(pin "2" (uuid "c555767c-f8d2-5107-90cc-f71cae28fb89"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R54") (unit 1))))
@@ -25526,17 +24327,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 93.98 581.66 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 93.98 581.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25903,17 +24693,6 @@
 			)
 		)
 		(property "ki_keywords" "HCMOS SR 3State"
-			(at 50.8 660.4 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "DIP*W7.62mm* SOIC*3.9x9.9mm*P1.27mm* TSSOP*4.4x5mm*P0.65mm* SOIC*5.3x10.2mm*P1.27mm* SOIC*7.5x10.3mm*P1.27mm*"
 			(at 50.8 660.4 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26322,17 +25101,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "C_*"
-			(at 83.82 647.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "ba9b61f0-0e43-59a2-8879-a076a36af00c"))
 		(pin "2" (uuid "9de7b6b4-286a-5eff-afea-530500ea9527"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "C13") (unit 1))))
@@ -26544,17 +25312,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 96.52 650.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "7b50bb39-b6f8-5f06-9c0b-bd20377daeff"))
 		(pin "2" (uuid "a0f49f08-99fa-576e-9e7c-c3d3bd28a665"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R55") (unit 1))))
@@ -26620,17 +25377,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 109.22 650.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 109.22 650.24 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26716,17 +25462,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 121.92 650.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "9d794fd0-239c-5c6b-98c4-26fd476a846a"))
 		(pin "2" (uuid "df53ead6-9808-520e-8639-3abd6f9451cc"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R57") (unit 1))))
@@ -26792,17 +25527,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 134.62 650.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 134.62 650.24 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26888,17 +25612,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 147.32 650.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "86a04254-8dbe-5519-9087-79da7833ae54"))
 		(pin "2" (uuid "05132ec2-dde2-5e6a-8686-c6158bc06a2a"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R59") (unit 1))))
@@ -26964,17 +25677,6 @@
 			)
 		)
 		(property "ki_keywords" "R res resistor"
-			(at 160.02 650.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "R_*"
 			(at 160.02 650.24 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27060,17 +25762,6 @@
 				)
 			)
 		)
-		(property "ki_fp_filters" "R_*"
-			(at 172.72 650.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "9b73ee0b-0aaf-5685-9e72-ef1ff600636d"))
 		(pin "2" (uuid "085c099d-3052-57dc-9048-8fa0fd29505e"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "R61") (unit 1))))
@@ -27136,17 +25827,6 @@
 			)
 		)
 		(property "ki_keywords" "screw terminal"
-			(at 198.12 645.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "TerminalBlock*:*"
 			(at 198.12 645.16 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27309,17 +25989,6 @@
 			)
 		)
 		(property "ki_keywords" "connector"
-			(at 48.26 731.52 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "Connector*:*_2x??_*"
 			(at 48.26 731.52 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27721,17 +26390,6 @@
 			)
 		)
 		(property "ki_keywords" "connector"
-			(at 99.06 723.9 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_fp_filters" "Connector*:*_2x??_*"
 			(at 99.06 723.9 0)
 			(show_name no)
 			(do_not_autoplace no)

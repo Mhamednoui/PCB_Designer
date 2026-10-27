@@ -1,6 +1,6 @@
 # blinky-555 - manufacturing details
 
-_Generated 2026-09-18 15:36 by `tools/boardgen/make_fab_report.py` from `blinky-555.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py blinky-555 --only fabreport`._
+_Generated 2026-10-27 18:56 by `tools/boardgen/make_fab_report.py` from `blinky-555.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py blinky-555 --only fabreport`._
 
 ## Quick answers (what a PCB price calculator asks)
 
@@ -9,7 +9,7 @@ _Generated 2026-09-18 15:36 by `tools/boardgen/make_fab_report.py` from `blinky-
 | Width | **7 cm** (70 mm) |
 | Height | **4.5 cm** (45 mm) |
 | Layers | **2** (copper on: F.Cu, B.Cu) |
-| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 159 vias. A one-layer fab can't make it without a redesign. |
+| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 162 vias. A one-layer fab can't make it without a redesign. |
 | Solder mask | **Yes, both sides** (colour not set in design - green is the cheap default) |
 | Silkscreen | Yes, top only (white) |
 | Board thickness | 1.6 mm |
@@ -17,7 +17,7 @@ _Generated 2026-09-18 15:36 by `tools/boardgen/make_fab_report.py` from `blinky-
 | Surface finish | not set in design - **HASL lead-free** is the cheap default and fine for hand soldering |
 | Material | FR-4 (KiCad default) |
 | Board area | 31.5 cm² (outline rectangle) |
-| Total holes to drill | 187 (28 component/mounting + 159 vias) |
+| Total holes to drill | 190 (28 component/mounting + 162 vias) |
 | Components | 9 (9 through-hole, 0 SMD) + 4 mechanical (mounting holes etc.) |
 | Assembly needed from the fab? | No - all through-hole, hand solderable |
 
@@ -53,14 +53,14 @@ What is on each copper layer:
 
 | Copper layer | Tracks | Track length | Track widths used | Pour zones | Poured area | Pads |
 |---|---|---|---|---|---|---|
-| F.Cu | 7 | 57.36 mm | 0.2 mm | 1 | 2862.13 mm² (90.86% of board) | 28 |
-| B.Cu | 15 | 118.25 mm | 0.2 mm | 1 | 2825.14 mm² (89.69% of board) | 28 |
+| F.Cu | 5 | 40.84 mm | 0.2 mm | 1 | 2872.27 mm² (91.18% of board) | 28 |
+| B.Cu | 26 | 142.6 mm | 0.2 mm | 1 | 2801.76 mm² (88.94% of board) | 28 |
 
 Silkscreen: 26 text items (smallest 0.9 mm high), 183 lines/shapes (thinnest 0.12 mm).
 
 ## Holes
 
-From the design (187 holes in total):
+From the design (190 holes in total):
 
 | Diameter (mm) | Plated? | Shape | Count |
 |---|---|---|---|
@@ -68,16 +68,16 @@ From the design (187 holes in total):
 | 0.9 | yes (PTH) | round | 2 |
 | 1.3 | yes (PTH) | round | 2 |
 | 3.2 | no (NPTH) | round | 4 |
-| 0.4 | yes (via, 0.8 mm pad) | round | 159 |
+| 0.4 | yes (via, 0.8 mm pad) | round | 162 |
 
 - Plated pads: 24 through-hole, 0 SMD; non-plated holes: 4; slots: 0
 - Smallest hole 0.4 mm, largest 3.2 mm
 
-Cross-check against the drill file the fab receives, `out/fab/gerbers/blinky-555.drl`: **187 holes**, matches the design.
+Cross-check against the drill file the fab receives, `out/fab/gerbers/blinky-555.drl`: **190 holes**, matches the design.
 
 | Tool | Diameter (mm) | Plating | Holes | Slots |
 |---|---|---|---|---|
-| T1 | 0.4 | Plated | 159 | 0 |
+| T1 | 0.4 | Plated | 162 | 0 |
 | T2 | 0.8 | Plated | 20 | 0 |
 | T3 | 0.9 | Plated | 2 | 0 |
 | T4 | 1.3 | Plated | 2 | 0 |
@@ -172,5 +172,5 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3), H3 (Mounting
 |---|---|---|
 | `out/fab/BOM_JLCPCB.csv` | 0.04 KB | assembly only |
 | `out/fab/CPL_JLCPCB.csv` | 0.04 KB | assembly only |
-| `out/fab/blinky-555_gerbers_JLCPCB.zip` | 48.12 KB | **upload this** - gerbers + drill |
+| `out/fab/blinky-555_gerbers_JLCPCB.zip` | 48.85 KB | **upload this** - gerbers + drill |
 | `out/fab/positions_raw.csv` | 0.04 KB | raw placement data (not needed for bare boards) |
