@@ -1,0 +1,21 @@
+{
+  "id": "ams1117-3.3",
+  "kind": "part",
+  "mpn": "AMS1117-3.3",
+  "manufacturer": "Advanced Monolithic Systems",
+  "status": "draft",
+  "verification": "unverified",
+  "lcsc": {"id": "C6186", "class": "basic"},
+  "sourcing": {"stock": 1465063, "price_1": 0.2003, "snapshot_date": "2026-10-27"},
+  "package": {"name": "SOT-223", "mount": "smd", "lcsc_package": "SOT-223", "body_mm": [6.5, 3.5, 1.6]},
+  "kicad": {"symbol": "Regulator_Linear:AMS1117-3.3", "footprint": "Package_TO_SOT_SMD:SOT-223-3_TabPin2", "fp_pad_copies": {"2": 2}},
+  "ratings": {"v_op": [null, 15], "i_max": 1.0, "t_op_c": [-40, 125]},
+  "pins": {
+    "1": {"name": "GND"},
+    "2": {"name": "VOUT", "also": "EasyEDA pad 4 has the same name (tab/duplicate pad)"},
+    "3": {"name": "VIN"}
+  },
+  "evidence": [],
+  "signed_hash": null,
+  "notes": "DRAFT from machine data (jlcsearch + EasyEDA, 2026-10-27). kicad symbol/footprint are tool suggestions. TODO: pins.*.class and abs_max (datasheet only); tht.lead_mm / lead_d_mm (datasheet only); polarity (human); lifecycle (human/distributor); datasheet evidence and owner sign-off. Nobody has checked this record against a datasheet (tier unverified)."
+}
