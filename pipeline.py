@@ -91,6 +91,9 @@ def build_stages(project_id):
         ("route", gen_script("make_pcb.py"), gen, [KICAD_PYTHON, "make_pcb.py", "route"]),
         ("finish", gen_script("make_pcb.py"), gen, [KICAD_PYTHON, "make_pcb.py", "finish"]),
         ("check", gen_script("make_pcb.py"), gen, [KICAD_PYTHON, "make_pcb.py", "check"]),
+        # Design review (kicad-happy analyzers + projects/<id>/waivers.json): decoupling distance, EMC, power tree.
+        ("review", gen_script("make_pcb.py"), WORKSPACE_ROOT,
+         [sys.executable, os.path.join(BOARDGEN, "make_review.py"), project_id]),
         ("outputs", scripted, gen, shared("make_outputs.py")),
         # Read-only: measures the finished board + its drill file, so it's safe on a signed-off board.
         ("fabreport", scripted, WORKSPACE_ROOT, shared("make_fab_report.py", project_id)),
