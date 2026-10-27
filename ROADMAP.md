@@ -75,11 +75,11 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P1-T2 cache + `parts new/refresh` | ✅ |
 | P1-T3 bind/assist/sign | ✅ |
 | P1-T4 test records + mutations | ⬜ |
-| P1-T5 lint PR- rules | 🔄 |
-| P1-T6 `parts` stage | ⬜ |
+| P1-T5 lint PR- rules | ✅ |
+| P1-T6 `parts` stage | 🔄 |
 | P1-T7 generic/connector/mechanical records | ⬜ |
 | P1-T8 crosschecked records for real parts | ⬜ |
-| P1-T9 migrate fixtures, strict mode | ⬜ |
+| P1-T9 migrate fixtures, strict mode (+ replace lint's monkeypatch of `parts.registry_part` with an explicit `parts.py` API: lenient load + registered-refs tracking) | ⬜ |
 
 ### MP Production-ready outputs (both assembly modes) - MP-T1/T2 superseded by P1 above; MP-T3 remains (P5)
 | ID | Task | Files | Effort | Deps | Acceptance | St |
