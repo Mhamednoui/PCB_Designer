@@ -55,3 +55,6 @@ projects/*/out/netlist.net
 
 # Agent git worktrees (temporary)
 .claude/worktrees/
+
+# gerber LVS result (rewritten by every lvs run)
+projects/*/out/lvs.json

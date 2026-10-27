@@ -1,0 +1,4 @@
+# Python deps for the system-Python stages (NOT KiCad python). Install: python -m pip install --user -r requirements.txt
+# gerber_lvs.py (lvs stage)
+gerbonara==1.6.3
+shapely==2.1.2
