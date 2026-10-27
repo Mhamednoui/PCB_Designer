@@ -1,0 +1,4 @@
+[
+  {"check": "review", "rule": "PM-002", "refs": ["A1"],
+   "why": "False positive: A1 is the Uno shield footprint whose origin is deliberately the board corner (make_pcb.py: A1 at (0, BH)); the rule measures footprint origin to edge, not copper to edge. KiCad DRC edge clearance is clean."}
+]

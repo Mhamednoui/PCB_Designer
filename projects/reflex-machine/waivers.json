@@ -1,0 +1,4 @@
+[
+  {"check": "review", "rule": "DC-001", "refs": ["U1", "C7"],
+   "why": "U1 is the R-785.0 5V DC-DC module (not a logic IC) with its own internal input/output capacitors; C7 is the extra 100nF on its +5V output, 13.4 mm centre-to-centre (9.2 mm pad-to-pad), acceptable for a bulk-rail cap. Marginal, not a defect."}
+]
