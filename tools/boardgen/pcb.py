@@ -840,8 +840,8 @@ def stage_check():
     print("DRC gate: %d errors, %d unconnected, %d parity, %d warnings -> %s"
           % (errors, unconnected, parity, warnings, "FAIL" if errors or unconnected or parity else "PASS"))
     from boardgen import decap_check          # native pad-to-pin decoupling distance (needs pcbnew)
-    examined, dbad, dinfo = decap_check.run(pcbnew.LoadBoard(PCB), NL, os.path.basename(NL.PRJ_DIR))
-    print("decap distance: %d IC supply pins examined, %d violations" % (examined, len(dbad)))
+    examined, dbad, dinfo, dskip = decap_check.run(pcbnew.LoadBoard(PCB), NL, os.path.basename(NL.PRJ_DIR))
+    print("decap distance: examined %d IC supply pins, skipped %d, %d violations" % (examined, dskip, len(dbad)))
     for line in dinfo + dbad:
         print(line)
     if examined == 0:

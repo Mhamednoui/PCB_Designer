@@ -42,16 +42,22 @@ def _limit(NL, net, pad):
 
 
 def run(board, NL, project_id):
-    """-> (examined supply pins, violation lines (unwaived), info lines)."""
+    """-> (examined supply pins, violation lines (unwaived), info lines, skipped module count)."""
     M = L.Model(NL)
     caps = [c for c in L.decoupling_caps(M) if any(M.is_ground(n) for n in c["pins"].values())]
     ws, problems = _waivers.load(project_id, "check")
     ws = [(i, w) for i, w in ws if w.get("rule") == RULE]
     used = set()
-    examined, bad, info = 0, [], []
+    examined, bad, info, skipped = 0, [], [], []
     for ref, net, pins, note in L.ic_supply_pins(M):
-        if note or M.parts[ref]["lib_id"].startswith(MODULE_PREFIXES):
-            continue                                              # modules carry their own input caps
+        if note:
+            continue
+        if M.parts[ref]["lib_id"].startswith(MODULE_PREFIXES):    # modules carry their own input caps
+            if ref not in skipped:
+                skipped.append(ref)
+                info.append("  SKIP %s (%s): module - decoupling not judged; verify against module datasheet"
+                            % (ref, M.parts[ref]["lib_id"]))
+            continue
         for ics in _pads(board, ref, pins):
             examined += 1
             best = None                                           # (distance mm, cap ref)
@@ -86,4 +92,4 @@ def run(board, NL, project_id):
         if i not in used:
             info.append("  WARN unused waiver waivers.json[%d] (rule %r, %s)" % (i, RULE, _waivers.describe(w)))
     bad += ["  FAIL  waivers: %s %s" % t for t in problems]
-    return examined, bad, info
+    return examined, bad, info, len(skipped)
