@@ -28,6 +28,7 @@ import subprocess
 import sys
 
 import pcbnew
+from boardgen import fab_rules
 from boardgen.kicad_paths import CLI  # one place for the KiCad location, see kicad_paths.py
 from boardgen.make_sch import lib_symbol
 from boardgen.sexp import find, find_all, symbol_pins
@@ -94,6 +95,38 @@ def sync_routed_project():
     import shutil
     shutil.copyfile(os.path.join(NL.PRJ_DIR, NL.PRJ_NAME + ".kicad_pro"),
                     os.path.join(NL.PRJ_DIR, NL.PRJ_NAME + "-routed.kicad_pro"))
+
+
+def write_fab_rules():
+    """(Re)write <project>.kicad_dru: JLCPCB limits + per-net current widths from NL.NET_SPEC. Called by
+    `place` and again by `check`, so DRC on an already-routed board always evaluates the current rules."""
+    path, widths = fab_rules.write_rules(NL.PRJ_DIR, NL, GLOBAL_NETS)
+    print("DRC rules -> %s%s" % (os.path.basename(path),
+          ("; current-based min track width: " + ", ".join("%s %.2f mm" % kv for kv in sorted(widths.items())))
+          if widths else ""))
+    return widths
+
+
+def route_netclasses(widths):
+    """Make the autorouter lay tracks at least as wide as the DRC rules demand: one netclass per wide net,
+    written into the throwaway -routed.kicad_pro only (the project's own .kicad_pro is left alone)."""
+    if not widths:
+        return
+    path = os.path.join(NL.PRJ_DIR, NL.PRJ_NAME + "-routed.kicad_pro")
+    with open(path, encoding="utf-8") as f:
+        pro = json.load(f)
+    ns = pro.setdefault("net_settings", {})
+    classes = ns.setdefault("classes", [])
+    base = next(c for c in classes if c.get("name") == "Default")
+    classes[:] = [c for c in classes if not str(c.get("name", "")).startswith("I_")]
+    pats = [q for q in ns.get("netclass_patterns") or [] if not str(q.get("netclass", "")).startswith("I_")]
+    for n, w in sorted(widths.items()):
+        cls = dict(base, name="I_" + n, track_width=w, priority=1)
+        classes.append(cls)
+        pats.append({"netclass": cls["name"], "pattern": pcb_net_name(n)})
+    ns["netclass_patterns"] = pats
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(pro, f, indent=2)
 
 
 def pcb_net_name(name):
@@ -257,8 +290,9 @@ def stage_place():
             val = fp.Value()
             val.SetVisible(True)
             val.SetLayer(pcbnew.F_SilkS)
-            # 0.8 mm is KiCad's default DRC minimum text height; 0.7 violates it on every part.
-            val.SetTextSize(pcbnew.VECTOR2I(mm(0.9), mm(0.9)))
+            # 1.0 mm is JLCPCB's minimum legible silk text height (fab_rules.LIMITS["silk_text"]); the
+            # .kicad_dru warns on anything smaller. KiCad's own default minimum is 0.8 mm.
+            val.SetTextSize(pcbnew.VECTOR2I(mm(fab_rules.LIMITS["silk_text"]), mm(fab_rules.LIMITS["silk_text"])))
             val.SetTextThickness(mm(0.12))
             val.SetPosition(pcbnew.VECTOR2I(cx, cy - val_dy))
             val.SetTextAngleDegrees(0)
@@ -324,6 +358,7 @@ def stage_place():
     pcbnew.SaveBoard(PCB, board)
     sync_routed_project()
     pcbnew.SaveBoard(ROUTED, board)
+    write_fab_rules()
     print("placed %d footprints -> %s" % (len(board.GetFootprints()), PCB))
 
 
@@ -337,6 +372,7 @@ def _require_freerouting():
 def stage_route(passes=40):
     _require_freerouting()
     sync_routed_project()
+    route_netclasses(write_fab_rules())    # wide nets get a wide netclass so the router obeys the DRC rules
     board = pcbnew.LoadBoard(ROUTED)       # no pours / stitching here; previous routes kept
     fanout_gnd(board)                      # GND vias first, so the router respects them
     pcbnew.SaveBoard(ROUTED, board)
@@ -693,6 +729,7 @@ def _stitch_and_fill(board, gnd):
 def stage_check():
     """DRC incl. schematic parity. Exits 1 on any DRC error, unconnected item or parity difference.
     Warnings (silkscreen) are reported but do not fail the gate."""
+    write_fab_rules()           # kicad-cli picks <project>.kicad_dru up from next to the .kicad_pro
     rpt = os.path.join(OUT, "drc.json")
     if os.path.exists(rpt):
         os.remove(rpt)          # never judge a stale report if kicad-cli fails to write a new one
