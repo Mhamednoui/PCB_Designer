@@ -209,6 +209,22 @@ GROUPS = [
 POWER_FLAG_NETS = ["+12V", "+12V_REG", "GND"]   # +5V is driven by the U1 module output
 
 
+# Electrical intent, read by tools/boardgen/lint_netlist.py (v in volts: number or (min, max); i_max in A).
+# MAGn_OUT is the MOSFET drain: its level when the magnet is ON (~0 V). Magnets are sized for <=1.5 A
+# each, with a 10 A blade fuse on the 12 V input (see DESIGN_BRIEF / HANDOVER).
+NET_SPEC = {
+    "GND": {"v": 0.0, "i_max": 10.0},
+    "+12V_IN": {"v": 12.0, "i_max": 10.0},
+    "+12V": {"v": 12.0, "i_max": 10.0},
+    "+12V_REG": {"v": 12.0, "i_max": 1.0},          # only feeds the 5 V module (via D2)
+    "+5V": {"v": 5.0, "i_max": 2.0},                # K7805-2000R3 module, 2 A
+    "+3V3": {"v": 3.3, "i_max": 0.5},
+    "+3V3_ESP": {"v": 3.3, "i_max": 0.5},
+}
+for _i in range(1, 11):
+    NET_SPEC["MAG%d_OUT" % _i] = {"v": 0.0, "i_max": 1.5}
+
+
 def nets():
     out = {}
     for p in PARTS:

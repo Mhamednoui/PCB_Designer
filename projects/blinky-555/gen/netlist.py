@@ -102,6 +102,15 @@ GROUPS = [
 ]
 POWER_FLAG_NETS = ["VCC", "GND"]
 
+# Electrical intent, read by tools/boardgen/lint_netlist.py (v in volts: number or (min, max); i_max in A).
+# OUT/TRIG are not rails: OUT swings 0..VCC (the LED is lit when it is high); TRIG ramps 1/3..2/3 VCC.
+NET_SPEC = {
+    "VCC": {"v": (9.0, 12.0), "i_max": 0.05},
+    "GND": {"v": 0.0, "i_max": 0.05},
+    "OUT": {"v": (9.0, 12.0), "i_max": 0.025},      # high level ~ VCC
+    "TRIG": {"v": (3.0, 8.0)},                      # 1/3 VCC .. 2/3 VCC
+}
+
 # Transient SPICE run (tools/boardgen/make_spice.py) - this board's live simulation, since it has no
 # MCU for Wokwi to run. The expectations are the design intent from the docstring above:
 #   high = 0.693*(R1+R2)*C1 = 395 ms, low = 0.693*R2*C1 = 326 ms -> 1.39 Hz, 55% duty.
