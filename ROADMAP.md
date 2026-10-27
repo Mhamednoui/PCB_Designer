@@ -27,7 +27,7 @@ Signed-off boards (reflex-machine, uno-toggle) are never rebuilt in place by thi
 |---|---|---|---|---|---|---|
 | M1-T1 | Shared stages exit non-zero on failure (netlist mismatch / ERC error, failed export, drill cross-check mismatch); audit `make_sch.py` | `tools/boardgen/{check_sch,make_outputs,make_fab_report,make_sch}.py` | medium | - | a broken input → exit 1; blinky `sch-check,outputs,fabreport` still exit 0 | ✅ |
 | M1-T2 | `pipeline.py`: `sys.executable` not bare `python`; end-of-run per-stage summary; check stages stop dirtying tracked files (see D2) | `pipeline.py`, `.gitignore` | medium | - | `--list` unchanged for all 4 projects; `git status` clean after `--only sch-check,check` | ✅ |
-| M1-T3 | Extract `make_pcb.py` into `tools/boardgen/pcb.py` per §A plan (blinky version wins; 5 hooks); `stage_check`/`stage_finish` exit 1 on violations | `tools/boardgen/pcb.py` (new), `projects/*/gen/make_pcb.py` | high | - | blinky `--force` rebuild = 0/0/0 + 3 silk; uno/reflex: `check` results unchanged + `place` into a scratch copy diffs only in expected silk text (see D1) | 🔄 |
+| M1-T3 | Extract `make_pcb.py` into `tools/boardgen/pcb.py` per §A plan (blinky version wins; 5 hooks); `stage_check`/`stage_finish` exit 1 on violations | `tools/boardgen/pcb.py` (new), `projects/*/gen/make_pcb.py` | high | - | blinky `--force` rebuild = 0/0/0 + 3 silk; uno/reflex: `check` results unchanged + `place` into a scratch copy diffs only in expected silk text (see D1) | ✅ |
 **DoD:** G1 + G2 met; blinky full rebuild green; uno/reflex boards untouched in git.
 
 ### M2 Test
