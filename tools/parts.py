@@ -237,29 +237,38 @@ def cmd_refresh(a):
             print("%s: no lcsc id, skipped" % pid)
             continue
         try:
-            j = pc.jlcsearch(rec["lcsc"]["id"], True if a.offline else None)
-            if rec.get("mpn"):
-                pc.verify_mpn(j.data["mfr"], rec["mpn"])
+            sr = pc.sourcing(rec["lcsc"]["id"], True if a.offline else None)
+            if rec.get("mpn") and sr.data.get("mpn"):
+                pc.verify_mpn(sr.data["mpn"], rec["mpn"])
         except (pc.MpnMismatch, pc.CacheMiss) as e:
             print("ERROR %s: %s" % (pid, e))
             rc = 1
             continue
-        d = j.data
-        if j.stale:
-            print("%s: NOT REFRESHED, %s. Cache is %.1f days old (stock %s on %s). Record unchanged."
-                  % (pid, j.flags()[0], j.age_days, d["stock"], j.fetched_at[:10]))
+        for w in sr.warns:
+            print("  WARN %s: %s" % (pid, w))
+        if sr.stale:
+            print("%s: NOT REFRESHED, a source served only stale cache (%s). Record unchanged."
+                  % (pid, ", ".join(sr.stale_srcs)))
             rc = max(rc, 2)
+            continue
+        stock = sr.data.get("jlc_stock") if sr.data.get("jlc_stock") is not None else sr.data.get("lcsc_stock")
+        price = sr.data.get("price_1")
+        if stock is None or price is None or not sr.data.get("class"):
+            print("ERROR %s: no source gave stock/price/class (%s). Record unchanged." % (pid, "; ".join(sr.warns) or "n/a"))
+            rc = 1
             continue
         s = rec.setdefault("sourcing", {})
         before = (dict(s), rec["lcsc"].get("class"))
-        cls = "basic" if d.get("is_basic") else "preferred" if d.get("is_preferred") else "extended"
-        s.update({"stock": d["stock"], "price_1": d["price"], "snapshot_date": j.fetched_at[:10]})
+        cls = sr.data["class"]
+        s.update({"stock": stock, "price_1": price, "snapshot_date": sr.fetched["price_1"][:10]})
         rec["lcsc"]["class"] = cls
         if (s, cls) != before:
             save(rec)
-        print("%s: stock %s -> %s, price_1 %s -> %s, class %s -> %s, snapshot %s" % (
-            pid, before[0].get("stock"), s["stock"], before[0].get("price_1"), s["price_1"],
-            before[1], cls, s["snapshot_date"]))
+        print("%s: stock %s -> %s [%s], price_1 %s -> %s [%s], class %s -> %s [%s], snapshot %s" % (
+            pid, before[0].get("stock"), s["stock"], sr.src.get("jlc_stock") or sr.src.get("lcsc_stock"),
+            before[0].get("price_1"), s["price_1"], sr.src.get("price_1"), before[1], cls, sr.src.get("class"), s["snapshot_date"]))
+        print("    jlc stock %s [%s]; lcsc stock %s [%s]" % (sr.data.get("jlc_stock"), sr.src.get("jlc_stock"),
+                                                              sr.data.get("lcsc_stock"), sr.src.get("lcsc_stock")))
     return rc
 
 

@@ -6,7 +6,7 @@
   "status": "draft",
   "verification": "crosschecked",
   "lcsc": {"id": "C38774", "class": "extended"},
-  "sourcing": {"stock": 1692, "price_1": 1.1909, "snapshot_date": "2026-10-27"},
+  "sourcing": {"stock": 1534, "price_1": 0.8954, "snapshot_date": "2026-10-27"},
   "package": {"name": "TO-220AB", "mount": "tht", "lcsc_package": "TO-220AB", "body_mm": [10.0, 4.5]},
   "kicad": {"symbol": "Transistor_FET:IRLZ44N", "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical"},
   "tht": {"lead_mm": [0.93, 0.55]},

@@ -6,7 +6,7 @@
   "status": "draft",
   "verification": "crosschecked",
   "lcsc": {"id": "C6186", "class": "basic"},
-  "sourcing": {"stock": 1465063, "price_1": 0.2003, "snapshot_date": "2026-10-27"},
+  "sourcing": {"stock": 1898639, "price_1": 0.2061, "snapshot_date": "2026-10-27"},
   "package": {"name": "SOT-223", "mount": "smd", "lcsc_package": "SOT-223", "body_mm": [6.5, 3.5, 1.6]},
   "kicad": {"symbol": "Regulator_Linear:AMS1117-3.3", "footprint": "Package_TO_SOT_SMD:SOT-223-3_TabPin2", "fp_pad_copies": {"2": 2}},
   "ratings": {"v_op": [null, 15], "i_max": 1.0, "t_op_c": [-40, 125]},
