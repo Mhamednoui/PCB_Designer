@@ -1,6 +1,6 @@
 # reflex-machine - manufacturing details
 
-_Generated 2026-09-18 15:36 by `tools/boardgen/make_fab_report.py` from `reflex-machine.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py reflex-machine --only fabreport`._
+_Generated 2026-10-27 19:00 by `tools/boardgen/make_fab_report.py` from `reflex-machine.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py reflex-machine --only fabreport`._
 
 ## Quick answers (what a PCB price calculator asks)
 
@@ -9,7 +9,7 @@ _Generated 2026-09-18 15:36 by `tools/boardgen/make_fab_report.py` from `reflex-
 | Width | **16 cm** (160 mm) |
 | Height | **12.5 cm** (125 mm) |
 | Layers | **2** (copper on: F.Cu, B.Cu) |
-| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 229 vias. A one-layer fab can't make it without a redesign. |
+| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 206 vias. A one-layer fab can't make it without a redesign. |
 | Solder mask | **Yes, both sides** (colour not set in design - green is the cheap default) |
 | Silkscreen | Yes, top only (white) |
 | Board thickness | 1.6 mm |
@@ -17,7 +17,7 @@ _Generated 2026-09-18 15:36 by `tools/boardgen/make_fab_report.py` from `reflex-
 | Surface finish | not set in design - **HASL lead-free** is the cheap default and fine for hand soldering |
 | Material | FR-4 (KiCad default) |
 | Board area | 200 cm² (outline rectangle) |
-| Total holes to drill | 671 (442 component/mounting + 229 vias) |
+| Total holes to drill | 648 (442 component/mounting + 206 vias) |
 | Components | 123 (123 through-hole, 0 SMD) + 2 mechanical (mounting holes etc.) |
 | Assembly needed from the fab? | No - all through-hole, hand solderable |
 
@@ -53,14 +53,14 @@ What is on each copper layer:
 
 | Copper layer | Tracks | Track length | Track widths used | Pour zones | Poured area | Pads |
 |---|---|---|---|---|---|---|
-| F.Cu | 458 | 2528.74 mm | 0.3 mm, 0.8 mm, 1.5 mm, 2.5 mm | 2 | 14242.71 mm² (71.21% of board) | 442 |
-| B.Cu | 583 | 3108.41 mm | 0.3 mm, 0.4 mm, 0.5 mm, 0.8 mm, 1.5 mm | 1 | 14157.42 mm² (70.79% of board) | 442 |
+| F.Cu | 491 | 2634.47 mm | 0.3 mm, 0.8 mm, 1.5 mm, 2.5 mm | 2 | 13915.54 mm² (69.58% of board) | 442 |
+| B.Cu | 571 | 3077.23 mm | 0.3 mm, 0.4 mm, 0.5 mm, 0.8 mm, 1.5 mm | 1 | 13789.12 mm² (68.95% of board) | 442 |
 
 Silkscreen: 292 text items (smallest 0.7 mm high), 1030 lines/shapes (thinnest 0.12 mm).
 
 ## Holes
 
-From the design (671 holes in total):
+From the design (648 holes in total):
 
 | Diameter (mm) | Plated? | Shape | Count |
 |---|---|---|---|
@@ -74,28 +74,30 @@ From the design (671 holes in total):
 | 1.6 | yes (PTH) | round | 20 |
 | 1.78 | yes (PTH) | round | 4 |
 | 3.2 | no (NPTH) | round | 6 |
-| 0.3 | yes (via, 0.6 mm pad) | round | 25 |
-| 0.4 | yes (via, 0.8 mm pad) | round | 204 |
+| 0.3 | yes (via, 0.6 mm pad) | round | 32 |
+| 0.4 | yes (via, 0.8 mm pad) | round | 173 |
+| 0.6 | yes (via, 1.2 mm pad) | round | 1 |
 
 - Plated pads: 436 through-hole, 0 SMD; non-plated holes: 6; slots: 0
 - Smallest hole 0.3 mm, largest 3.2 mm
 
-Cross-check against the drill file the fab receives, `out/fab/gerbers/reflex-machine.drl`: **671 holes**, matches the design.
+Cross-check against the drill file the fab receives, `out/fab/gerbers/reflex-machine.drl`: **648 holes**, matches the design.
 
 | Tool | Diameter (mm) | Plating | Holes | Slots |
 |---|---|---|---|---|
-| T1 | 0.3 | Plated | 25 | 0 |
-| T2 | 0.4 | Plated | 204 | 0 |
-| T3 | 0.8 | Plated | 150 | 0 |
-| T4 | 0.9 | Plated | 24 | 0 |
-| T5 | 1 | Plated | 60 | 0 |
-| T6 | 1.02 | Plated | 92 | 0 |
-| T7 | 1.1 | Plated | 32 | 0 |
-| T8 | 1.2 | Plated | 32 | 0 |
-| T9 | 1.3 | Plated | 22 | 0 |
-| T10 | 1.6 | Plated | 20 | 0 |
-| T11 | 1.78 | Plated | 4 | 0 |
-| T12 | 3.2 | NonPlated | 6 | 0 |
+| T1 | 0.3 | Plated | 32 | 0 |
+| T2 | 0.4 | Plated | 173 | 0 |
+| T3 | 0.6 | Plated | 1 | 0 |
+| T4 | 0.8 | Plated | 150 | 0 |
+| T5 | 0.9 | Plated | 24 | 0 |
+| T6 | 1 | Plated | 60 | 0 |
+| T7 | 1.02 | Plated | 92 | 0 |
+| T8 | 1.1 | Plated | 32 | 0 |
+| T9 | 1.2 | Plated | 32 | 0 |
+| T10 | 1.3 | Plated | 22 | 0 |
+| T11 | 1.6 | Plated | 20 | 0 |
+| T12 | 1.78 | Plated | 4 | 0 |
+| T13 | 3.2 | NonPlated | 6 | 0 |
 
 ## Tightest geometry vs. typical fab limits
 
@@ -110,12 +112,12 @@ Limits are typical JLCPCB standard 2-layer values - confirm on the fab's capabil
 | Largest hole | 3.2 mm | <= 6.3 mm | OK |
 | Smallest via drill | 0.3 mm | >= 0.3 mm | OK |
 | Smallest annular ring | 0.15 mm | >= 0.13 mm | OK |
-| Closest two holes (edge to edge, measured) | 0.489 mm | >= 0.5 mm | **CHECK** |
+| Closest two holes (edge to edge, measured) | 0.484 mm | >= 0.5 mm | **CHECK** |
 | Copper to board edge (DRC rule) | 0.5 mm | >= 0.3 mm | OK |
 | Smallest silkscreen text | 0.7 mm | >= 1 mm | **CHECK** |
 | Thinnest silkscreen line | 0.12 mm | >= 0.153 mm | **CHECK** |
 
-Closest two holes: via on GND (126.00, 152.00) and A1 pad GND3 (127.18, 151.80).
+Closest two holes: A1 pad GND5 (177.98, 146.72) and via on GND (179.17, 146.72).
 
 How to read a **CHECK**: a copper or hole row is a real risk - fix it or ask the fab. A *silkscreen* row is cosmetic: the fab still prints it, just fainter or blurrier (KiCad's own footprint outlines are 0.12 mm, so nearly every KiCad board shows that one). A *DRC rule* row only means the rule would allow something tighter than the fab; the measured rows show what the board really uses.
 
@@ -183,7 +185,7 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3).
 | Check | Result |
 |---|---|
 | DRC errors | **0** |
-| DRC warnings | 213 |
+| DRC warnings | 164 |
 | Unconnected items | 0 |
 | Schematic vs board differences | 0 |
 
@@ -219,4 +221,4 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3).
 | `out/fab/BOM_JLCPCB.csv` | 0.04 KB | assembly only |
 | `out/fab/CPL_JLCPCB.csv` | 0.04 KB | assembly only |
 | `out/fab/positions_raw.csv` | 0.04 KB | raw placement data (not needed for bare boards) |
-| `out/fab/reflex-machine_gerbers_JLCPCB.zip` | 441.88 KB | **upload this** - gerbers + drill |
+| `out/fab/reflex-machine_gerbers_JLCPCB.zip` | 436.62 KB | **upload this** - gerbers + drill |

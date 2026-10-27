@@ -52,8 +52,10 @@ def placements():
                              "C9", "C10", "C11"]):
         P[ref] = (99.0, 53.0 + 3.6 * k, 0)
     # column B: short column beside the Mega, below the ICs
-    for k, ref in enumerate(["C12", "C13", "C8"]):
+    for k, ref in enumerate(["C12", "C8"]):
         P[ref] = (86.0, 84.0 + 4.5 * k, 0)
+    # U3 decoupling: right beside pin 16 (VCC) in the 3 mm gap before column C; rotated so pad 1 (+5V) is at the pin
+    P["C13"] = (96.3, 51.5, 270)     # 100nF  pads (96.3,51.5) / (96.3,56.5)
     return P
 
 

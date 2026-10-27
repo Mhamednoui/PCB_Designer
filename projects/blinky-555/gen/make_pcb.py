@@ -51,7 +51,7 @@ def placements():
         "D1": (52.0, 24.0, 0),     # 5 mm LED         x 50.06..56.49  y 20.79..27.21
         # bottom row - the capacitors
         "C1": (10.0, 36.0, 0),     # 10uF timing      x  7.85..14.65  y 32.60..39.40
-        "C3": (24.0, 36.0, 0),     # 100nF decoupling x 22.95..30.05  y 34.50..37.50
+        "C3": (36.0, 17.5, 0),     # 100nF decoupling, above-right of U1, pad 1 (VCC) 4.8 mm from pin 8  x 34.95..42.05  y 16.00..19.00
         "C2": (40.0, 36.0, 0),     # 10nF on CONT     x 38.95..46.05  y 34.50..37.50
     }
 
