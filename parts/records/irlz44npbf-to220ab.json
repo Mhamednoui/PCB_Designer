@@ -1,0 +1,26 @@
+{
+  "id": "irlz44npbf-to220ab",
+  "kind": "part",
+  "mpn": "IRLZ44NPBF",
+  "manufacturer": "Infineon",
+  "status": "draft",
+  "verification": "crosschecked",
+  "lcsc": {"id": "C38774", "class": "extended"},
+  "sourcing": {"stock": 1692, "price_1": 1.1909, "snapshot_date": "2026-10-27"},
+  "package": {"name": "TO-220AB", "mount": "tht", "lcsc_package": "TO-220AB", "body_mm": [10.0, 4.5]},
+  "kicad": {"symbol": "Transistor_FET:IRLZ44N", "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical"},
+  "tht": {"lead_mm": [0.93, 0.55]},
+  "polarity": {"polarised": true, "pin1": "pin 1 = GATE, 2 = DRAIN (also the metal tab), 3 = SOURCE; viewed from the printed face with leads pointing down, gate is the left lead", "pin1_footprint_marker": "square pad 1 (KiCad TO-220-3_Vertical)"},
+  "ratings": {"v_op": [null, 55], "i_max": 47, "p_max_mw": 110000, "t_op_c": [-55, 175]},
+  "pins": {
+    "1": {"name": "G", "alias": "GATE", "class": "input", "abs_max": {"v_min": -16, "v_max": 16}},
+    "2": {"name": "D", "alias": "DRAIN", "class": "passive", "abs_max": {"v_max": 55, "i_ma": 47000}},
+    "3": {"name": "S", "alias": "SOURCE", "class": "passive", "abs_max": {"i_ma": 47000}}
+  },
+  "evidence": [
+    {"section": "pins,ratings,tht", "doc_url": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726", "page": 8, "rev": "PD-94831 (11/11/03), PDF mod 2021-04-29", "method": "agent read the datasheet text: p8 TO-220AB outline 'LEAD ASSIGNMENTS HEXFET: 1 - GATE, 2 - DRAIN, 3 - SOURCE, 4 - DRAIN' and lead width 0.69-0.93 mm / thickness 0.46-0.55 mm (3X); p1 absolute maximum ratings (VGS +-16 V, ID 47 A @25C, PD 110 W, TJ -55..+175 C) and V(BR)DSS 55 V (p2)", "verified_by": "agent-P1-T8", "date": "2026-10-27", "notes": "Agent read, a person has not. lead_mm is the datasheet MAXIMUM (0.93 x 0.55 mm, diagonal 1.08 mm); KiCad TO-220-3_Vertical drills 1.10 mm, i.e. only 0.02 mm of clearance over the maximum diagonal (decision 9.7 asks 0.10 for square leads), fine for typical leads (0.69-0.93 wide) but a PR-HOLE finding on the maximum. i_ma 47000 is the datasheet ID at TC=25C (33 A at 100C); it is silicon-limited, the package/leads allow less in practice. The 4th 'lead' in the drawing is the tab (= drain), electrically the same net as pin 2."},
+    {"section": "pins", "doc_url": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726", "page": 8, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T22:03:47Z (C38774). page 8 of irlz44npbf.pdf_fileId_5546d462533600a40153567217c32726 names all 3 pins. A person has not read the datasheet.", "rev": "PD-94831 11/11/03"}
+  ],
+  "signed_hash": "6d4267f014931ce544e98d11a1bafd06378224960b5d8889156218196de40a16",
+  "notes": "Machine data: jlcsearch + EasyEDA 2026-10-27 (LCSC C38774 = IRLZ44NPBF, TO-220AB). Fixture ref: reflex Q1..Q10, pins G=MAGn_G, D=MAGn_OUT, S=GND. class/abs_max/lead_mm/ratings were read by the agent from the Infineon datasheet pages cited in evidence; no person has confirmed them (owner sign-off needed). KiCad symbol Transistor_FET:IRLZ44N pin order 1=G 2=D 3=S agrees with the datasheet drawing and with EasyEDA and with the KiCad TO-220-3_Vertical pad order."
+}
