@@ -110,11 +110,11 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | ID | Task | St |
 |---|---|---|
 | PA-1 design IR + `ir` stage | ⬜ |
-| PA-2 stage registry + incremental runner | ⬜ |
+| PA-2 stage registry + incremental runner | ✅ (`tools/boardgen/stages.json`; `--describe`; `--no-cache`) |
 | PA-3 port checks to the IR | ⬜ |
 | PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |
 | PA-5 parallel + tiered mutation runner | ⬜ |
-| PA-6 run report + tool versions + determinism | ⬜ |
+| PA-6 run report + tool versions + determinism (also: feed captured tool versions - LTspice, gerbonara, Freerouting - into PA-2's cache key; MANUFACTURING.md timestamp churn) | ⬜ |
 | PA-7 finding taxonomy, `--explain`, board markers | ⬜ |
 | PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
 | PA-9 pre-commit + CI | ⬜ |

@@ -174,7 +174,7 @@ Proposed checks, cheapest first:
 Surprises: the strongest signal (LED at 3.4 A) was printed in the log and ignored; DRC catches c1/k only as a side effect of geometry, not intent.
 
 ## E. Stages added by MD (current state - keep updated)
-Order: lint → sch → sch-check → place → route → finish → check → review → outputs → lvs → fabreport → connections → pinmap → spice → webview.
+Stages are declared in `tools/boardgen/stages.json` (PA-2): add a stage = add an entry; `pipeline.py --describe <stage>`; incremental cache per project (`--no-cache` forces; design stages, parts, outputs, webview never cached). Order: lint → parts → sch → sch-check → place → route → finish → check → review → outputs → lvs → fabreport → connections → pinmap → spice → webview.
 - `lint` (`tools/boardgen/lint_netlist.py`, system Python, <1 s): rules decoupling/polarity/led/short/pads/single-pin. NET_SPEC `v` = a net's ACTIVE level (blinky OUT (9,12); reflex MAGn_OUT 0.0 = drain when on) - not only rails.
 - `check` (`pcb.py`): DRC with generated `<id>.kicad_dru` (`fab_rules.py`: JLCPCB 2-layer limits + IPC-2221 width per net from NET_SPEC.i_max). Every rule carries explicit severity, else `.kicad_pro` severities win.
 - `review` (`make_review.py`): kicad-happy sch+pcb+emc, fast mode (no `--full`); gates on deterministic errors + DC-001/DC-002. Output in `test/review/` (self-gitignored).

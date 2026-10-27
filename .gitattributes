@@ -1,0 +1,2 @@
+# Generated files are written with LF by the pipeline; keep them LF on checkout so regeneration is not a diff.
+*.kicad_dru text eol=lf
