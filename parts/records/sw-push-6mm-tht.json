@@ -1,0 +1,45 @@
+{
+  "id": "sw-push-6mm-tht",
+  "kind": "connector",
+  "package": {
+    "name": "Tactile switch 6 mm, 4-leg THT",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Switch:SW_Push",
+    "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+    "fp_pad_copies": {
+      "1": 2,
+      "2": 2
+    }
+  },
+  "pins": {
+    "1": {
+      "name": "1",
+      "class": "passive"
+    },
+    "2": {
+      "name": "2",
+      "class": "passive"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Pad multiset 1x2, 2x2 taken from the footprint file."
+    }
+  ],
+  "polarity": {
+    "polarised": false
+  },
+  "unverified_dims": [
+    "leg_orientation"
+  ],
+  "notes": "Uno-toggle SW1/SW2. 4 legs = 2 pads numbered 1 and 2 twice each (pads in parallel pairs): the symbol shows only 2 pins. Orientation matters on a real 6 mm switch (the two internally joined pairs run along one axis), which the pad numbering encodes: unverified against the actual switch.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

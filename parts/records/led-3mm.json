@@ -1,0 +1,48 @@
+{
+  "id": "led-3mm",
+  "kind": "generic",
+  "package": {
+    "name": "LED D3.0 THT",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Device:LED",
+    "footprint": "LED_THT:LED_D3.0mm"
+  },
+  "tht": {
+    "lead_mm": [
+      0.5,
+      0.5
+    ]
+  },
+  "pins": {
+    "1": {
+      "name": "K",
+      "class": "passive",
+      "also": "cathode (flat side of the LED body, shorter lead)"
+    },
+    "2": {
+      "name": "A",
+      "class": "passive",
+      "also": "anode (longer lead)"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pin numbers and pad multiset only. lead_mm 0.5 x 0.5 = typical square LED lead (0.45-0.5); KiCad drill 0.9: diagonal 0.707 + 0.2 margin = 0.907 > 0.9, so the spec's PR-HOLE margin rule would flag this marginally. Polarity: symbol Device:LED pin 1 = K, pin 2 = A (verified via sym_pins); KiCad LED_THT pad 1 is the square (rect) pad = cathode."
+    }
+  ],
+  "polarity": {
+    "polarised": true,
+    "pin1": "cathode (K), flat edge on the body, shorter lead",
+    "pin1_footprint_marker": "square pad 1"
+  },
+  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED. Pin 1 = cathode (K), pin 2 = anode (A); square pad = cathode. Colour/forward voltage are per part (value field: RED, GREEN).",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

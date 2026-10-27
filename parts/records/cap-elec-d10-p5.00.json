@@ -1,0 +1,49 @@
+{
+  "id": "cap-elec-d10-p5.00",
+  "kind": "generic",
+  "package": {
+    "name": "Radial electrolytic D10 P5.00",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Device:C_Polarized",
+    "footprint": "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm"
+  },
+  "tht": {
+    "lead_d_mm": 0.6
+  },
+  "pins": {
+    "1": {
+      "name": "~",
+      "class": "passive",
+      "also": "+ (positive)"
+    },
+    "2": {
+      "name": "~",
+      "class": "passive",
+      "also": "- (negative)"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pin numbers and pad multiset only. lead_d_mm 0.6 = typical radial electrolytic lead for D10 (0.6); KiCad drill 1.0. Polarity: symbol Device:C_Polarized pin 1 at top carries the '+' bar graphic (verified in Device.kicad_sym); KiCad CP footprint pad 1 (roundrect) = '+'."
+    }
+  ],
+  "value_range": [
+    1e-07,
+    0.1
+  ],
+  "polarity": {
+    "polarised": true,
+    "pin1": "+ (positive, longer lead); body stripe marks the negative lead",
+    "pin1_footprint_marker": "roundrect pad 1 (pad 2 circle)"
+  },
+  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED (reflex C1 1000uF 25V). Pin 1 = +, pin 2 = -. Voltage rating is per part, not per record.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

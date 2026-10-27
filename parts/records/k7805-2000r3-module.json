@@ -1,0 +1,45 @@
+{
+  "id": "k7805-2000r3-module",
+  "kind": "part",
+  "mpn": "K7805-2000R3",
+  "package": {
+    "name": "SIP-3 DC-DC module (R-78 style)",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Converter_DCDC:R-785.0-1.0",
+    "footprint": "Converter_DCDC:Converter_DCDC_RECOM_R-78B-2.0_THT"
+  },
+  "pins": {
+    "1": {
+      "name": "IN",
+      "class": "power_in"
+    },
+    "2": {
+      "name": "GND",
+      "class": "power_in"
+    },
+    "3": {
+      "name": "OUT",
+      "class": "power_out"
+    }
+  },
+  "polarity": {
+    "polarised": true,
+    "pin1": "pin 1 = IN (verify on the module marking)",
+    "pin1_footprint_marker": "rect pad 1"
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: KiCad symbol pins vs KiCad footprint pads by number only (1 IN, 2 GND, 3 OUT). The symbol/footprint are for the RECOM R-78 family; that the K7805-2000R3 is pin-compatible is NOT checked against its datasheet."
+    }
+  ],
+  "notes": "Reflex U1 (5V 2A buck module). THT drop-in for a 7805. A REVERSED connection (swapping IN/GND/OUT) destroys the module and the Mega: the pinout and the claim of compatibility with the RECOM footprint MUST be signed from the K7805-2000R3 datasheet (P1-T8). No LCSC id or manufacturer recorded here (not verified).",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

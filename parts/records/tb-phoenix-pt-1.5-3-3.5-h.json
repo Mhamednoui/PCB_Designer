@@ -1,0 +1,48 @@
+{
+  "id": "tb-phoenix-pt-1.5-3-3.5-h",
+  "kind": "connector",
+  "package": {
+    "name": "Screw terminal 3P 3.5 mm (Phoenix PT 1,5/3-3.5-H)",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Connector:Screw_Terminal_01x03",
+    "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-3-3.5-H_1x03_P3.50mm_Horizontal"
+  },
+  "pins": {
+    "1": {
+      "name": "Pin_1",
+      "class": "passive"
+    },
+    "2": {
+      "name": "Pin_2",
+      "class": "passive"
+    },
+    "3": {
+      "name": "Pin_3",
+      "class": "passive"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Pitch 3.50 mm from the footprint name; no drawing compared."
+    }
+  ],
+  "polarity": {
+    "polarised": false,
+    "pin1": "pin 1 = left-most screw when the wire entries face you",
+    "pin1_footprint_marker": "roundrect pad 1"
+  },
+  "unverified_dims": [
+    "pitch_mm",
+    "drill_mm"
+  ],
+  "notes": "Reflex COIN input J12. Ratings NOT recorded (owner).",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

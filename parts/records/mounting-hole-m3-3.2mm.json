@@ -1,0 +1,26 @@
+{
+  "id": "mounting-hole-m3-3.2mm",
+  "kind": "mechanical",
+  "package": {
+    "name": "M3 mounting hole 3.2 mm",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "",
+    "footprint": "MountingHole:MountingHole_3.2mm_M3"
+  },
+  "pins": {},
+  "evidence": [
+    {
+      "section": "kicad",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: footprint exists and has no named pads (one unnamed np_thru_hole). No datasheet applies."
+    }
+  ],
+  "notes": "Not a netlist part: inserted by tools/boardgen/pcb.py from the project's MOUNTING_HOLES list (blinky-555 x4, reflex-machine x2, uno-toggle none). No symbol, not in the BOM (the schema has no bom flag; consumers must skip kind=mechanical). Non-plated 3.2 mm hole for M3; the board does not rely on it electrically.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

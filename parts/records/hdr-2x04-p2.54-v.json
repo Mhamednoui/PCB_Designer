@@ -1,0 +1,73 @@
+{
+  "id": "hdr-2x04-p2.54-v",
+  "kind": "connector",
+  "package": {
+    "name": "Pin header 2x4 2.54 mm vertical",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Connector_Generic:Conn_02x04_Odd_Even",
+    "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical"
+  },
+  "pins": {
+    "1": {
+      "name": "Pin_1",
+      "class": "passive"
+    },
+    "2": {
+      "name": "Pin_2",
+      "class": "passive"
+    },
+    "3": {
+      "name": "Pin_3",
+      "class": "passive"
+    },
+    "4": {
+      "name": "Pin_4",
+      "class": "passive"
+    },
+    "5": {
+      "name": "Pin_5",
+      "class": "passive"
+    },
+    "6": {
+      "name": "Pin_6",
+      "class": "passive"
+    },
+    "7": {
+      "name": "Pin_7",
+      "class": "passive"
+    },
+    "8": {
+      "name": "Pin_8",
+      "class": "passive"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Pin numbering row-wise (Odd_Even) matches the footprint's pad order by number; physical positions not compared."
+    }
+  ],
+  "tht": {
+    "lead_mm": [
+      0.64,
+      0.64
+    ]
+  },
+  "polarity": {
+    "polarised": false,
+    "pin1": "pin 1 = square pad; odd pins on one row, even pins on the other (row-wise numbering 1,2 / 3,4 ...)",
+    "pin1_footprint_marker": "rect pad 1"
+  },
+  "unverified_dims": [
+    "pin_square_mm"
+  ],
+  "notes": "Reflex J17 ESP32 SPARE. 2.54 mm headers only: no 2.0 mm header is used by any fixture. Standard 0.64 mm square pin against KiCad drill 1.0: diagonal 0.905 + 0.2 margin = 1.105 > 1.0, so the spec's PR-HOLE margin rule would flag it; the real clearance is 0.1 mm per side, which is normal for headers.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

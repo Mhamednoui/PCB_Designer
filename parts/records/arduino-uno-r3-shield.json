@@ -1,0 +1,183 @@
+{
+  "id": "arduino-uno-r3-shield",
+  "kind": "connector",
+  "package": {
+    "name": "Arduino Uno R3 shield footprint (37 pads)",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "arduino-library:Arduino_Uno_R3_Shield",
+    "footprint": "arduino-library:Arduino_Uno_R3_Shield"
+  },
+  "pins": {
+    "3V3": {
+      "name": "3.3V",
+      "class": "power_out"
+    },
+    "5V1": {
+      "name": "5V",
+      "class": "power_in"
+    },
+    "5V2": {
+      "name": "SPI_5V",
+      "class": "power_in"
+    },
+    "A0": {
+      "name": "A0",
+      "class": "bidirectional"
+    },
+    "A1": {
+      "name": "A1",
+      "class": "bidirectional"
+    },
+    "A2": {
+      "name": "A2",
+      "class": "bidirectional"
+    },
+    "A3": {
+      "name": "A3",
+      "class": "bidirectional"
+    },
+    "A4": {
+      "name": "A4",
+      "class": "bidirectional"
+    },
+    "A5": {
+      "name": "A5",
+      "class": "bidirectional"
+    },
+    "AREF": {
+      "name": "AREF",
+      "class": "input"
+    },
+    "D0": {
+      "name": "D0/RX",
+      "class": "bidirectional"
+    },
+    "D1": {
+      "name": "D1/TX",
+      "class": "bidirectional"
+    },
+    "D2": {
+      "name": "D2_INT0",
+      "class": "bidirectional"
+    },
+    "D3": {
+      "name": "D3_INT1",
+      "class": "bidirectional"
+    },
+    "D4": {
+      "name": "D4",
+      "class": "bidirectional"
+    },
+    "D5": {
+      "name": "D5",
+      "class": "bidirectional"
+    },
+    "D6": {
+      "name": "D6",
+      "class": "bidirectional"
+    },
+    "D7": {
+      "name": "D7",
+      "class": "bidirectional"
+    },
+    "D8": {
+      "name": "D8",
+      "class": "bidirectional"
+    },
+    "D9": {
+      "name": "D9",
+      "class": "bidirectional"
+    },
+    "D10": {
+      "name": "D10_CS",
+      "class": "bidirectional"
+    },
+    "D11": {
+      "name": "D11",
+      "class": "bidirectional"
+    },
+    "D12": {
+      "name": "D12",
+      "class": "bidirectional"
+    },
+    "D13": {
+      "name": "D13",
+      "class": "bidirectional"
+    },
+    "GND1": {
+      "name": "GND",
+      "class": "power_in"
+    },
+    "GND2": {
+      "name": "GND",
+      "class": "power_in"
+    },
+    "GND3": {
+      "name": "GND",
+      "class": "power_in"
+    },
+    "GND4": {
+      "name": "SPI_GND",
+      "class": "power_in"
+    },
+    "IORF": {
+      "name": "IOREF",
+      "class": "output"
+    },
+    "MISO": {
+      "name": "SPI_MISO",
+      "class": "input"
+    },
+    "MOSI": {
+      "name": "SPI_MOSI",
+      "class": "output"
+    },
+    "RST1": {
+      "name": "RESET",
+      "class": "open_collector"
+    },
+    "RST2": {
+      "name": "SPI_RESET",
+      "class": "open_collector"
+    },
+    "SCK": {
+      "name": "SPI_SCK",
+      "class": "output"
+    },
+    "SCL": {
+      "name": "SCL",
+      "class": "bidirectional"
+    },
+    "SDA": {
+      "name": "SDA",
+      "class": "bidirectional"
+    },
+    "VIN": {
+      "name": "VIN",
+      "class": "power_in"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Project-lib symbol pins and footprint pads agree by number (37 each). No dimension was compared to a drawing."
+    }
+  ],
+  "source": "project-lib",
+  "polarity": {
+    "polarised": false
+  },
+  "unverified_dims": [
+    "header_offsets_mm",
+    "pad_pitch_mm"
+  ],
+  "notes": "Project-vendored library (decision 9.6): symbol and footprint live in projects/uno-toggle/lib/ of the project, not in the KiCad install; loader/lint must read the project sym-lib-table. Uno-toggle A1. Board outline of the project is derived from this footprint's B.Fab outline. Uno header gaps are the famous non-2.54 mm offset (the 0.16 in gap): unverified here.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}
