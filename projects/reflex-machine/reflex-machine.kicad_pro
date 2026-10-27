@@ -265,7 +265,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": "1.0"
+      "sch_revision": ""
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -769,18 +769,13 @@
       {
         "filename": "reflex-machine.kicad_sch",
         "name": "reflex-machine",
-        "uuid": "9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3"
+        "uuid": "00000000-0000-0000-0000-000000000000"
       }
     ],
     "used_designators": "",
     "variants": []
   },
-  "sheets": [
-    [
-      "9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3",
-      "reflex-machine"
-    ]
-  ],
+  "sheets": [],
   "text_variables": {},
   "tuning_profiles": {
     "meta": {
