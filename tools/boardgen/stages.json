@@ -1,0 +1,255 @@
+{
+  "_doc": [
+    "Stage registry read by pipeline.py. ARRAY ORDER IS RUN ORDER: add a stage by inserting one entry where it belongs; pipeline.py needs no edit.",
+    "Fields (all validated on load; an unknown or missing field is a hard error):",
+    "  name           unique stage id used by --only / --skip / --describe",
+    "  description    one line, shown by --list --describe and the docstring-style help",
+    "  applies        always | has_netlist | has_gen_script:<file> | netlist_has_block:<NAME>   (has_netlist = projects/<id>/gen/netlist.py exists)",
+    "  interpreter    kicad (KiCad's bundled Python, can import pcbnew) | system (the Python running pipeline.py)",
+    "  cwd            gen (projects/<id>/gen) | root (repo root) | webview_tools (webview/tools)",
+    "  argv           arguments after the interpreter; tokens {project} and {boardgen} (= tools/boardgen) are substituted",
+    "  design_stage   true = writes/regenerates the design itself; blocked by the fab-output guard unless --force; never cached",
+    "  inputs         globs (relative to the repo root, {project} substituted) whose CONTENTS decide whether the stage must re-run",
+    "  outputs        globs the stage writes; a cached skip also requires them to be present and untouched since the last run",
+    "  env            environment variables that change the stage's behaviour; if any is set the stage is never cached",
+    "  no_cache_reason  required whenever inputs is empty: why this stage must always run (a stage with no inputs is never cached)",
+    "Cache rules (pipeline.py): key = sha256(stage entry + resolved argv + toolchain + input file contents); a stage is skipped as 'cached' only if",
+    "its key and its outputs are identical to the last SUCCESSFUL run in projects/<id>/.pipeline_cache.json. Failures are never cached. --no-cache forces."
+  ],
+  "stages": [
+    {
+      "name": "lint",
+      "description": "Design-rule lint of netlist.py (decoupling, polarity, LED resistors, shorts, pad/pin existence, registry use). Pure Python, <1 s.",
+      "applies": "has_netlist",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/lint_netlist.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py",
+        "projects/{project}/gen/*.py", "projects/{project}/lib/**",
+        "projects/{project}/sym-lib-table", "projects/{project}/fp-lib-table",
+        "projects/{project}/waivers.json",
+        "parts/schema.json", "parts/records/**"
+      ],
+      "outputs": [],
+      "env": ["PARTS_RECORDS_DIR"]
+    },
+    {
+      "name": "parts",
+      "description": "Registry parts vs live/cached LCSC + EasyEDA: MPN, footprint geometry, package, stock, freshness.",
+      "applies": "has_netlist",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/check_parts.py", "{project}"],
+      "design_stage": false,
+      "inputs": [],
+      "outputs": [],
+      "no_cache_reason": "answer depends on live supplier stock and data age (network + clock), which no input file captures"
+    },
+    {
+      "name": "sch",
+      "description": "Generate the schematic from netlist.py.",
+      "applies": "has_netlist",
+      "interpreter": "kicad",
+      "cwd": "gen",
+      "argv": ["{boardgen}/make_sch.py"],
+      "design_stage": true,
+      "inputs": [],
+      "outputs": [],
+      "no_cache_reason": "design stage: regenerates the design files other stages read and must stay an explicit, --force-guarded act"
+    },
+    {
+      "name": "sch-check",
+      "description": "Netlist compare (kicad-cli export vs netlist.py) plus ERC.",
+      "applies": "has_netlist",
+      "interpreter": "kicad",
+      "cwd": "gen",
+      "argv": ["{boardgen}/check_sch.py"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py",
+        "projects/{project}/gen/*.py", "projects/{project}/lib/**",
+        "projects/{project}/sym-lib-table", "projects/{project}/fp-lib-table",
+        "projects/{project}/waivers.json",
+        "projects/{project}/*.kicad_sch", "projects/{project}/*.kicad_pro"
+      ],
+      "outputs": ["projects/{project}/out/erc.json", "projects/{project}/out/netlist.net"]
+    },
+    {
+      "name": "place",
+      "description": "Footprints, board outline, silkscreen and pre-routed links.",
+      "applies": "has_gen_script:make_pcb.py",
+      "interpreter": "kicad",
+      "cwd": "gen",
+      "argv": ["make_pcb.py", "place"],
+      "design_stage": true,
+      "inputs": [],
+      "outputs": [],
+      "no_cache_reason": "design stage: rewrites the board file in place"
+    },
+    {
+      "name": "route",
+      "description": "Autoroute with Freerouting.",
+      "applies": "has_gen_script:make_pcb.py",
+      "interpreter": "kicad",
+      "cwd": "gen",
+      "argv": ["make_pcb.py", "route"],
+      "design_stage": true,
+      "inputs": [],
+      "outputs": [],
+      "no_cache_reason": "design stage, and Freerouting is nondeterministic: identical inputs do not give identical copper, so a skip would hide a different result"
+    },
+    {
+      "name": "finish",
+      "description": "Ground pours and stitching vias.",
+      "applies": "has_gen_script:make_pcb.py",
+      "interpreter": "kicad",
+      "cwd": "gen",
+      "argv": ["make_pcb.py", "finish"],
+      "design_stage": true,
+      "inputs": [],
+      "outputs": [],
+      "no_cache_reason": "design stage: rewrites the board file in place"
+    },
+    {
+      "name": "check",
+      "description": "DRC including schematic parity - the gate before fab.",
+      "applies": "has_gen_script:make_pcb.py",
+      "interpreter": "kicad",
+      "cwd": "gen",
+      "argv": ["make_pcb.py", "check"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py", "tools/fp_bbox.py",
+        "projects/{project}/gen/*.py", "projects/{project}/lib/**",
+        "projects/{project}/sym-lib-table", "projects/{project}/fp-lib-table",
+        "projects/{project}/waivers.json",
+        "projects/{project}/*.kicad_sch", "projects/{project}/*.kicad_pcb", "projects/{project}/*.kicad_pro"
+      ],
+      "outputs": ["projects/{project}/out/drc.json", "projects/{project}/*.kicad_dru"]
+    },
+    {
+      "name": "review",
+      "description": "Design review (kicad-happy schematic/PCB/EMC analyzers + waivers.json): decoupling distance, EMC, power tree.",
+      "applies": "has_gen_script:make_pcb.py",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/make_review.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py",
+        "projects/{project}/gen/*.py", "projects/{project}/waivers.json",
+        "projects/{project}/*.kicad_sch", "projects/{project}/*.kicad_pcb", "projects/{project}/*.kicad_pro",
+        ".claude/skills/kicad/scripts/**/*.py", ".claude/skills/emc/scripts/**/*.py"
+      ],
+      "outputs": ["projects/{project}/test/review/review.json"]
+    },
+    {
+      "name": "outputs",
+      "description": "Gerbers, drill, BOM, CPL, STEP, schematic PDF and renders.",
+      "applies": "has_netlist",
+      "interpreter": "kicad",
+      "cwd": "gen",
+      "argv": ["{boardgen}/make_outputs.py"],
+      "design_stage": false,
+      "inputs": [],
+      "outputs": [],
+      "no_cache_reason": "release artefact: always regenerated on request (3D models and KiCad libs it embeds are not enumerable as inputs)"
+    },
+    {
+      "name": "lvs",
+      "description": "Independent connectivity of the fab zip itself (gerbers + drill), diffed against netlist.py.",
+      "applies": "has_netlist",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/gerber_lvs.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py", "requirements.txt",
+        "projects/{project}/gen/*.py", "projects/{project}/waivers.json",
+        "projects/{project}/*.kicad_pcb",
+        "projects/{project}/out/fab/**"
+      ],
+      "outputs": ["projects/{project}/out/lvs.json"]
+    },
+    {
+      "name": "fabreport",
+      "description": "MANUFACTURING.md: size, layers, holes, parts, order-form answers. Read-only on the board.",
+      "applies": "has_netlist",
+      "interpreter": "kicad",
+      "cwd": "root",
+      "argv": ["{boardgen}/make_fab_report.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py",
+        "projects/{project}/gen/*.py", "projects/{project}/lib/**",
+        "projects/{project}/sym-lib-table", "projects/{project}/fp-lib-table",
+        "projects/{project}/waivers.json",
+        "projects/{project}/*.kicad_pcb", "projects/{project}/*.kicad_pro", "projects/{project}/*.kicad_dru",
+        "projects/{project}/out/fab/**"
+      ],
+      "outputs": ["projects/{project}/MANUFACTURING.md"]
+    },
+    {
+      "name": "connections",
+      "description": "CONNECTIONS.md: every pin of every part and where its copper goes, in plain words.",
+      "applies": "has_netlist",
+      "interpreter": "kicad",
+      "cwd": "root",
+      "argv": ["{boardgen}/make_connections.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py",
+        "projects/{project}/gen/*.py", "projects/{project}/lib/**",
+        "projects/{project}/sym-lib-table", "projects/{project}/fp-lib-table",
+        "projects/{project}/*.kicad_sch", "projects/{project}/*.kicad_pcb"
+      ],
+      "outputs": ["projects/{project}/CONNECTIONS.md"]
+    },
+    {
+      "name": "pinmap",
+      "description": "Firmware pin map vs netlist cross-check (enabled by a FIRMWARE block in netlist.py).",
+      "applies": "netlist_has_block:FIRMWARE",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/check_pinmap.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py",
+        "projects/{project}/gen/*.py", "projects/{project}/waivers.json",
+        "projects/{project}/**/*.ino", "projects/{project}/**/*.cpp", "projects/{project}/**/*.c",
+        "projects/{project}/**/*.h", "projects/{project}/**/*.hpp",
+        "projects/{project}/test/wokwi/diagram.json"
+      ],
+      "outputs": []
+    },
+    {
+      "name": "spice",
+      "description": "Transient LTspice run of the whole board plus expected-vs-measured (enabled by a SPICE block in netlist.py).",
+      "applies": "netlist_has_block:SPICE",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/make_spice.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/*.py", "tools/sym_pins.py",
+        "projects/{project}/gen/*.py", "projects/{project}/lib/**",
+        "projects/{project}/sym-lib-table", "projects/{project}/fp-lib-table"
+      ],
+      "outputs": ["projects/{project}/test/spice/transient.json"]
+    },
+    {
+      "name": "webview",
+      "description": "Export GLB, cache icons, build manifest, onboard to the viewer (works for any .kicad_pcb).",
+      "applies": "always",
+      "interpreter": "system",
+      "cwd": "webview_tools",
+      "argv": ["onboard.py", "{project}"],
+      "design_stage": false,
+      "inputs": [],
+      "outputs": [],
+      "no_cache_reason": "the viewer server rewrites manifest.json/io_map.json live and onboard.py keeps its own GLB/icon caches, so a pipeline-level skip would be unsafe"
+    }
+  ]
+}

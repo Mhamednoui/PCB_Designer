@@ -70,7 +70,7 @@ PROJECTS = os.path.join(ROOT, "projects")
 MUTATIONS = os.path.join(HERE, "mutations.json")
 TEXT_EXT = (".kicad_pro", ".kicad_sch", ".kicad_pcb", ".kicad_dru", ".py", ".json", ".md", ".ino", ".toml")
 IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "docs", ".pio", "*-routed.*", "*-backup*",
-                                "*.lck", "review")
+                                "*.lck", "review", ".pipeline_cache.json")
 TIMEOUT_S = 900
 
 
@@ -227,7 +227,9 @@ def run_entry(e, keep):
         except (SetupError, KeyError, OSError, ValueError) as ex:
             return "-", "ERROR", time.time() - t0, "setup failed: %s: %s" % (type(ex).__name__, ex)
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONIOENCODING="utf-8", **ENV_EXTRA.get(pid, {}))
-        cmd = [sys.executable, "-B", "pipeline.py", pid, "--force", "--only", ",".join(e["stages"])]
+        # --no-cache: a mutation must be judged by actually running its stages. A skip on matching hashes
+        # would be a green result nobody earned, and the mutated copy is a fresh project every time.
+        cmd = [sys.executable, "-B", "pipeline.py", pid, "--force", "--no-cache", "--only", ",".join(e["stages"])]
         try:
             r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, timeout=TIMEOUT_S,
                                text=True, encoding="utf-8", errors="replace")
