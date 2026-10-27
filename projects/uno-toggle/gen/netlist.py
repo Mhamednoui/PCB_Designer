@@ -100,6 +100,15 @@ GROUPS = [
 POWER_FLAG_NETS = ["GND"]
 
 
+# Electrical intent, read by tools/boardgen/lint_netlist.py (v in volts: number or (min, max); i_max in A).
+# LED1/LED2 are the Uno's GPIO outputs: their level when driven HIGH (5 V), ~10 mA each through 330R.
+NET_SPEC = {
+    "GND": {"v": 0.0, "i_max": 0.05},
+    "LED1": {"v": 5.0, "i_max": 0.02},
+    "LED2": {"v": 5.0, "i_max": 0.02},
+}
+
+
 def nets():
     out = {}
     for p in PARTS:
