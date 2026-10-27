@@ -109,6 +109,15 @@ NET_SPEC = {
 }
 
 
+FIRMWARE = {
+    # Read by tools/boardgen/check_pinmap.py (schema documented there).
+    "files": ["firmware/uno_toggle.ino"],
+    "mcu_ref": "A1",
+    "analog_base": 14,
+    "signals": {"BTN1": "BTN1", "BTN2": "BTN2", "LED1": "LED1", "LED2": "LED2"},
+}
+
+
 def nets():
     out = {}
     for p in PARTS:

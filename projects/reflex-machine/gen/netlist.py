@@ -225,6 +225,30 @@ for _i in range(1, 11):
     NET_SPEC["MAG%d_OUT" % _i] = {"v": 0.0, "i_max": 1.5}
 
 
+FIRMWARE = {
+    # Read by tools/boardgen/check_pinmap.py (schema documented there).
+    "files": ["../../CODES/arduino_main_code.cpp"],
+    "mcu_ref": "A1",
+    "analog_base": 54,
+    "fixed": {"D18": "MEGA_TX1", "D19": "ESP_TX2"},           # Serial1 pins are fixed in hardware
+    "signals": {
+        "PWM_PINS": ["MAG%d_PWM" % i for i in range(1, 11)],
+        "BTN_SPEED1": "BTN_S1", "BTN_SPEED2": "BTN_S2", "BTN_SPEED3": "BTN_S3", "BTN_RESET": "BTN_RST",
+        "COIN_PIN": "COIN_IN", "SEG_DATA": "SEG_DATA", "SEG_LATCH": "SEG_LATCH", "SEG_CLOCK": "SEG_CLOCK",
+        "LED1": "LED1", "LED2": "LED2", "LED3": "LED3", "LED4": "LED4",
+    },
+    "wokwi_part": "mega",
+    "also": [{
+        "files": ["../../CODES/ESP32_main_code.cpp"],
+        "mcu_ref": "A2",
+        "wokwi": False,
+        "pad_to_pin": {"25": "16", "24": "17", "6": "32", "7": "33", "8": "25", "9": "26", "10": "27", "11": "14"},
+        "pin_regex": r"(^|_)PIN\d*$",
+        "signals": {"RX2_PIN": "ESP_RX2", "TX2_PIN": "ESP_TX2"},
+    }],
+}
+
+
 def nets():
     out = {}
     for p in PARTS:
