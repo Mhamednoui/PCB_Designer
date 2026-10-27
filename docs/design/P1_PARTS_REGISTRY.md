@@ -206,3 +206,10 @@ Parallel groups (disjoint files, max 3): T1 first; then T2, T3, T4; then T5, T6,
    for generics (2-pin passives) and connectors. Ambiguous names (two pins both "GND", NC) resolve by name+index or explicit number.
    Also in P1-T9: `PARTS_RECORDS_DIR` env override in `parts.py` (replaces the test sitecustomize hook) and an explicit
    registered-refs API (replaces lint's monkeypatch). When done, flip M-libpin-swap from `known-gap` to an expected catch/no-op.
+10. **PR-HOLE severity (refines 7, from P1-T8):** drill < max lead diagonal (or round lead_d) → ERROR (part does not fit);
+    drill < diagonal + 0.10 (square/rect) or lead_d + 0.20 (round) → WARN (fits, below recommended margin). Lead dims use the
+    datasheet MAXIMUM (worst case). IRLZ44N in KiCad TO-220 (1.10 vs 1.08 diag) → WARN, accepted.
+11. **From P1-T8:** `parts new` must compare the EasyEDA *Manufacturer Part* field, not the component title (suffix `_Cxxxx`);
+    jlcsearch lacks some valid LCSC ids (C507175) → `parts` stage needs a fallback stock source (EasyEDA/LCSC product API) - P1 follow-up;
+    records for clone parts (HGSEMI 74HC595, YLPTEC K7805) carry a release-report item "verify part marking before power-up";
+    PC817C stays `unverified` (KiCad symbol has empty pin names) → owner-sign list.
