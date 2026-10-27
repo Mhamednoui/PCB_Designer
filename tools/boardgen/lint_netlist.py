@@ -11,6 +11,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))                    # tools/
 from boardgen import project as _project                      # noqa: E402
+from boardgen import waivers as _waivers                      # noqa: E402
 from boardgen.sexp import parse, find_all                      # noqa: E402
 from sym_pins import _block                                    # noqa: E402
 
@@ -321,31 +322,16 @@ def rule_single_pin(M):
 
 # ── waivers ─────────────────────────────────────────────────────────────────────────────────────
 def apply_waivers(project_id, findings):
-    path = os.path.join(_project.PROJECTS, project_id, "waivers.json")
-    if not os.path.isfile(path):
-        return []
-    try:
-        waivers = json.load(open(path, encoding="utf-8"))
-        assert isinstance(waivers, list)
-    except (ValueError, AssertionError) as e:
-        return [Finding("ERROR", "waiver", "waivers.json", "unreadable or not a list: %s" % e)]
-    extra = []
-    for i, w in enumerate(waivers):
-        if not isinstance(w, dict) or w.get("check", "lint") != "lint":
-            continue
-        tag = "waivers.json[%d]" % i
-        if not str(w.get("why", "")).strip():
-            extra.append(Finding("ERROR", "waiver", tag, "waiver for rule %r has no 'why'" % w.get("rule")))
-            continue
-        refs, nets = set(w.get("refs") or []), set(w.get("nets") or [])
+    ws, problems = _waivers.load(project_id, "lint")
+    extra = [Finding("ERROR", "waiver", t, m) for t, m in problems]
+    for i, w in ws:
         used = False
         for f in findings:
-            if f.sev == "ERROR" and f.waiver is None and f.rule == w.get("rule") and \
-                    ((refs and refs & f.refs) or (nets and nets & f.nets) or (not refs and not nets)):
+            if f.sev == "ERROR" and f.waiver is None and _waivers.matches(w, f.rule, f.refs, f.nets):
                 f.waiver, used = w, True
         if not used:
-            extra.append(Finding("WARN", "waiver", tag, "unused waiver (rule %r, %s)"
-                                 % (w.get("rule"), sorted(refs | nets) or "all")))
+            extra.append(Finding("WARN", "waiver", "waivers.json[%d]" % i, "unused waiver (rule %r, %s)"
+                                 % (w.get("rule"), _waivers.describe(w))))
     return extra
 
 
