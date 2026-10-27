@@ -8,7 +8,10 @@ A green pipeline must mean a good board. Today stages print violations and still
 board generator is copy-pasted three times and already drifting, and nothing is tested automatically.
 "Better" = **honest gates, one copy of every generator, a regression suite that proves both, a fresh
 clone that tells you exactly what's missing, and docs lean enough to load every session.**
-Signed-off boards (reflex-machine, uno-toggle) are never rebuilt in place by this roadmap.
+**Primary goal (user, 2026-10-27): a platform that produces valid, expert-level designs and PCBs ready for
+manufacturing.** The existing boards are regression fixtures only - they may be rebuilt freely and reproduced later.
+Each board declares `ASSEMBLY = "pcba"` (JLCPCB assembles SMD from LCSC) or `"hand"` (through-hole, hand-soldered);
+every check enforces that mode's rules.
 
 **Top priority (user, 2026-10-27): design + PCB correctness on complex boards.** Today's gates prove the
 board is *consistent* (netlist = schematic = copper), not that the *design is right*: the catch matrix
@@ -57,8 +60,29 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | MD-T5 | `review` stage: kicad-happy schematic+PCB+EMC analyzers → `test/review/review.json`; fail on unwaived deterministic errors + DC-001/DC-002 (decoupling distance); waivers per contract | `tools/boardgen/make_review.py` (new), `projects/*/waivers.json` | medium | MD-T1 (waiver format) | reflex flags U3/C13; blinky/uno pass with documented waivers | ⬜ |
 | MD-T6 | `lvs` stage: independent connectivity from the **gerbers + drill actually sent to the fab** (gerbonara/shapely), diffed against `netlist.py` | `tools/boardgen/gerber_lvs.py` (new) | high | - | 0 diffs on all 3 boards; a cut track injected into a gerber copy → exit 1 | ⬜ |
 | MD-T7 | Mutation suite: each of the 16 mistake classes injected into a temp copy, asserts the pipeline exits non-zero at the expected stage; reports catch rate | `tests/mutations/` (new) | high | MD-T1..T6 | 16/16 caught; runtime reported | ⬜ |
-**DoD:** G0 met; all 3 boards pass every new stage (or carry written waivers); reflex-machine design findings reported to the user.
+**DoD:** G0 met; all 3 fixtures pass every new stage (or carry written waivers).
 
+### MP Production-ready outputs (both assembly modes)
+| ID | Task | Files | Effort | Deps | Acceptance | St |
+|---|---|---|---|---|---|---|
+| MP-T1 | `ASSEMBLY` mode in `netlist.py` + mode rules in `lint`: `hand` forbids SMD footprints / fine pitch; `pcba` requires an LCSC number per part, footprint package == LCSC package | `tools/boardgen/lint_netlist.py`, `tools/boardgen/parts.py` (new) | medium | MD-T1 | a 0603 part on a `hand` board fails; a `pcba` part without LCSC fails | ⬜ |
+| MP-T2 | Part pipeline: LCSC lookup (stock, basic/extended, package, price) cached per project; `easyeda2kicad` import for non-stock parts with pad-count/pinout cross-check vs symbol | `tools/boardgen/parts.py`, `projects/<id>/lib/` | high | MP-T1 | out-of-stock or package-mismatch part fails `lint`; cache works offline | ⬜ |
+| MP-T3 | JLCPCB PCBA outputs: BOM (Comment/Designator/Footprint/LCSC) + CPL with per-package rotation/offset corrections (JLC rotation DB); assembly-side check; `outputs` verifies every placed part has an LCSC row | `tools/boardgen/make_outputs.py`, `tools/boardgen/jlc_rotations.json` (new) | medium | MP-T1 | CPL rotations correct for SOT-23/SOIC/QFN/USB-C fixtures (checked against JLC preview rules) | ⬜ |
+
+### MS Scales to complex boards
+| ID | Task | Files | Effort | Deps | Acceptance | St |
+|---|---|---|---|---|---|---|
+| MS-T1 | Automatic placement: group-based placer from `netlist.py` groups (connectors on edges, decoupling caps within 3 mm of their IC pin, courtyard-aware packing); `placements()` becomes optional overrides | `tools/boardgen/autoplace.py` (new), `tools/boardgen/pcb.py` | high | MD | a 60+ part board places with 0 courtyard errors and every decoupling cap ≤3 mm from its pin | ⬜ |
+| MS-T2 | SMD routing support: fan-out vias for SMD pads, netclasses from `NET_SPEC` (power/signal widths), 4-layer stackup option (In1=GND, In2=power) | `tools/boardgen/pcb.py` | high | MD-T2 | SMD fixture routes 0/0/0 on 2 and 4 layers | ⬜ |
+| MS-T3 | Multi-sheet (hierarchical) schematic generation from `netlist.py` groups, so a complex schematic stays readable | `tools/boardgen/make_sch.py` | high | - | 1 sheet per group; netlist compare 0 mismatches | ⬜ |
+
+### MV Proof
+| ID | Task | Files | Effort | Deps | Acceptance | St |
+|---|---|---|---|---|---|---|
+| MV-T1 | Reference complex board built through the platform only: PCBA, e.g. ESP32-S3 module + USB-C (power + data) + 3V3 LDO + ESD + I2C sensor + status LEDs + buttons | `projects/ref-esp32/` (new) | high | MP, MS | every stage green; fab zip + BOM + CPL pass JLCPCB upload checks | ⬜ |
+| MV-T2 | Rebuild the 3 fixtures from their `netlist.py` with all new gates | `projects/*` | medium | MD, MP | all green or written waivers | ⬜ |
+
+## Backlog (after MV)
 ### M2 Test
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
