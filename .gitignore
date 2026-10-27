@@ -52,3 +52,6 @@ projects/**/test/spice/*.log
 projects/*/out/drc.json
 projects/*/out/erc.json
 projects/*/out/netlist.net
+
+# Agent git worktrees (temporary)
+.claude/worktrees/
