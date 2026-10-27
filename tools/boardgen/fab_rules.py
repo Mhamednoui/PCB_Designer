@@ -36,6 +36,10 @@ LIMITS = {
     "edge_clearance": 0.3,  # fab min 0.20 for a routed edge
     "silk_text": 1.0,       # text height; fab minimum
 }
+# Our own via: 0.8 / 0.4 gives a 0.20 mm ring (limit above: 0.10). Used by every stage that adds a via.
+VIA_DIA = 0.8
+VIA_DRILL = 0.4
+SAFETY = 0.05               # mm added on top of every limit the generator keeps itself (rounding, mm->nm)
 DEFAULT_I_MAX = 0.3         # A, for a net NET_SPEC does not declare
 DEFAULT_COPPER_OZ = 1.0
 DEFAULT_TEMP_RISE_C = 10.0
@@ -66,6 +70,34 @@ def params(NL):
 def min_width(oz):
     """Default track width / clearance we enforce. JLCPCB's 2 oz minimum is 0.16 mm, so use 0.20 there."""
     return LIMITS["track"] if oz <= 1.0 else 0.20
+
+
+def limits(NL=None):
+    """Every fab limit plus the geometry derived from it, in mm - the ONE place pcb.py gets spacing from.
+    Edge-to-edge limits become centre distances using the real radii, plus SAFETY:
+      via_to_copper    via centre -> other-net pad/track edge   (via radius + clearance + SAFETY)
+      track_to_copper  track centre -> other-net copper edge    (half the width + clearance + SAFETY)
+      via_to_edge      via centre -> board edge                 (via radius + edge_clearance + SAFETY)
+      pour_inset       copper pour edge -> board edge           (edge_clearance + 2 * SAFETY)
+      min_track        smallest track width we enforce (depends on COPPER_OZ)
+    plus hole_gap(d1, d2) / via_hole_pitch(d) below for hole-to-hole centre distances."""
+    oz = params(NL)["oz"] if NL is not None else DEFAULT_COPPER_OZ
+    L = dict(LIMITS)
+    clr = max(L["clearance"], min_width(oz))
+    r_via = VIA_DIA / 2.0
+    assert (VIA_DIA - VIA_DRILL) / 2.0 >= L["via_annular"] + 1e-9, "own via violates the via annular limit"
+    L.update(via_dia=VIA_DIA, via_drill=VIA_DRILL, safety=SAFETY, min_track=min_width(oz), copper_oz=oz,
+             via_to_copper=r_via + clr + SAFETY,
+             via_to_edge=r_via + L["edge_clearance"] + SAFETY,
+             pour_inset=L["edge_clearance"] + 2 * SAFETY)
+    L["track_to_copper"] = lambda width: width / 2.0 + clr + SAFETY
+    return L
+
+
+def hole_pitch(d1, d2, edge_gap):
+    """Minimum centre distance between two drilled holes of diameters d1, d2 (mm) so their edges are
+    edge_gap apart (+ SAFETY)."""
+    return d1 / 2.0 + d2 / 2.0 + edge_gap + SAFETY
 
 
 def describe_params(NL):
@@ -151,10 +183,12 @@ def render(reqs, oz=1.0, rise_c=10.0):
 
     rule("jlc_min_track", "track_width (min %gmm)" % mw)
     rule("jlc_min_clearance", "clearance (min %gmm)" % mw)
-    rule("jlc_annular_min", "annular_width (min %gmm)" % LIMITS["annular"], condition="A.Type == 'Pad'")
-    rule("jlc_via_annular_min", "annular_width (min %gmm)" % LIMITS["via_annular"], condition="A.Type == 'Via'")
+    # KiCad evaluates LATER rules first and the first match wins, so a warning-level "preferred" rule must be
+    # written BEFORE its error-level "min" twin, or it shadows the error (a 0.1 mm ring would pass).
     rule("jlc_annular_preferred", "annular_width (min %gmm)" % LIMITS["annular_preferred"],
          condition="A.Type == 'Pad'", severity="warning")
+    rule("jlc_annular_min", "annular_width (min %gmm)" % LIMITS["annular"], condition="A.Type == 'Pad'")
+    rule("jlc_via_annular_min", "annular_width (min %gmm)" % LIMITS["via_annular"], condition="A.Type == 'Via'")
     rule("jlc_hole_to_hole", "hole_to_hole (min %gmm)" % LIMITS["hole_to_hole"],
          condition="A.Type != 'Via' || B.Type != 'Via'")
     rule("jlc_via_hole_to_hole", "hole_to_hole (min %gmm)" % LIMITS["via_hole_to_hole"],
@@ -219,6 +253,9 @@ def _selftest():
     rq["VCC"]["poured"], rq["VCC"]["layers"] = True, ["F.Cu"]
     t2 = render(list(rq.values()))
     assert t2.count("(severity warning)") == txt.count("(severity warning)") + 1   # poured -> warning
+    L = limits(_NL)
+    assert abs(hole_pitch(1.0, VIA_DRILL, L["hole_to_hole"]) - (0.5 + 0.2 + 0.45 + SAFETY)) < 1e-9
+    assert L["via_to_copper"] > VIA_DIA / 2 + L["clearance"] and L["pour_inset"] > L["edge_clearance"]
     print("fab_rules selftest OK: 1 A -> %.3f mm; widths %s" % (w1, {n: r["width"] for n, r in rq.items()}))
 
 

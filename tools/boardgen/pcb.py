@@ -132,6 +132,42 @@ def write_fab_rules():
     return reqs
 
 
+# Fab-derived spacing. Everything that keeps copper/holes apart comes from fab_rules.limits(NL) (the same
+# numbers the generated .kicad_dru enforces), never from a literal in this file. Kept as plain literals,
+# because they are design choices and not fab limits: GND_STUB_W (a GND escape track's width - asserted
+# >= the fab minimum track), STITCH_PITCH (stitching density), the grid origin/step and the fan-out ring radii.
+GND_STUB_W = 0.4
+STITCH_PITCH = 1.3          # min centre distance between stitching vias (density, not a fab limit)
+
+
+def _lim():
+    lim = fab_rules.limits(NL)
+    assert GND_STUB_W >= lim["min_track"], "GND_STUB_W below the fab minimum track"
+    return lim
+
+
+def _pth_holes(board):
+    """[((x, y) local mm, drill diameter mm)] of every drilled pad (PTH and NPTH)."""
+    return [(local(pad.GetPosition()), pcbnew.ToMM(max(pad.GetDrillSize().x, pad.GetDrillSize().y)))
+            for fp in board.GetFootprints() for pad in fp.Pads() if pad.GetDrillSize().x > 0]
+
+
+def _hole_ok(holes, x, y):
+    """A via drilled at (x, y) keeps the fab's pad-hole-to-via-hole gap to every drilled pad."""
+    lim = _lim()
+    return all(math.hypot(x - hx, y - hy) >= fab_rules.hole_pitch(d, lim["via_drill"], lim["hole_to_hole"])
+               for (hx, hy), d in holes)
+
+
+def _add_gnd_via(board, gnd, x, y):
+    via = pcbnew.PCB_VIA(board)
+    via.SetPosition(V(x, y))
+    via.SetWidth(mm(fab_rules.VIA_DIA))
+    via.SetDrill(mm(fab_rules.VIA_DRILL))
+    via.SetNet(gnd)
+    board.Add(via)
+
+
 POUR_ONLY_ABOVE_MM = 2.0   # a net needing more than this cannot be autorouted as a track
 
 
@@ -413,7 +449,10 @@ def _unconnected_nets(path):
     rpt = os.path.join(OUT, "route_drc.json")
     if os.path.exists(rpt):
         os.remove(rpt)
-    subprocess.run([CLI, "pcb", "drc", "--format", "json", "-o", rpt, path], capture_output=True, text=True)
+    for _ in range(2):      # kicad-cli occasionally dies natively on a freshly imported board; once more is enough
+        subprocess.run([CLI, "pcb", "drc", "--format", "json", "-o", rpt, path], capture_output=True, text=True)
+        if os.path.exists(rpt):
+            break
     if not os.path.exists(rpt):
         raise SystemExit("route check: kicad-cli produced no DRC report for %s" % path)
     with open(rpt, encoding="utf-8") as f:
@@ -528,7 +567,8 @@ def _free(board, x, y, radius, net_code, ignore=()):
     """True if a disc at (x,y) keeps `radius` mm clearance from other-net copper."""
     c = V(x, y)
     r = mm(radius)
-    if not (1.0 < x < BW - 1.0 and 1.0 < y < BH - 1.0):
+    m = _lim()["via_to_edge"]
+    if not (m < x < BW - m and m < y < BH - m):
         return False
     for t in board.GetTracks():
         if t.GetNetCode() == net_code:
@@ -559,7 +599,8 @@ def _free_on(board, x, y, radius, net_code, layer, ignore=()):
     """Like _free, but only copper on `layer` counts (vias/THT pads always count)."""
     c = V(x, y)
     r = mm(radius)
-    if not (1.0 < x < BW - 1.0 and 1.0 < y < BH - 1.0):
+    m = _lim()["via_to_edge"]
+    if not (m < x < BW - m and m < y < BH - m):
         return False
     for t in board.GetTracks():
         if t.GetNetCode() == net_code:
@@ -620,7 +661,7 @@ def connect_orphans(board, gnd):
             steps = max(2, int(math.hypot(bx - ax, by - ay) / 0.25))
             for i in range(steps + 1):
                 if not _free_on(board, ax + (bx - ax) * i / steps, ay + (by - ay) * i / steps,
-                                0.2 + 0.25, gnd.GetNetCode(), layer, ignore):
+                                _lim()["track_to_copper"](GND_STUB_W), gnd.GetNetCode(), layer, ignore):
                     return False
         return True
 
@@ -641,7 +682,7 @@ def connect_orphans(board, gnd):
                 for layer in [l for l in slayers if l in tlayers]:
                     for pts in ([(sx, sy), (tx, ty)], [(sx, sy), (sx, ty), (tx, ty)], [(sx, sy), (tx, sy), (tx, ty)]):
                         if clear_path(pts, layer, (pad,)):
-                            add_track(board, pts, 0.4, gnd, layer)
+                            add_track(board, pts, GND_STUB_W, gnd, layer)
                             fixed, done = fixed + 1, True
                             break
                     if done:
@@ -680,7 +721,7 @@ def stage_finish():
     # board origin for drill/place files, so the JLCPCB CPL uses board coordinates
     board.GetDesignSettings().SetAuxOrigin(V(0, 0))
 
-    inset = 0.4
+    inset = _lim()["pour_inset"]
     whole = [(inset, inset), (BW - inset, inset), (BW - inset, BH - inset), (inset, BH - inset)]
     add_zone(board, gnd, pcbnew.B_Cu, whole, priority=0)
     add_zone(board, gnd, pcbnew.F_Cu, whole, priority=0)
@@ -696,6 +737,8 @@ def fanout_gnd(board):
     added = 0
     failed = []
     gnd_tracks = [t for t in board.GetTracks() if t.GetNetname() == "GND" and t.Type() != pcbnew.PCB_VIA_T]
+    lim = _lim()
+    holes = _pth_holes(board)
     for fp in board.GetFootprints():
         for pad in fp.Pads():
             if pad.GetNetname() != "GND" or pad.GetAttribute() != pcbnew.PAD_ATTRIB_SMD:
@@ -708,19 +751,15 @@ def fanout_gnd(board):
                 for ang in range(0, 360, 30):
                     vx = px + dist * math.cos(math.radians(ang))
                     vy = py + dist * math.sin(math.radians(ang))
-                    if not _free(board, vx, vy, 0.4 + 0.3, gnd.GetNetCode(), ignore=(pad,)):
+                    if not _free(board, vx, vy, lim["via_to_copper"], gnd.GetNetCode(), ignore=(pad,))                             or not _hole_ok(holes, vx, vy):
                         continue
                     # track corridor check (midpoints)
-                    if not all(_free(board, px + (vx - px) * f, py + (vy - py) * f, 0.2 + 0.25, gnd.GetNetCode(), ignore=(pad,))
+                    if not all(_free(board, px + (vx - px) * f, py + (vy - py) * f, lim["track_to_copper"](GND_STUB_W),
+                                    gnd.GetNetCode(), ignore=(pad,))
                                for f in (0.35, 0.6, 0.85)):
                         continue
-                    via = pcbnew.PCB_VIA(board)
-                    via.SetPosition(V(vx, vy))
-                    via.SetWidth(mm(0.8))
-                    via.SetDrill(mm(0.4))
-                    via.SetNet(gnd)
-                    board.Add(via)
-                    add_track(board, [(px, py), (vx, vy)], 0.4, gnd, pad.GetLayer() if pad.IsOnLayer(pcbnew.F_Cu) else pcbnew.B_Cu)
+                    _add_gnd_via(board, gnd, vx, vy)
+                    add_track(board, [(px, py), (vx, vy)], GND_STUB_W, gnd, pad.GetLayer() if pad.IsOnLayer(pcbnew.F_Cu) else pcbnew.B_Cu)
                     added += 1
                     done = True
                     break
@@ -739,8 +778,11 @@ def _stitch_and_fill(board, gnd):
     fill.Fill(board.Zones())
     gnd_zones = [z for z in board.Zones() if z.GetNetname() == "GND"]
     vias = [local(t.GetPosition()) for t in board.GetTracks() if t.Type() == pcbnew.PCB_VIA_T]
-    holes = [(local(pad.GetPosition()), pcbnew.ToMM(max(pad.GetDrillSize().x, pad.GetDrillSize().y)))
-             for fp in board.GetFootprints() for pad in fp.Pads() if pad.GetDrillSize().x > 0]
+    holes = _pth_holes(board)
+    lim = _lim()
+    # Stitching vias are GND-only drills: next to another via the via-via limit applies, next to a PTH/NPTH
+    # pad hole the (larger) pad hole-to-hole limit does. Both are edge-to-edge with the real drill radii.
+    via_pitch = max(STITCH_PITCH, fab_rules.hole_pitch(lim["via_drill"], lim["via_drill"], lim["via_hole_to_hole"]))
     gnd_pth = [pad.GetPosition() for fp in board.GetFootprints() for pad in fp.Pads()
                if pad.GetNetname() == "GND" and pad.GetDrillSize().x > 0]
 
@@ -749,17 +791,12 @@ def _stitch_and_fill(board, gnd):
                    for layer in (pcbnew.F_Cu, pcbnew.B_Cu))
 
     def spacing_ok(x, y):
-        if any(math.hypot(x - vx, y - vy) < 1.3 for vx, vy in vias):
+        if any(math.hypot(x - vx, y - vy) < via_pitch for vx, vy in vias):
             return False
-        return all(math.hypot(x - hx, y - hy) >= d / 2 + 0.2 + 0.35 for (hx, hy), d in holes)
+        return _hole_ok(holes, x, y)
 
     def add_via(x, y):
-        via = pcbnew.PCB_VIA(board)
-        via.SetPosition(V(x, y))
-        via.SetWidth(mm(0.8))
-        via.SetDrill(mm(0.4))
-        via.SetNet(gnd)
-        board.Add(via)
+        _add_gnd_via(board, gnd, x, y)
         vias.append((x, y))
 
     grid = 0
@@ -768,7 +805,7 @@ def _stitch_and_fill(board, gnd):
             gx, gy = 2.0 + 4.0 * i, 2.0 + 4.0 * j
             if gx > BW - 2 or gy > BH - 2:
                 continue
-            if in_both(V(gx, gy)) and spacing_ok(gx, gy) and _free(board, gx, gy, 0.4 + 0.45, gnd.GetNetCode()):
+            if in_both(V(gx, gy)) and spacing_ok(gx, gy) and _free(board, gx, gy, lim["via_to_copper"], gnd.GetNetCode()):
                 add_via(gx, gy)
                 grid += 1
     print("grid stitching vias:", grid)
@@ -789,7 +826,7 @@ def _stitch_and_fill(board, gnd):
                 x = x0
                 while x <= x1:
                     if polys.Contains(V(x, y), k) and in_both(V(x, y)) and spacing_ok(x, y) \
-                            and _free(board, x, y, 0.4 + 0.3, gnd.GetNetCode()):
+                            and _free(board, x, y, lim["via_to_copper"], gnd.GetNetCode()):
                         add_via(x, y)
                         island_vias += 1
                         done = True
@@ -808,10 +845,42 @@ def _stitch_and_fill(board, gnd):
 
 
 
+# Rules KiCad's own default .kicad_pro already ignores (every project has these; they are not suppressions).
+_KICAD_DEFAULT_IGNORED = {"footprint_filters_mismatch", "footprint_type_mismatch", "missing_courtyard",
+                          "track_not_centered_on_via", "tuning_profile_track_geometries"}
+
+
+def _ignored_rules():
+    """Board rules the project's .kicad_pro sets to `ignore` beyond KiCad's defaults. That overrides the
+    .kicad_dru severity and blinds DRC (e.g. unconnected_items ignored -> an open net passes). Waive one in
+    projects/<id>/waivers.json: {"check":"check","rule":"ignored-<rule>","why":"..."}. Prints every one;
+    returns the unwaived."""
+    from boardgen import waivers
+    path = os.path.join(NL.PRJ_DIR, NL.PRJ_NAME + ".kicad_pro")
+    with open(path, encoding="utf-8") as f:
+        sev = json.load(f).get("board", {}).get("design_settings", {}).get("rule_severities", {})
+    ws, problems = waivers.load(os.path.basename(NL.PRJ_DIR), "check")
+    for where, msg in problems:
+        print("  WARN %s: %s" % (where, msg))
+    bad = []
+    for rule, level in sorted(sev.items()):
+        if level != "ignore" or rule in _KICAD_DEFAULT_IGNORED:
+            continue
+        w = next((w for _, w in ws if waivers.matches(w, "ignored-" + rule, [], [])), None)
+        if w:
+            print("  ignored rule (waived: %s): %s" % (w["why"], rule))
+        else:
+            print("  IGNORED RULE (not waived - DRC is blind to it): %s" % rule)
+            bad.append(rule)
+    print("suppressed DRC rules beyond KiCad defaults: %d unwaived" % len(bad))
+    return bad
+
+
 def stage_check():
     """DRC incl. schematic parity. Exits 1 on any DRC error, unconnected item or parity difference.
     Warnings (silkscreen) are reported but do not fail the gate."""
     write_fab_rules()           # kicad-cli picks <project>.kicad_dru up from next to the .kicad_pro
+    suppressed = _ignored_rules()
     rpt = os.path.join(OUT, "drc.json")
     if os.path.exists(rpt):
         os.remove(rpt)          # never judge a stale report if kicad-cli fails to write a new one
@@ -846,7 +915,7 @@ def stage_check():
         print(line)
     if examined == 0:
         print("  note: 0 supply pins examined - nothing was checked (no U* part with a power_in pin?)")
-    if errors or unconnected or parity or dbad:
+    if errors or unconnected or parity or dbad or suppressed:
         sys.exit(1)
 
 

@@ -10,6 +10,10 @@
 (rule "jlc_min_clearance"
   (severity error)
   (constraint clearance (min 0.15mm)))
+(rule "jlc_annular_preferred"
+  (severity warning)
+  (condition "A.Type == 'Pad'")
+  (constraint annular_width (min 0.25mm)))
 (rule "jlc_annular_min"
   (severity error)
   (condition "A.Type == 'Pad'")
@@ -18,10 +22,6 @@
   (severity error)
   (condition "A.Type == 'Via'")
   (constraint annular_width (min 0.1mm)))
-(rule "jlc_annular_preferred"
-  (severity warning)
-  (condition "A.Type == 'Pad'")
-  (constraint annular_width (min 0.25mm)))
 (rule "jlc_hole_to_hole"
   (severity error)
   (condition "A.Type != 'Via' || B.Type != 'Via'")
