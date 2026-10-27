@@ -26,6 +26,7 @@ import pcbnew
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from boardgen.project import PROJECTS  # noqa: E402
 from boardgen.kicad_paths import CLI as KICAD_CLI  # noqa: E402
+from boardgen.fab_rules import LIMITS as _DRC_LIMITS  # noqa: E402  (same numbers the .kicad_dru enforces)
 
 NM = 1e6  # pcbnew internal units are nanometres
 
@@ -46,7 +47,9 @@ def f3(v):
 # Typical JLCPCB standard-service limits (2-layer, 1 oz). They change - the report says to confirm.
 FAB_LIMITS = {
     "track": 0.127, "clearance": 0.127, "pth_drill": 0.3, "npth_drill": 0.5, "max_drill": 6.3,
-    "via_drill": 0.3, "annular": 0.13, "hole_to_hole": 0.5, "edge_clearance": 0.3,
+    "via_drill": 0.3, "annular": 0.13,   # pads AND vias mixed in one row; the .kicad_dru gates pads 0.18 / vias 0.10 separately
+    "hole_to_hole": _DRC_LIMITS["hole_to_hole"],
+    "edge_clearance": _DRC_LIMITS["edge_clearance"],
     "silk_text": 1.0, "silk_line": 0.153,
 }
 
@@ -284,6 +287,9 @@ def verdict(value, limit, higher_is_better=True):
     return "OK" if ok else "**CHECK**"
 
 
+ADVISORY = ("Smallest silkscreen text", "Thinnest silkscreen line")   # cosmetic, never fails the stage
+
+
 def build(project):
     pcb_path = find_pcb(project)
     pdir = os.path.dirname(pcb_path)
@@ -489,15 +495,22 @@ def build(project):
         ("Smallest silkscreen text", min_silk, FAB_LIMITS["silk_text"], True),
         ("Thinnest silkscreen line", min_silk_line, FAB_LIMITS["silk_line"], True),
     ]
+    failed = []
     for label, value, limit, hib in rows:
+        v = verdict(value, limit, hib)
+        if v != "OK" and label in ADVISORY:
+            v = "advisory"
+        elif v == "**CHECK**":
+            failed.append("%s %s mm (limit %s %s mm)" % (label, f3(value), ">=" if hib else "<=", f3(limit)))
         w("| %s | %s | %s %s mm | %s |" % (label, ("%s mm" % f3(value)) if value is not None else "-",
-                                            ">=" if hib else "<=", f3(limit), verdict(value, limit, hib)))
+                                            ">=" if hib else "<=", f3(limit), v))
     w("")
     if c["hole_gap_where"]:
         w("Closest two holes: %s." % c["hole_gap_where"])
         w("")
-    w("How to read a **CHECK**: a copper or hole row is a real risk - fix it or ask the fab. A *silkscreen* "
-      "row is cosmetic: the fab still prints it, just fainter or blurrier (KiCad's own footprint outlines are "
+    w("How to read a **CHECK**: a copper or hole row is a real risk - fix it or ask the fab (the "
+      "fabreport stage exits 1 while any is left). A *silkscreen* row is marked *advisory* instead: it is "
+      "cosmetic, the fab still prints it, just fainter or blurrier (KiCad's own footprint outlines are "
       "0.12 mm, so nearly every KiCad board shows that one). A *DRC rule* row only means the rule would allow "
       "something tighter than the fab; the measured rows show what the board really uses.")
     w("")
@@ -605,13 +618,16 @@ def build(project):
         print("  drill file %s: %d holes (%s)" % (d["file"], drl_total,
                                                   "matches" if drl_total == total_holes else "MISMATCH"))
     return [d["file"] for d in drl
-            if sum(r["holes"] + r["slots"] for r in d["rows"]) != total_holes]
+            if sum(r["holes"] + r["slots"] for r in d["rows"]) != total_holes], failed
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         raise SystemExit("usage: make_fab_report.py <project-id>")
-    bad = build(sys.argv[1])
+    bad, failed = build(sys.argv[1])
     if bad:
         raise SystemExit("FAILED: drill hole count disagrees with the design in %s "
                          "(see MANUFACTURING.md)" % ", ".join(bad))
+    if failed:
+        raise SystemExit("FAILED: %d fab-limit row(s) marked **CHECK** in MANUFACTURING.md: %s"
+                         % (len(failed), "; ".join(failed)))
