@@ -1,6 +1,6 @@
 # reflex-machine - manufacturing details
 
-_Generated 2026-10-27 19:18 by `tools/boardgen/make_fab_report.py` from `reflex-machine.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py reflex-machine --only fabreport`._
+_Generated 2026-10-27 19:19 by `tools/boardgen/make_fab_report.py` from `reflex-machine.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py reflex-machine --only fabreport`._
 
 ## Quick answers (what a PCB price calculator asks)
 
