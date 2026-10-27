@@ -1,6 +1,7 @@
 """Run ERC + export netlist from the generated schematic and compare with netlist.py."""
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -73,6 +74,31 @@ print("ERC summary:", {"%s/%s" % k: c for k, c in sorted(counts.items())})
 erc_errors = sum(c for (sev, _), c in counts.items() if sev == "error")
 erc_warnings = sum(c for (sev, _), c in counts.items() if sev == "warning")
 print("ERC: %d errors, %d warnings" % (erc_errors, erc_warnings))
+
+# Warning types that mean a real wiring mistake rather than style. Names verified against
+# KiCad 10's _eeschema.dll. Each fails the stage unless waived (waivers.json, "check": "sch-check").
+PROMOTED = ("ground_pin_not_ground", "isolated_pin_label", "power_pin_not_driven",
+            "pin_to_pin", "pin_not_driven")
+from boardgen import waivers as _waivers  # noqa: E402
+_wl, _wproblems = _waivers.load(os.path.basename(NL.PRJ_DIR), "sch-check")
+for where, msg in _wproblems:
+    FAILURES.append("%s: %s" % (where, msg))
+fired = {}
+for sheet in erc.get("sheets", []):
+    for v in sheet.get("violations", []):
+        if v["type"] not in PROMOTED or v["severity"] == "error":   # errors already fail above
+            continue
+        descs = [i.get("description", "") for i in v.get("items", [])]
+        refs = [m for d in descs for m in re.findall(r"of ([^\s]+)\s*$", d)]
+        if any(_waivers.matches(w, v["type"], refs, []) for _, w in _wl):
+            continue
+        fired.setdefault(v["type"], []).append("%s | %s" % (v["description"], "; ".join(descs)))
+for t, items in sorted(fired.items()):
+    print("PROMOTED ERC WARNING %s x%d:" % (t, len(items)))
+    for it in items[:5]:
+        print("   ", it)
+    FAILURES.append("%d ERC %s (promoted warning)" % (len(items), t))
+print("promoted ERC warnings fired: %s" % (sorted(fired) or "none"))
 if bad:
     FAILURES.append("%d netlist mismatches" % bad)
 if erc_errors:
