@@ -50,7 +50,7 @@ def placements():
     # column C: beside the Mega, left of the power strip
     for k, ref in enumerate(["R55", "R56", "R57", "R58", "R59", "R60", "R61", "R41", "R42", "R63",
                              "C9", "C10", "C11"]):
-        P[ref] = (99.0, 53.0 + 3.6 * k, 0)
+        P[ref] = (99.4, 53.0 + 3.6 * k, 0)
     # column B: short column beside the Mega, below the ICs
     for k, ref in enumerate(["C12", "C8"]):
         P[ref] = (86.0, 84.0 + 4.5 * k, 0)
@@ -137,14 +137,23 @@ def extra_routes(board, P, net):
     pcb.add_track(board, [(u3x + 7.62, u3y + 7.62), (u3x + 3.81, u3y + 7.62),
                           (u3x + 3.81, u3y + 17.78), (u3x, u3y + 17.78)], 0.4, net("GND"), B)
 
-    # heavy power path J1 -> fuse (both holder pads)
-    pcb.add_track(board, [(150.0, 90.0), (146.4, 90.0), (146.4, 74.0), (145.4, 74.0)], 2.5, net("+12V_IN"))
+    # heavy power path J1 -> fuse (both holder pads). NET_SPEC says 10 A on +12V_IN and this is the
+    # only non-poured copper carrying all of it: IPC-2221 (1 oz, 10 C rise) needs 7.2 mm, so 7.5 mm.
+    # Geometry: J1 pad 1 = (150,90), J1 pad 2 (GND) = (150,84.92) - the run along y=91.5 spans
+    # y 87.75..95.25 (1.5 mm clear of that GND pad), then up x=144 (x 140.25..147.75, 0.95 mm clear of it)
+    # to the fuse's +12V_IN pad pair at (142,74) / (145.4,74). Both fuse pads sit inside the 7.5 mm band.
+    pcb.add_track(board, [(150.0, 91.5), (144.0, 91.5), (144.0, 74.0)], 7.5, net("+12V_IN"))
 
 
 def extra_pours(board, nets, inset):
     """+12V pour on F.Cu over the power-strip region, above the GND pour (priority 1)."""
     pcb.add_zone(board, nets["+12V"], pcb.pcbnew.F_Cu,
                  [(inset, inset), (BW - inset, inset), (BW - inset, 66.0), (112.0, 66.0), (112.0, 13.2), (inset, 13.2)],
+                 priority=1, clearance=0.4)
+    # +12V_IN pour around the 7.5 mm pre-route in extra_routes (J1 pad 1 -> fuse pad pair), so the pad
+    # connections and any router stubs are copper of the same width; GND pad J1.2 stays 1.5 mm outside.
+    pcb.add_zone(board, board.FindNet("/+12V_IN") or board.FindNet("+12V_IN"), pcb.pcbnew.F_Cu,
+                 [(140.25, 72.5), (147.75, 72.5), (147.75, 87.75), (152.5, 87.75), (152.5, 95.25), (140.25, 95.25)],
                  priority=1, clearance=0.4)
 
 
