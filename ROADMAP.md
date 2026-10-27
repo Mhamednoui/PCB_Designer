@@ -82,6 +82,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P1-T8 crosschecked records for real parts | ✅ (PC817 → owner) |
 | P1-T9a API: pins-by-function, PARTS_RECORDS_DIR, registered-refs API, PR-HOLE severities, `parts new` MPN field | ✅ |
 | P1-T9b migrate fixtures to registry (pins by function, `nc=`), `PARTS_STRICT`, C_Polarized | 🔄 |
+| P1-T10 stock source fix: JLCPCB assembly stock (smtGood) for `pcba`, LCSC detail endpoint fallback, jlcsearch last; covers modules + passives (from MV-T0) | 🔄 |
 
 ### MP Production-ready outputs (both assembly modes) - MP-T1/T2 superseded by P1 above; MP-T3 remains (P5)
 | ID | Task | Files | Effort | Deps | Acceptance | St |
@@ -93,6 +94,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 ### MS Scales to complex boards
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
+| MS-T0 | Antenna keep-out rule: module records carry the keep-out polygon (from the vendor guide); `check` fails on copper/parts inside it and on antenna not at the board edge (from MV-T0) | `parts/records`, `tools/boardgen/pcb.py` | medium | P1 | ESP32-S3 fixture with copper under antenna fails | ⬜ |
 | MS-T1 | Automatic placement: group-based placer from `netlist.py` groups (connectors on edges, decoupling caps within 3 mm of their IC pin, courtyard-aware packing); `placements()` becomes optional overrides | `tools/boardgen/autoplace.py` (new), `tools/boardgen/pcb.py` | high | MD | a 60+ part board places with 0 courtyard errors and every decoupling cap ≤3 mm from its pin | ⬜ |
 | MS-T2 | SMD routing support: fan-out vias for SMD pads, netclasses from `NET_SPEC` (power/signal widths), 4-layer stackup option (In1=GND, In2=power) | `tools/boardgen/pcb.py` | high | MD-T2 | SMD fixture routes 0/0/0 on 2 and 4 layers | ⬜ |
 | MS-T3 | Multi-sheet (hierarchical) schematic generation from `netlist.py` groups, so a complex schematic stays readable | `tools/boardgen/make_sch.py` | high | - | 1 sheet per group; netlist compare 0 mismatches | ⬜ |
@@ -100,6 +102,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 ### MV Proof
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
+| MV-T0 | Reference board brief + architecture (`projects/ref-esp32/`): ESP32-S3-WROOM-1-N8, LDL1117 (not AMS1117: dropout), USB-C FS, 2-layer, ~0.9 W LDO peak → ≥2 cm² tab copper; Q1-Q13 defaults accepted | `projects/ref-esp32/*.md` | high | - | docs reviewed | ✅ |
 | MV-T1 | Reference complex board built through the platform only: PCBA, e.g. ESP32-S3 module + USB-C (power + data) + 3V3 LDO + ESD + I2C sensor + status LEDs + buttons | `projects/ref-esp32/` (new) | high | MP, MS | every stage green; fab zip + BOM + CPL pass JLCPCB upload checks | ⬜ |
 | MV-T2 | Rebuild the 3 fixtures from their `netlist.py` with all new gates | `projects/*` | medium | MD, MP | all green or written waivers | ⬜ |
 
