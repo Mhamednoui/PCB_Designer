@@ -1,0 +1,35 @@
+{
+  "id": "bc547-to92",
+  "kind": "part",
+  "mpn": "BC547",
+  "status": "draft",
+  "verification": "unverified",
+  "package": {
+    "name": "TO-92",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Transistor_BJT:BC547",
+    "footprint": "Package_TO_SOT_THT:TO-92_Inline"
+  },
+  "pins": {
+    "1": {
+      "name": "C",
+      "class": "passive"
+    },
+    "2": {
+      "name": "B",
+      "class": "input"
+    },
+    "3": {
+      "name": "E",
+      "class": "passive"
+    }
+  },
+  "evidence": [],
+  "signed_hash": null,
+  "notes": "TEST DATA (tests/parts): not a datasheet-checked record.",
+  "tht": {
+    "lead_d_mm": 0.45
+  }
+}

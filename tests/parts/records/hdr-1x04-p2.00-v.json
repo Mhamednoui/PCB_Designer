@@ -1,0 +1,46 @@
+{
+  "id": "hdr-1x04-p2.00-v",
+  "kind": "connector",
+  "package": {
+    "name": "Pin header 1x4 2.00 mm vertical",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Connector_Generic:Conn_01x04",
+    "footprint": "Connector_PinHeader_2.00mm:PinHeader_1x04_P2.00mm_Vertical"
+  },
+  "pins": {
+    "1": {
+      "name": "Pin_1",
+      "class": "passive"
+    },
+    "2": {
+      "name": "Pin_2",
+      "class": "passive"
+    },
+    "3": {
+      "name": "Pin_3",
+      "class": "passive"
+    },
+    "4": {
+      "name": "Pin_4",
+      "class": "passive"
+    }
+  },
+  "tht": {
+    "lead_mm": [
+      0.5,
+      0.5
+    ]
+  },
+  "polarity": {
+    "polarised": false,
+    "pin1": "square pad",
+    "pin1_footprint_marker": "rect pad 1"
+  },
+  "evidence": [],
+  "signed_hash": null,
+  "status": "draft",
+  "verification": "unverified",
+  "notes": "TEST DATA (tests/parts)."
+}
