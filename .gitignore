@@ -67,3 +67,6 @@ parts/.cache/
 
 # Parts registry: stage report (rewritten by every parts run)
 projects/*/test/parts/
+
+# Incremental pipeline state (per-stage input hashes of the last successful run)
+projects/*/.pipeline_cache.json
