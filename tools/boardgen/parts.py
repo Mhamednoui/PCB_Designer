@@ -6,13 +6,16 @@ Spec: docs/design/P1_PARTS_REGISTRY.md.  Records: parts/records/*.json, schema: 
     rec = parts.get("ne555p-dip8")
     PARTS.append(parts.registry_part("U1", "ne555p-dip8", "NE555P", {1: "GND", ...}, group))
 
+Release rules key on `verification` (unverified / crosschecked / verified), not on `status`.
 Self-test: python tools/boardgen/parts.py --selftest
 """
 import copy
 import hashlib
 import json
 import re
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -102,7 +105,7 @@ def validate(rec, source="<record>"):
     out = ["%s: %s: %s" % (source, p or "(root)", m) for p, m in errs]
     if isinstance(rec, dict) and not errs:
         if rec["kind"] in ("part", "generic") and rec["verification"] != "unverified" and not rec.get("evidence"):
-            out.append("%s: evidence: tier %s needs at least one evidence entry" % (source, rec["verification"]))
+            out.append("%s: evidence: tier %s needs at least one evidence entry (PR-TIER)" % (source, rec["verification"]))
         for pin, p in rec["pins"].items():
             vm = (p.get("abs_max") or {}).get("v_max")
             if isinstance(vm, str):
@@ -170,6 +173,10 @@ def load_all(records_dir=None, strict=True):
         errs = validate(rec, f.name)
         if not errs and rec["id"] in recs:
             errs = ["%s: id: duplicate id %r" % (f.name, rec["id"])]
+        if not errs and rec["verification"] != "unverified" and rec.get("signed_hash") is None:
+            errs = ["%s: signed_hash: tier %s needs a signed_hash, found none (PR-TIER)" % (f.name, rec["verification"])]
+        if not errs and rec["verification"] != "unverified" and not rec.get("evidence"):
+            errs = ["%s: evidence: tier %s needs at least one evidence entry (PR-TIER)" % (f.name, rec["verification"])]
         if not errs and not hash_ok(rec):
             errs = ["%s: signed_hash: signed fields changed since sign-off (PR-HASH)" % f.name]
         if errs:
@@ -234,6 +241,17 @@ def registry_part(ref, part_id, value, pins, group):
 
 
 # --------------------------------------------------------------------------- self-test
+_FIXTURE = {   # self-contained NE555P-like record; the selftest never reads parts/records
+    "id": "ne555p-dip8", "kind": "part", "mpn": "NE555P", "status": "draft", "verification": "unverified",
+    "lcsc": {"id": "C46749", "class": "extended"}, "sourcing": {"stock": 1, "price_1": 0.3, "snapshot_date": "2026-01-01"},
+    "package": {"name": "DIP-8", "mount": "tht"}, "kicad": {"symbol": "Timer:NE555P", "footprint": "Package_DIP:DIP-8_W7.62mm"},
+    "pins": {"1": {"name": "GND", "class": "power_in"}, "2": {"name": "TRIG", "class": "input"},
+             "3": {"name": "OUT", "class": "output"}, "4": {"name": "RESET", "class": "input"},
+             "5": {"name": "CONT", "class": "analog"}, "6": {"name": "THRES", "class": "input"},
+             "7": {"name": "DISCH", "class": "open_collector"}, "8": {"name": "VCC", "class": "power_in"}},
+    "evidence": [], "signed_hash": None}
+
+
 def selftest():
     fails = []
 
@@ -242,9 +260,13 @@ def selftest():
         if not cond:
             fails.append(what)
 
-    recs = load_all()
+    global _registry
+    tmp = Path(tempfile.mkdtemp(prefix="parts_selftest_"))
+    (tmp / "ne555p.json").write_text(json.dumps(_FIXTURE), encoding="utf-8")
+    recs = load_all(tmp)
     r = recs.get("ne555p-dip8")
-    ok(r is not None and r["verification"] == "unverified", "load ok: ne555p-dip8 present, tier unverified")
+    saved, _registry = _registry, recs          # get()/registry_part() read the fixture, never the live records
+    ok(r is not None and r["verification"] == "unverified", "load ok: fixture ne555p-dip8 present, tier unverified")
     ok(get("ne555p-dip8") == r, "get(id) returns the loaded record")
     try:
         get("ne555")
@@ -285,6 +307,24 @@ def selftest():
     except RegistryError:
         ok(True, "unknown pin raises")
 
+    for tier, mut, what in (("crosschecked", {"evidence": [{"verified_by": "t"}]}, "needs a signed_hash"),
+                            ("verified", {"signed_hash": "0" * 64, "evidence": []}, "evidence entry")):
+        bad = copy.deepcopy(_FIXTURE)
+        bad.update(mut)
+        bad["verification"] = tier
+        (tmp / "ne555p.json").write_text(json.dumps(bad), encoding="utf-8")
+        try:
+            load_all(tmp)
+            ok(False, "PR-TIER: %s without %s rejected" % (tier, what))
+        except RegistryError as e:
+            ok("PR-TIER" in str(e) and what in str(e), "PR-TIER: %s without %s rejected" % (tier, what))
+    good = copy.deepcopy(_FIXTURE)
+    good.update(verification="crosschecked", evidence=[{"verified_by": "t"}])
+    good["signed_hash"] = signed_hash(good)
+    (tmp / "ne555p.json").write_text(json.dumps(good), encoding="utf-8")
+    ok("ne555p-dip8" in load_all(tmp), "crosschecked with hash + evidence loads")
+    _registry = saved
+    shutil.rmtree(tmp, ignore_errors=True)
     print("\nselftest: %s" % ("FAILED (%d)" % len(fails) if fails else "all passed"))
     return 1 if fails else 0
 

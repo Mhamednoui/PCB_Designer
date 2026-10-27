@@ -4,7 +4,7 @@
   "mpn": "NE555P",
   "manufacturer": "Texas Instruments",
   "status": "draft",
-  "verification": "unverified",
+  "verification": "crosschecked",
   "lcsc": {"id": "C46749", "class": "extended"},
   "sourcing": {"stock": 34636, "price_1": 0.3039, "snapshot_date": "2026-10-27"},
   "package": {"name": "DIP-8", "mount": "tht", "lcsc_package": "DIP-8", "body_mm": [9.8, 6.6, 3.5]},
@@ -22,7 +22,9 @@
     "7": {"name": "DISCH", "class": "open_collector"},
     "8": {"name": "VCC", "class": "power_in", "abs_max": {"v_max": 18}}
   },
-  "evidence": [],
-  "signed_hash": null,
-  "notes": "ILLUSTRATIVE: abs_max values, lead_mm and ratings were NOT read from a datasheet. Nobody has checked this record against the TI NE555 PDF yet (tier unverified)."
+  "evidence": [
+    {"section": "pins", "doc_url": "https://www.ti.com/lit/ds/symlink/ne555.pdf", "page": 3, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T18:21:55Z (C46749). page 3 of ne555.pdf names all 8 pins. A person has not read the datasheet.", "rev": "K (SLFS022K, March 2026)"}
+  ],
+  "signed_hash": "ae65d73db6e452f885eaf6176009b45f7f45e40bc4052e3dfd704b99f632ecb0",
+  "notes": "ILLUSTRATIVE: abs_max values, lead_mm and ratings were NOT read from a datasheet. Tier crosschecked covers pin numbers/names/pads only (see evidence); class, abs_max, lead_mm and ratings are still unchecked by anyone: owner sign-off needed."
 }

@@ -2,6 +2,7 @@
 
   python tools/parts.py new C46749 [--id ne555p-dip8] [--dry-run] [--out FILE] [--offline]
   python tools/parts.py refresh [<id>|--all] [--offline]
+  python tools/parts.py assist|bind|crosscheck|sign|audit ...    (tools/parts_sign.py, verification tiers)
 
 `new` writes a DRAFT (status draft, verification unverified) from machine data only; human/datasheet-only
 fields (pin class, abs_max, tht, polarity) are left out and listed as TODO. An existing id is only
@@ -262,7 +263,14 @@ def cmd_refresh(a):
     return rc
 
 
+SIGN_CMDS = ("assist", "bind", "crosscheck", "sign", "audit", "selftest")   # implemented in parts_sign.py (P1-T3)
+
+
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] in SIGN_CMDS:
+        import parts_sign
+        return parts_sign.main(argv)
     ap = argparse.ArgumentParser(prog="parts")
     sub = ap.add_subparsers(dest="cmd", required=True)
     n = sub.add_parser("new")
