@@ -1,0 +1,45 @@
+{
+  "id": "tb-phoenix-mkds-3-2-5.08",
+  "kind": "connector",
+  "package": {
+    "name": "Screw terminal 2P 5.08 mm (Phoenix MKDS 3/2)",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Connector:Screw_Terminal_01x02",
+    "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal"
+  },
+  "pins": {
+    "1": {
+      "name": "Pin_1",
+      "class": "passive"
+    },
+    "2": {
+      "name": "Pin_2",
+      "class": "passive"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Pitch 5.08 mm is from the footprint name; no drawing compared."
+    }
+  ],
+  "polarity": {
+    "polarised": false,
+    "pin1": "pin 1 = left-most screw when the wire entries face you",
+    "pin1_footprint_marker": "roundrect pad 1"
+  },
+  "unverified_dims": [
+    "pitch_mm",
+    "drill_mm",
+    "current_rating"
+  ],
+  "notes": "Reflex 12V_IN J1, carries the full 10 A through the fuse. Ratings NOT recorded: the 10 A claim is exactly what the owner must confirm against the MKDS 3 datasheet before release.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

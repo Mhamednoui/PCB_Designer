@@ -1,0 +1,154 @@
+{
+  "id": "esp32-devkit-v1-30pin-socket",
+  "kind": "connector",
+  "package": {
+    "name": "ESP32 DevKit V1 30-pin socket footprint",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "reflex:ESP32_DevKit_V1_30pin",
+    "footprint": "reflex:ESP32_DevKit_V1_30pin_Socket"
+  },
+  "pins": {
+    "1": {
+      "name": "EN",
+      "class": "input"
+    },
+    "2": {
+      "name": "VP/IO36",
+      "class": "input"
+    },
+    "3": {
+      "name": "VN/IO39",
+      "class": "input"
+    },
+    "4": {
+      "name": "IO34",
+      "class": "input"
+    },
+    "5": {
+      "name": "IO35",
+      "class": "input"
+    },
+    "6": {
+      "name": "IO32",
+      "class": "bidirectional"
+    },
+    "7": {
+      "name": "IO33",
+      "class": "bidirectional"
+    },
+    "8": {
+      "name": "IO25",
+      "class": "bidirectional"
+    },
+    "9": {
+      "name": "IO26",
+      "class": "bidirectional"
+    },
+    "10": {
+      "name": "IO27",
+      "class": "bidirectional"
+    },
+    "11": {
+      "name": "IO14",
+      "class": "bidirectional"
+    },
+    "12": {
+      "name": "IO12",
+      "class": "bidirectional"
+    },
+    "13": {
+      "name": "IO13",
+      "class": "bidirectional"
+    },
+    "14": {
+      "name": "GND",
+      "class": "power_in"
+    },
+    "15": {
+      "name": "VIN(5V)",
+      "class": "power_in"
+    },
+    "16": {
+      "name": "IO23",
+      "class": "bidirectional"
+    },
+    "17": {
+      "name": "IO22",
+      "class": "bidirectional"
+    },
+    "18": {
+      "name": "TX0/IO1",
+      "class": "bidirectional"
+    },
+    "19": {
+      "name": "RX0/IO3",
+      "class": "bidirectional"
+    },
+    "20": {
+      "name": "IO21",
+      "class": "bidirectional"
+    },
+    "21": {
+      "name": "IO19",
+      "class": "bidirectional"
+    },
+    "22": {
+      "name": "IO18",
+      "class": "bidirectional"
+    },
+    "23": {
+      "name": "IO5",
+      "class": "bidirectional"
+    },
+    "24": {
+      "name": "TX2/IO17",
+      "class": "bidirectional"
+    },
+    "25": {
+      "name": "RX2/IO16",
+      "class": "bidirectional"
+    },
+    "26": {
+      "name": "IO4",
+      "class": "bidirectional"
+    },
+    "27": {
+      "name": "IO2",
+      "class": "bidirectional"
+    },
+    "28": {
+      "name": "IO15",
+      "class": "bidirectional"
+    },
+    "29": {
+      "name": "GND",
+      "class": "power_in"
+    },
+    "30": {
+      "name": "3V3",
+      "class": "power_out"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Project-lib symbol pins and footprint pads agree by number (30 each). No dimension was compared to a drawing."
+    }
+  ],
+  "source": "project-lib",
+  "polarity": {
+    "polarised": false
+  },
+  "unverified_dims": [
+    "row_pitch_mm"
+  ],
+  "notes": "Project-vendored library (decision 9.6): symbol and footprint live in projects/reflex-machine/lib/ of the project, not in the KiCad install; loader/lint must read the project sym-lib-table. Reflex A2. Custom symbol/footprint. The two socket rows are ASSUMED 25.4 mm apart: never measured with calipers or a 1:1 print, so row_pitch_mm stays in unverified_dims and must be printed in every release. Pin names are the symbol's (DOIT 30-pin order), not checked against a datasheet here.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

@@ -1,0 +1,47 @@
+{
+  "id": "res-axial-0207-p10.16",
+  "kind": "generic",
+  "package": {
+    "name": "Axial DIN0207 1/4 W, 10.16 mm pitch",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Device:R",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+  },
+  "tht": {
+    "lead_d_mm": 0.54
+  },
+  "pins": {
+    "1": {
+      "name": "~",
+      "class": "passive",
+      "also": "unnamed pin 1 (KiCad shows ~)"
+    },
+    "2": {
+      "name": "~",
+      "class": "passive",
+      "also": "unnamed pin 2 (KiCad shows ~)"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pin numbers and pad multiset only. lead_d_mm 0.54 = typical 1/4 W metal-film lead (0.5-0.6); KiCad drill 0.8."
+    }
+  ],
+  "value_range": [
+    1,
+    10000000.0
+  ],
+  "polarity": {
+    "polarised": false
+  },
+  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. Unpolarised. Covers every axial 1/4 W resistor (blinky 3, uno-toggle 2, reflex 55). Real MPN binding goes through orderable_as at release (decision 9.2), empty on hand boards. Value range 1 ohm .. 10 Mohm is a sanity bound, not a datasheet limit.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

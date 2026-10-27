@@ -1,0 +1,45 @@
+{
+  "id": "tvs-do15-p10.16-h",
+  "kind": "generic",
+  "package": {
+    "name": "DO-15 axial horizontal P10.16 (TVS)",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Device:D_Zener",
+    "footprint": "Diode_THT:D_DO-15_P10.16mm_Horizontal"
+  },
+  "tht": {
+    "lead_d_mm": 0.95
+  },
+  "pins": {
+    "1": {
+      "name": "K",
+      "class": "passive",
+      "also": "cathode (band end)"
+    },
+    "2": {
+      "name": "A",
+      "class": "passive",
+      "also": "anode"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pin numbers and pad multiset only. lead_d_mm 0.95 = typical P6KE/DO-15 lead (~0.038 in); KiCad drill 1.2 (0.95 + 0.2 = 1.15 <= 1.2). Polarity: symbol Device:D_Zener pin 1 = K, pin 2 = A; footprint pad 1 (roundrect) = 'K'."
+    }
+  ],
+  "polarity": {
+    "polarised": true,
+    "pin1": "cathode (K), band on the body",
+    "pin1_footprint_marker": "roundrect pad 1 plus 'K' silk text"
+  },
+  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED, UNIDIRECTIONAL TVS (reflex D1 P6KE15A, drawn with the zener symbol). Pin 1 = cathode (band) goes to the protected rail, pin 2 = anode to GND. A bidirectional part (P6KE15CA) has no polarity: do not substitute blindly.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}
