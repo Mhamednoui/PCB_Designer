@@ -183,3 +183,6 @@ Order: lint → sch → sch-check → place → route → finish → check → r
 - Waivers: `projects/<id>/waivers.json`, shared helper `tools/boardgen/waivers.py`; `why` mandatory; unused → WARN.
 Traps: mutate netlist.py with `python -B` (stale .pyc within 1 s); agent worktrees start from `main` - brief must `git reset --hard improve/roadmap-v1`; worktree agents can't edit main-checkout files (write notes to scratchpad).
 Open real findings: reflex +12V/GND tracks 1.5 mm vs 10 A declared (IPC-2221 wants ~7.2 mm @1 oz/10 °C) - MD-T2b refining rule for pours.
+- (MD-T8) kicad-happy `analyze_pcb.py` decap distance is origin-to-origin when pad data is missing → blind at some rotations; not trustworthy as sole gate (MD-T9 adds a native pad-to-pin check).
+- (MD-T8) Freerouting nondeterministic (1 run left SPARE_D13 unconnected; rerun ok); `finish` crashed once 0xC0000005, ok on rerun → MD-T9 retries.
+- (MD-T2b) reflex +12V_IN J1→F1 is the only non-poured 10 A path: 1.5/2.5 mm vs 7.2 mm needed (1 oz, 10 °C) → MD-T10.
