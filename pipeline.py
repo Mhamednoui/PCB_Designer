@@ -83,6 +83,8 @@ def build_stages(project_id):
             return any(line.startswith("SPICE = ") for line in f)
 
     return [
+        # Design-rule lint of netlist.py itself (pure Python, <1 s): catches design mistakes ERC/DRC cannot.
+        ("lint", scripted, WORKSPACE_ROOT, [sys.executable, os.path.join(BOARDGEN, "lint_netlist.py"), project_id]),
         ("sch", scripted, gen, shared("make_sch.py")),
         ("sch-check", scripted, gen, shared("check_sch.py")),
         ("place", gen_script("make_pcb.py"), gen, [KICAD_PYTHON, "make_pcb.py", "place"]),
