@@ -281,3 +281,50 @@ Scaling axes and the change each needs:
 | PA-4 | Layer-agnostic audit of `pcb.py` + 4-layer fixture (blinky-4L) through the full pipeline | high | MD-T11 |
 | PA-5 | Parallel + tiered mutation runner | medium | - |
 **Exit:** adding a new check touches only its own file + its mutation entries; blinky-4L green; fast-tier suite <60 s.
+
+---
+
+## 11. Engineering standards - error-proof, debuggable, extensible (decided 2026-10-27)
+
+### 11.1 Error-proof (defects can't get in, or can't get out)
+- **Every guarantee has a test that breaks it** (mutation suite). A check without a mutation is not "supported".
+- **Fail closed:** unknown input, missing data, offline source, zero items examined → WARN with reason or FAIL; never PASS.
+- **Two independent engines** for anything that reaches the fab (§9).
+- **Single source of truth + generated everything else**; hand edits of generated files are detected (hash in IR) and refused.
+- **Schemas everywhere:** netlist IR, parts records, waivers, mutations, stage registry, fab profiles - all JSON-Schema validated on load.
+- **Pre-commit + CI gate:** Python syntax/lint (ruff), JSON schema validation, fast-tier mutation suite, secret scan, control-char scan (LESSONS 14).
+
+### 11.2 Easy to debug
+- **One run report per pipeline run** (`out/run/<timestamp>/report.json` + `report.html`): every stage's inputs (with hashes),
+  command, exit code, duration, counts examined/passed/failed/waived, findings with rule id + location, tool versions
+  (KiCad, Freerouting, LTspice, Python, git commit). Any failure is reproducible from the report alone.
+- **Error taxonomy:** every finding = `RULE-ID | severity | where (ref/pin/net/x,y/layer) | what was measured vs limit |
+  why it matters | how to fix | doc link`. No bare stack traces for expected failures; real exceptions keep full traces.
+- **`--explain <RULE-ID>`** prints the rule's doc, its mutation, and an example fix.
+- **Visual debugging:** findings with coordinates are rendered as markers on the board image (and in the webview).
+- **Determinism:** same inputs → same outputs (sorted output, fixed timestamps in generated files, Freerouting version
+  logged); nondeterministic tools are retried and their attempt log kept.
+
+### 11.3 Easy to add features
+- **Extension points, each with a template + scaffold command + doc page:**
+  stage (`stages/<name>.py` + registry entry), rule (`rules/<id>.py`), part (`parts new`), design block (`blocks/<name>.py`),
+  fab profile (`fab_profiles/<fab>.json`), mutation (`mutations.json` entry).
+  `python pipeline.py --scaffold rule MY-RULE` creates the file, the doc stub and a failing mutation to fill in.
+- **`docs/CONTRIBUTING.md`:** "how to add X" for every extension point, with the definition of done:
+  code + schema + doc + fixture pass + mutation fail + run-report fields + CHANGELOG line.
+- **Architecture Decision Records** (`docs/adr/NNNN-title.md`): every decision made in this plan (registry tiers, pins-by-function,
+  no ML gate, IR, strangler re-architecture, ...) recorded with context, decision, consequences - so a new contributor (human
+  or agent) knows *why*, not just *what*.
+- **Versioning:** the platform has a version (semver) and a CHANGELOG; every board release records the platform version and
+  the git commit that produced it.
+
+### 11.4 Tasks (phase PA, alongside §10)
+| ID | Task | Effort |
+|---|---|---|
+| PA-6 | Run report (json+html) + tool-version capture + determinism pass on generated files | high |
+| PA-7 | Finding/error taxonomy object used by every checker; `--explain`; findings → board markers | medium |
+| PA-8 | Scaffold commands + templates for stage/rule/part/block/fab-profile/mutation; `docs/CONTRIBUTING.md` | medium |
+| PA-9 | Pre-commit + GitHub CI (ruff, schema validation, fast-tier mutations, secret + control-char scan) | medium |
+| PA-10 | `docs/adr/` with the decisions taken so far; CHANGELOG + platform version | low |
+**PA exit (with §10):** a new check is added by scaffold → fill → its mutation flips to CAUGHT, touching no core file;
+every failing run can be diagnosed from its run report alone.

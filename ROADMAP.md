@@ -109,6 +109,11 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | PA-3 port checks to the IR | ⬜ |
 | PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |
 | PA-5 parallel + tiered mutation runner | ⬜ |
+| PA-6 run report + tool versions + determinism | ⬜ |
+| PA-7 finding taxonomy, `--explain`, board markers | ⬜ |
+| PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
+| PA-9 pre-commit + CI | ⬜ |
+| PA-10 ADRs + CHANGELOG + platform version | ⬜ |
 
 ### Independent verification (PLATFORM_PLAN §9) - queued
 | ID | Task | Phase | St |
