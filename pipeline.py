@@ -95,6 +95,8 @@ def build_stages(project_id):
         ("review", gen_script("make_pcb.py"), WORKSPACE_ROOT,
          [sys.executable, os.path.join(BOARDGEN, "make_review.py"), project_id]),
         ("outputs", scripted, gen, shared("make_outputs.py")),
+        # Independent connectivity of the fab zip itself (gerbers + drill), diffed against netlist.py.
+        ("lvs", scripted, WORKSPACE_ROOT, [sys.executable, os.path.join(BOARDGEN, "gerber_lvs.py"), project_id]),
         # Read-only: measures the finished board + its drill file, so it's safe on a signed-off board.
         ("fabreport", scripted, WORKSPACE_ROOT, shared("make_fab_report.py", project_id)),
         ("connections", scripted, WORKSPACE_ROOT, shared("make_connections.py", project_id)),
