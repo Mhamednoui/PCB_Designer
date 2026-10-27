@@ -93,11 +93,11 @@ def build_stages(project_id):
         # Read-only: measures the finished board + its drill file, so it's safe on a signed-off board.
         ("fabreport", scripted, WORKSPACE_ROOT, shared("make_fab_report.py", project_id)),
         ("connections", scripted, WORKSPACE_ROOT, shared("make_connections.py", project_id)),
-        ("pinmap", os.path.isfile(os.path.join(test, "pinmap.py")), test, ["python", "pinmap.py"]),
+        ("pinmap", os.path.isfile(os.path.join(test, "pinmap.py")), test, [sys.executable, "pinmap.py"]),
         ("spice", has_spice_block(), WORKSPACE_ROOT,
          [sys.executable, os.path.join(BOARDGEN, "make_spice.py"), project_id]),
         ("webview", True, os.path.join(WORKSPACE_ROOT, "webview", "tools"),
-         ["python", "onboard.py", project_id]),
+         [sys.executable, "onboard.py", project_id]),
     ]
 
 
@@ -108,9 +108,16 @@ def run_stage(name, cwd, cmd):
     elapsed = time.time() - started
     if result.returncode != 0:
         print(f"--- {name} FAILED after {elapsed:.1f}s (exit {result.returncode})")
-        return False
+        return False, elapsed
     print(f"--- {name} ok ({elapsed:.1f}s)")
-    return True
+    return True, elapsed
+
+
+def print_summary(rows):
+    print("\nsummary:")
+    print(f"  {'stage':<14}{'result':<9}{'seconds':>8}")
+    for name, status, secs in rows:
+        print(f"  {name:<14}{status:<9}{'' if secs is None else format(secs, '.1f'):>8}")
 
 
 def main():
@@ -176,11 +183,21 @@ def main():
     if skipped:
         print(f"(skipping stages this project doesn't have: {', '.join(skipped)})")
 
+    rows, failed = [], None
     for name, cwd, cmd in planned:
-        if not run_stage(name, cwd, cmd):
-            print(f"\npipeline stopped at '{name}'. Fix it, then re-run with "
-                  f"--only {name} (or --skip the stages already done).")
-            sys.exit(1)
+        if failed:
+            rows.append((name, "skipped", None))
+            continue
+        ok, secs = run_stage(name, cwd, cmd)
+        rows.append((name, "ok" if ok else "FAILED", secs))
+        if not ok:
+            failed = name
+
+    print_summary(rows)
+    if failed:
+        print(f"\npipeline stopped at '{failed}'. Fix it, then re-run with "
+              f"--only {failed} (or --skip the stages already done).")
+        sys.exit(1)
 
     print("\npipeline complete.")
 
