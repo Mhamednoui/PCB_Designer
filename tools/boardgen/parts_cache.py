@@ -21,6 +21,10 @@ CACHE_DIR = ROOT / "parts" / ".cache"
 BASE = "https://jlcsearch.tscircuit.com"
 MAX_AGE_DAYS = 90          # spec section 6: geometry / MPN cache older than this = WARN
 STOCK_MAX_AGE_DAYS = 7     # stock snapshot older than this = release error (pcba)
+UA = "Mozilla/5.0 (compatible; pcb-parts-registry/1; polite, cache-first)"
+# Undocumented, login-free endpoints (MV-T0). Env vars override the URLs (tests simulate a dead source with them).
+JLCPCB_SMT_URL = ("https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList")
+LCSC_DETAIL_URL = "https://wmsc.lcsc.com/ftps/wm/product/detail?productCode="
 _last_call = [0.0]
 
 
@@ -75,24 +79,28 @@ def _read(kind, lcsc):
     return None
 
 
-def _http_json(url, timeout=20):
+def _http_json(url, timeout=20, body=None):
     wait = 0.5 - (time.time() - _last_call[0])   # etiquette: 0.5 s between calls
     if wait > 0:
         time.sleep(wait)
     _last_call[0] = time.time()
-    req = urllib.request.Request(url, headers={"User-Agent": "pcb-parts-registry/1"})
+    hdr = {"User-Agent": UA, "Accept": "application/json"}
+    data = None
+    if body is not None:                                      # POST JSON (JLCPCB assembly search)
+        data, hdr["Content-Type"] = json.dumps(body).encode("utf-8"), "application/json"
+    req = urllib.request.Request(url, data=data, headers=hdr)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode("utf-8"))
 
 
-def _fetch(kind, lcsc, url, pick, offline=None):
+def _fetch(kind, lcsc, url, pick, offline=None, body=None):
     """Network first (unless offline); on failure fall back to the cache with stale=True."""
     offline = is_offline() if offline is None else offline
     cached = _read(kind, lcsc)
     err = "offline mode" if offline else None
     if not offline:
         try:
-            data = pick(_http_json(url))
+            data = pick(_http_json(url, body=body))
             ent = {"fetched_at": now_iso(), "source": url, "status": "ok", "data": data}
             p = _path(kind, lcsc)
             p.parent.mkdir(parents=True, exist_ok=True)
@@ -152,3 +160,130 @@ def easyeda_mpn(data):
         return cp["Manufacturer Part"]
     title = ee.get("title")
     return re.sub(r"_C\d+$", "", title) if title else None
+
+
+# ---------------------------------------------------------------- P1-T10: stock source chain
+# JLCPCB assembly stock + basic/extended: jlcpcb smtGood first. LCSC stock / MPN / datasheet: LCSC detail.
+# jlcsearch is the last resort. Every field records which source answered; a failing or reshaped source is
+# a WARN naming it and the chain falls through. A value no source gave stays None, never invented.
+def _tier1(tiers):
+    for t in tiers or []:
+        if t.get("startNumber") == 1 and isinstance(t.get("productPrice"), (int, float)):
+            return t["productPrice"]
+    return None
+
+
+def jlcpcb_smt(lcsc, offline=None):
+    """JLCPCB assembly library entry for an exact LCSC id: stockCount, componentLibraryType, model, datasheet."""
+    lcsc = norm_lcsc(lcsc)
+    url = os.environ.get("PARTS_JLCPCB_URL") or JLCPCB_SMT_URL
+
+    def pick(j):
+        lst = (((j.get("data") or {}).get("componentPageInfo") or {}).get("list"))
+        if lst is None or j.get("code") != 200:
+            raise ValueError("unexpected response shape (code=%r)" % j.get("code"))
+        hits = [c for c in lst if c.get("componentCode") == lcsc]
+        if not hits:
+            raise ValueError("no exact match for %s in %d results (not in the JLCPCB assembly library)" % (lcsc, len(lst)))
+        c = hits[0]
+        if not isinstance(c.get("stockCount"), int):
+            raise ValueError("no integer stockCount")
+        return {"stock": c["stockCount"], "library_type": c.get("componentLibraryType"),
+                "preferred": bool(c.get("preferredComponentFlag")), "mpn": c.get("componentModelEn"),
+                "datasheet": c.get("dataManualUrl") or None, "price_1": _tier1(c.get("componentPrices"))}
+    body = {"keyword": lcsc, "currentPage": 1, "pageSize": 10, "searchSource": "search"}
+    return _fetch("jlcpcb_smt", lcsc, url, pick, offline, body)
+
+
+def lcsc_detail(lcsc, offline=None):
+    """LCSC product detail: stockNumber (LCSC warehouse, not JLC assembly), productModel (MPN), pdfUrl."""
+    lcsc = norm_lcsc(lcsc)
+    base = os.environ.get("PARTS_LCSC_URL") or LCSC_DETAIL_URL
+
+    def pick(j):
+        r = j.get("result")
+        if not isinstance(r, dict) or r.get("productCode") != lcsc or not isinstance(r.get("stockNumber"), int):
+            raise ValueError("unexpected response shape or id not found (code=%r)" % j.get("code"))
+        return {"stock": r["stockNumber"], "mpn": r.get("productModel"), "datasheet": r.get("pdfUrl") or None}
+    return _fetch("lcsc_detail", lcsc, base + lcsc, pick, offline)
+
+
+class Sourcing:
+    """Merged per-field view: .data[field] = value, .src[field] = which source answered, .warns = source failures."""
+    def __init__(self):
+        self.data, self.src, self.warns, self.fetched, self.stale = {}, {}, [], {}, False
+        self.stale_srcs = []
+
+    def put(self, field, value, source, f):
+        if field not in self.data and value is not None:
+            self.data[field], self.src[field] = value, source
+            self.fetched[field] = f.fetched_at
+
+    def field_age(self, field):
+        return age_days(self.fetched.get(field))
+
+    @property
+    def age_days(self):                      # oldest field: lets check_parts treat this like a Fetched
+        ages = [age_days(v) for v in self.fetched.values()]
+        return max(ages) if ages else None
+
+    @property
+    def fetched_at(self):
+        return min(self.fetched.values()) if self.fetched else None
+
+    def is_stale(self, field):
+        return self.src.get(field, "").endswith("(stale cache)")
+
+
+def sourcing(lcsc, offline=None):
+    """Run the source chain for one LCSC id. Never raises for a source failure (WARN in .warns); raises CacheMiss
+    only when no source produced anything at all. A source that failed live but has a cache entry contributes its
+    cached values only after every live source was tried, flagged stale (never silent)."""
+    lcsc = norm_lcsc(lcsc)
+    sr, stale_pool = Sourcing(), []
+    results = {}
+
+    def run(name, fn):
+        try:
+            f = fn(lcsc, offline)
+        except CacheMiss as e:
+            sr.warns.append("%s: unavailable (%s)" % (name, e))
+            return
+        except Exception as e:                       # bad id etc.
+            sr.warns.append("%s: %s: %s" % (name, type(e).__name__, e))
+            return
+        if f.stale:
+            sr.warns.append("%s: live fetch failed (%s); cached %s used, %.1f d old" % (
+                name, f.error, f.fetched_at[:10], f.age_days or 0))
+            stale_pool.append((name, f))
+        else:
+            results[name] = f
+    run("jlcpcb_smt", jlcpcb_smt)
+    run("lcsc_detail", lcsc_detail)
+    if "jlcpcb_smt" not in results or "lcsc_detail" not in results:
+        run("jlcsearch", jlcsearch)              # last resort only: spare the community API when both primaries answered
+    for name, f in list(results.items()) + stale_pool:   # live sources first, then stale caches
+        d = f.data
+        tag = name + (" (stale cache)" if f.stale else "")
+        if f.stale and name not in sr.stale_srcs:
+            sr.stale_srcs.append(name)
+        if name == "jlcpcb_smt":
+            sr.put("jlc_stock", d["stock"], tag, f)
+            lt = d["library_type"]
+            sr.put("class", "basic" if lt == "base" else ("preferred" if d["preferred"] else "extended") if lt == "expand" else lt, tag, f)
+            sr.put("mpn", d["mpn"], tag, f)
+            sr.put("datasheet", d["datasheet"], tag, f)
+            sr.put("price_1", d.get("price_1"), tag, f)
+        elif name == "lcsc_detail":
+            sr.put("lcsc_stock", d["stock"], tag, f)
+            sr.put("mpn", d["mpn"], tag, f)
+            sr.put("datasheet", d["datasheet"], tag, f)
+        else:
+            sr.put("lcsc_stock", d.get("stock"), tag, f)
+            sr.put("price_1", d.get("price"), tag, f)
+            sr.put("class", "basic" if d.get("is_basic") else "preferred" if d.get("is_preferred") else "extended", tag, f)
+            sr.put("mpn", d.get("mfr"), tag, f)
+    if not sr.data:
+        raise CacheMiss("sourcing %s: no source answered (%s)" % (lcsc, "; ".join(sr.warns)))
+    sr.stale = bool(sr.stale_srcs)
+    return sr
