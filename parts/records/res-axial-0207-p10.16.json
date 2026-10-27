@@ -2,7 +2,7 @@
   "id": "res-axial-0207-p10.16",
   "kind": "generic",
   "package": {
-    "name": "Axial DIN0207 1/4 W, 10.16 mm pitch",
+    "name": "R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
     "mount": "tht"
   },
   "kicad": {

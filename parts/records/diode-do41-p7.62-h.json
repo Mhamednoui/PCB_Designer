@@ -2,7 +2,7 @@
   "id": "diode-do41-p7.62-h",
   "kind": "generic",
   "package": {
-    "name": "DO-41 axial horizontal P7.62",
+    "name": "D_DO-41_SOD81_P7.62mm_Horizontal",
     "mount": "tht"
   },
   "kicad": {

@@ -3518,17 +3518,6 @@
 				)
 			)
 		)
-		(property "LCSC" "C2895470"
-			(at 50.8 195.58 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "376317ef-b815-54c3-9979-17a1e0c83be4"))
 		(pin "2" (uuid "51f4bcdc-c600-555c-9414-4addf7101c74"))
 		(instances (project "uno-toggle" (path "/fd59619f-c1c5-5938-9614-d718bf64babe" (reference "D1") (unit 1))))

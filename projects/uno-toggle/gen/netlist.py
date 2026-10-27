@@ -16,6 +16,7 @@ PRJ_NAME = "uno-toggle"
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(PRJ_DIR)), "tools"))
 from boardgen.kicad_paths import SHARE as KICAD_SHARE, SYMBOLS as KICAD_SYMBOLS, \
     FOOTPRINTS as KICAD_FOOTPRINTS  # noqa: E402
+from boardgen import parts as _parts  # noqa: E402
 PROJECT_LIBS = ("arduino-library",)
 
 # Schematic title block (read by make_sch.py - keeps that script board-agnostic)
@@ -31,57 +32,48 @@ def uid(*parts):
     return str(uuid.uuid5(_NS, "/".join(parts)))
 
 
-# ── Footprints (all through-hole - the user cannot solder SMD) ──
-FP_R = "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-FP_C = "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm"
-FP_LED5 = "LED_THT:LED_D5.0mm"
-FP_SW = "Button_Switch_THT:SW_PUSH_6mm"
-FP_UNO = "arduino-library:Arduino_Uno_R3_Shield"
+PARTS_STRICT = True        # every part must be declared through the registry (lint rule PR-REF)
 
-# ── LCSC part numbers (left blank = hand-solder / not ordered assembled) ──
-LCSC = {
-    "330R": "", "100nF": "", "LED_RED": "C2895470", "LED_GREEN": "",
-}
+# Symbol, footprint and LCSC id of each part come from its registry record, parts/records/<id>.json
+# (all through-hole - the user cannot solder SMD). Generic 2-pin passives, the switches and the shield
+# have unnamed or board-position pins: pad numbers. Diodes/LEDs are polarised: pins by function (K / A).
+R_ID, C_ID, LED_ID = "res-axial-0207-p10.16", "cap-disc-5mm-p5.00", "led-5mm"
+SW_ID, UNO_ID = "sw-push-6mm-tht", "arduino-uno-r3-shield"
 
 PARTS = []
 
 
-def part(ref, lib_id, value, footprint, pins, group, lcsc=""):
-    PARTS.append(dict(ref=ref, lib_id=lib_id, value=value, footprint=footprint,
-                      pins={str(k): v for k, v in pins.items() if v},
-                      group=group, lcsc=lcsc))
-
-
 def R(ref, value, a, b, group):
-    part(ref, "Device:R", value, FP_R, {1: a, 2: b}, group, LCSC.get(value, ""))
+    PARTS.append(_parts.registry_part(ref, R_ID, value, {1: a, 2: b}, group))
 
 
-def C(ref, value, a, b, group, fp=FP_C):
-    part(ref, "Device:C", value, fp, {1: a, 2: b}, group, LCSC.get(value, ""))
+def C(ref, value, a, b, group):
+    PARTS.append(_parts.registry_part(ref, C_ID, value, {1: a, 2: b}, group))
 
 
-def LED(ref, color, cathode, anode, group, fp=FP_LED5):
-    part(ref, "Device:LED", color, fp, {1: cathode, 2: anode}, group, LCSC["LED_" + color])
+def LED(ref, color, cathode, anode, group):
+    PARTS.append(_parts.registry_part(ref, LED_ID, color, {"K": cathode, "A": anode}, group))
 
 
 # ── 1. Controller (the shield headers that plug into the Uno) ──
-# Only the pins we actually use are connected; the rest stay unconnected on purpose.
+# Only the pins we actually use are connected; every other shield pin is unconnected on purpose
+# (nc="rest" is allowed for connector records only).
 G = "mcu"
 # Note: the 5V pin is deliberately NOT connected. Nothing on this board uses the rail - the LEDs are
 # driven straight from the digital pins and the buttons use the AVR's internal pull-ups. Wiring 5V
 # anyway would create a single-pin net, which is an ERC error for no benefit.
-part("A1", "arduino-library:Arduino_Uno_R3_Shield", "Arduino Uno R3", FP_UNO, {
+PARTS.append(_parts.registry_part("A1", UNO_ID, "Arduino Uno R3", {
     "D2": "BTN1", "D3": "BTN2",
     "D8": "LED1", "D9": "LED2",
     "GND1": "GND", "GND2": "GND", "GND3": "GND",
-}, G)
+}, G, nc="rest"))
 
 # ── 2. Buttons: to GND, using the AVR's internal pull-ups (pressed = LOW) ──
 # The 100nF across each switch is hardware debounce - the Reflex Machine taught us not to feed a
 # raw mechanical switch straight into a pin (see docs/LESSONS_LEARNED.md).
 G = "buttons"
-part("SW1", "Switch:SW_Push", "BTN1", FP_SW, {1: "BTN1", 2: "GND"}, G)
-part("SW2", "Switch:SW_Push", "BTN2", FP_SW, {1: "BTN2", 2: "GND"}, G)
+PARTS.append(_parts.registry_part("SW1", SW_ID, "BTN1", {1: "BTN1", 2: "GND"}, G))
+PARTS.append(_parts.registry_part("SW2", SW_ID, "BTN2", {1: "BTN2", 2: "GND"}, G))
 C("C1", "100nF", "BTN1", "GND", G)
 C("C2", "100nF", "BTN2", "GND", G)
 

@@ -2,7 +2,7 @@
   "id": "sw-push-6mm-tht",
   "kind": "connector",
   "package": {
-    "name": "Tactile switch 6 mm, 4-leg THT",
+    "name": "SW_PUSH_6mm",
     "mount": "tht"
   },
   "kicad": {

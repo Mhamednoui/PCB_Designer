@@ -28,7 +28,8 @@ PRJ_NAME = "blinky-555"
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(PRJ_DIR)), "tools"))
 from boardgen.kicad_paths import SHARE as KICAD_SHARE, SYMBOLS as KICAD_SYMBOLS, \
     FOOTPRINTS as KICAD_FOOTPRINTS  # noqa: E402
-PROJECT_LIBS = ()          # stock libraries only - nothing to vendor into projects/blinky-555/lib
+from boardgen import parts as _parts  # noqa: E402
+PROJECT_LIBS = ()        # stock libraries only - nothing to vendor into projects/blinky-555/lib
 
 SCH_TITLE = "Blinky 555 - 1 Hz LED flasher"
 SCH_SUBTITLE = "Standalone NE555 astable, 9-12 V in, through-hole"
@@ -42,59 +43,50 @@ def uid(*parts):
     return str(uuid.uuid5(_NS, "/".join(parts)))
 
 
-# Footprints - all through-hole (the user cannot solder SMD)
-FP_R = "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-FP_C = "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm"
-FP_CP = "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"        # polarised electrolytic
-FP_LED5 = "LED_THT:LED_D5.0mm"
-FP_DIP8 = "Package_DIP:DIP-8_W7.62mm"
-FP_TERM2 = "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
+PARTS_STRICT = True        # every part must be declared through the registry (lint rule PR-REF)
 
-LCSC = {"LED_RED": "C2895470"}
+# Symbol, footprint and LCSC id of each part come from its registry record, parts/records/<id>.json.
+# ICs, transistors and polarised parts connect their pins BY FUNCTION (the record's pin name): the pad
+# numbers are derived from the record, so a part swapped for one with another pinout renumbers by
+# construction. Generic 2-pin passives and connectors have unnamed pins ("~", "Pin_1"): pad numbers.
+R_ID, C_ID, CP_ID = "res-axial-0207-p10.16", "cap-disc-5mm-p5.00", "cap-elec-d6.3-p2.50"
+LED_ID, DIP8_ID, TERM2_ID = "led-5mm", "ne555p-dip8", "tb-maixu-mx126-5.0-2p"
 
 PARTS = []
 
 
-def part(ref, lib_id, value, footprint, pins, group, lcsc=""):
-    PARTS.append(dict(ref=ref, lib_id=lib_id, value=value, footprint=footprint,
-                      pins={str(k): v for k, v in pins.items() if v},
-                      group=group, lcsc=lcsc))
-
-
 def R(ref, value, a, b, group):
-    part(ref, "Device:R", value, FP_R, {1: a, 2: b}, group)
+    PARTS.append(_parts.registry_part(ref, R_ID, value, {1: a, 2: b}, group))
 
 
-def C(ref, value, a, b, group, fp=FP_C):
-    part(ref, "Device:C", value, fp, {1: a, 2: b}, group)
+def C(ref, value, a, b, group, part_id=C_ID):
+    PARTS.append(_parts.registry_part(ref, part_id, value, {1: a, 2: b}, group))
 
 
 # ── 1. Power in ──
 # Polarity is on the silkscreen (see make_pcb.py TEXTS) - a 2-pin terminal block gives no clue itself.
 G = "power"
-part("J1", "Connector:Conn_01x02_Pin", "9-12V IN", FP_TERM2, {1: "VCC", 2: "GND"}, G)
+PARTS.append(_parts.registry_part("J1", TERM2_ID, "9-12V IN", {1: "VCC", 2: "GND"}, G))
 C("C3", "100nF", "VCC", "GND", G)          # decoupling, sits right at U1's pin 8
 
 # ── 2. The 555 astable ──
-# Pin numbers from `python tools/sym_pins.py Timer:NE555P`:
-#   1 GND  2 TRIG  3 OUT  4 ~RST  5 CONT  6 THRES  7 DISCH  8 VCC
-# RST is tied to VCC because a floating reset pin holds the timer in reset at random - the single
-# most common reason a hand-wired 555 "does nothing".
+# Pins by function (pads 1..8 = GND TRIG OUT RESET CONT THRES DISCH VCC; see `python tools/sym_pins.py
+# Timer:NE555P`). RESET is tied to VCC because a floating reset pin holds the timer in reset at random -
+# the single most common reason a hand-wired 555 "does nothing".
 G = "timer"
-part("U1", "Timer:NE555P", "NE555P", FP_DIP8, {
-    1: "GND", 2: "TRIG", 3: "OUT", 4: "VCC",
-    5: "CONT", 6: "TRIG", 7: "DISCH", 8: "VCC",
-}, G)
+PARTS.append(_parts.registry_part("U1", DIP8_ID, "NE555P", {
+    "GND": "GND", "TRIG": "TRIG", "OUT": "OUT", "RESET": "VCC",
+    "CONT": "CONT", "THRES": "TRIG", "DISCH": "DISCH", "VCC": "VCC",
+}, G))
 R("R1", "10k", "VCC", "DISCH", G)          # charge path
 R("R2", "47k", "DISCH", "TRIG", G)         # charge + discharge path
-C("C1", "10uF", "TRIG", "GND", G, fp=FP_CP)   # timing cap: pin 1 = +, pin 2 = -
+C("C1", "10uF", "TRIG", "GND", G, CP_ID)   # timing cap, Device:C_Polarized: pad 1 = +, pad 2 = -
 C("C2", "10nF", "CONT", "GND", G)          # noise filter on the control pin
 
 # ── 3. Output ──
 G = "led"
 R("R3", "470R", "OUT", "LED_A", G)
-part("D1", "Device:LED", "RED", FP_LED5, {1: "GND", 2: "LED_A"}, G, LCSC["LED_RED"])
-
+PARTS.append(_parts.registry_part("D1", LED_ID, "RED", {"K": "GND", "A": "LED_A"}, G))
 GROUPS = [
     ("power", "POWER IN: 9-12 V DC VIA J1"),
     ("timer", "NE555 ASTABLE: ~1.4 Hz, 50%% DUTY IS NOT EXPECTED (R1+R2 CHARGE, R2 DISCHARGES)"),

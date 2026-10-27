@@ -2,7 +2,7 @@
   "id": "arduino-mega2560-r3-shield",
   "kind": "connector",
   "package": {
-    "name": "Arduino Mega 2560 R3 shield footprint (91 pads)",
+    "name": "Arduino_Mega2560_R3_Shield",
     "mount": "tht"
   },
   "kicad": {

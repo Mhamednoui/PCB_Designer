@@ -1,6 +1,6 @@
 # blinky-555 - every connection, in plain words
 
-_Generated 2026-10-27 22:55 by `tools/boardgen/make_connections.py` from the real board copper (`blinky-555.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py blinky-555 --only connections`._
+_Generated 2026-10-27 23:31 by `tools/boardgen/make_connections.py` from the real board copper (`blinky-555.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py blinky-555 --only connections`._
 
 ## How to use this file
 
@@ -38,7 +38,7 @@ IC / module · footprint `Package_DIP:DIP-8_W7.62mm` · Precision Timers, 555 co
 
 ### C1 - 10uF
 
-capacitor · footprint `Capacitor_THT:CP_Radial_D6.3mm_P2.50mm` · Unpolarized capacitor
+capacitor · footprint `Capacitor_THT:CP_Radial_D6.3mm_P2.50mm` · Polarized capacitor
 
 | Pin | Name | Goes to |
 |---|---|---|

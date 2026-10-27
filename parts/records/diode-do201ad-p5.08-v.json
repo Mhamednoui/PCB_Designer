@@ -2,7 +2,7 @@
   "id": "diode-do201ad-p5.08-v",
   "kind": "generic",
   "package": {
-    "name": "DO-201AD axial vertical P5.08 cathode up",
+    "name": "D_DO-201AD_P5.08mm_Vertical_CathodeUp",
     "mount": "tht"
   },
   "kicad": {

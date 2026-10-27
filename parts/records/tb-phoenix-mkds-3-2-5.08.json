@@ -2,7 +2,7 @@
   "id": "tb-phoenix-mkds-3-2-5.08",
   "kind": "connector",
   "package": {
-    "name": "Screw terminal 2P 5.08 mm (Phoenix MKDS 3/2)",
+    "name": "TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal",
     "mount": "tht"
   },
   "kicad": {

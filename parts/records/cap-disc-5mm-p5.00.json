@@ -2,7 +2,7 @@
   "id": "cap-disc-5mm-p5.00",
   "kind": "generic",
   "package": {
-    "name": "Disc ceramic D5.0 W2.5 P5.00",
+    "name": "C_Disc_D5.0mm_W2.5mm_P5.00mm",
     "mount": "tht"
   },
   "kicad": {

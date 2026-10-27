@@ -2,7 +2,7 @@
   "id": "led-3mm",
   "kind": "generic",
   "package": {
-    "name": "LED D3.0 THT",
+    "name": "LED_D3.0mm",
     "mount": "tht"
   },
   "kicad": {

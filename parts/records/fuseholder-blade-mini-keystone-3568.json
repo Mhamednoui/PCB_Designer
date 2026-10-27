@@ -2,7 +2,7 @@
   "id": "fuseholder-blade-mini-keystone-3568",
   "kind": "connector",
   "package": {
-    "name": "Fuse holder, car blade mini (Keystone 3568)",
+    "name": "Fuseholder_Blade_Mini_Keystone_3568",
     "mount": "tht"
   },
   "kicad": {

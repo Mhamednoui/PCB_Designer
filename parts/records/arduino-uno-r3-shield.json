@@ -2,7 +2,7 @@
   "id": "arduino-uno-r3-shield",
   "kind": "connector",
   "package": {
-    "name": "Arduino Uno R3 shield footprint (37 pads)",
+    "name": "Arduino_Uno_R3_Shield",
     "mount": "tht"
   },
   "kicad": {

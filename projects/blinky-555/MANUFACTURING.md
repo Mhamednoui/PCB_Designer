@@ -1,6 +1,6 @@
 # blinky-555 - manufacturing details
 
-_Generated 2026-10-27 22:55 by `tools/boardgen/make_fab_report.py` from `blinky-555.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py blinky-555 --only fabreport`._
+_Generated 2026-10-27 23:31 by `tools/boardgen/make_fab_report.py` from `blinky-555.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py blinky-555 --only fabreport`._
 
 ## Quick answers (what a PCB price calculator asks)
 
@@ -54,7 +54,7 @@ What is on each copper layer:
 | Copper layer | Tracks | Track length | Track widths used | Pour zones | Poured area | Pads |
 |---|---|---|---|---|---|---|
 | F.Cu | 5 | 40.84 mm | 0.2 mm | 1 | 2872.27 mm² (91.18% of board) | 28 |
-| B.Cu | 26 | 142.6 mm | 0.2 mm | 1 | 2800.96 mm² (88.92% of board) | 28 |
+| B.Cu | 26 | 142.6 mm | 0.2 mm | 1 | 2801.76 mm² (88.94% of board) | 28 |
 
 Silkscreen: 26 text items (smallest 0.9 mm high), 183 lines/shapes (thinnest 0.12 mm).
 
@@ -176,5 +176,5 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3), H3 (Mounting
 |---|---|---|
 | `out/fab/BOM_JLCPCB.csv` | 0.04 KB | assembly only |
 | `out/fab/CPL_JLCPCB.csv` | 0.04 KB | assembly only |
-| `out/fab/blinky-555_gerbers_JLCPCB.zip` | 48.96 KB | **upload this** - gerbers + drill |
+| `out/fab/blinky-555_gerbers_JLCPCB.zip` | 48.97 KB | **upload this** - gerbers + drill |
 | `out/fab/positions_raw.csv` | 0.04 KB | raw placement data (not needed for bare boards) |

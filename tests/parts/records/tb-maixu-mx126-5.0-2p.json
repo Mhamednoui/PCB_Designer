@@ -1,0 +1,44 @@
+{
+  "id": "tb-maixu-mx126-5.0-2p",
+  "kind": "connector",
+  "package": {
+    "name": "TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Connector:Conn_01x02_Pin",
+    "footprint": "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
+  },
+  "pins": {
+    "1": {
+      "name": "Pin_1",
+      "class": "passive"
+    },
+    "2": {
+      "name": "Pin_2",
+      "class": "passive"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Pitch 5.00 mm is from the footprint name; no drawing compared."
+    }
+  ],
+  "polarity": {
+    "polarised": false,
+    "pin1": "pin 1 = left-most screw when the wire entries face you",
+    "pin1_footprint_marker": "roundrect pad 1"
+  },
+  "unverified_dims": [
+    "pitch_mm",
+    "drill_mm"
+  ],
+  "notes": "Pitch/pad count taken from the footprint name, not a drawing. Ratings (V/A per pin) NOT recorded: owner to add from the MX126 datasheet. Used by blinky-555 J1 (9-12 V in). Symbol is the generic pin-header symbol (Conn_01x02_Pin), cosmetic only.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

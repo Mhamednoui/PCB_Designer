@@ -2,7 +2,7 @@
   "id": "led-5mm",
   "kind": "generic",
   "package": {
-    "name": "LED D5.0 THT",
+    "name": "LED_D5.0mm",
     "mount": "tht"
   },
   "kicad": {

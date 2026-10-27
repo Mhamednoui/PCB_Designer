@@ -346,6 +346,185 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:C_Polarized"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "C"
+				(at 0.635 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C_Polarized"
+				(at 0.635 -2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0.9652 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Polarized capacitor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "CP_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "C_Polarized_0_1"
+				(rectangle
+					(start -2.286 0.508)
+					(end 2.286 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 2.286)
+						(xy -0.762 2.286)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 2.794)
+						(xy -1.27 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 2.286 -0.508)
+					(end -2.286 -1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+			)
+			(symbol "C_Polarized_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.794)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.794)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:LED"
 			(pin_numbers
 				(hide yes)
@@ -1968,6 +2147,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C46749"
+			(at 48.26 116.84 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1" (uuid "1d295f2a-ab5d-5f6d-9653-e9edf1386549"))
 		(pin "2" (uuid "3fef8a1d-0116-55d8-a5d3-53c80d673d08"))
 		(pin "3" (uuid "6c4cd21d-9fd9-5cc5-a08d-c24098a68d7c"))
@@ -2212,9 +2402,9 @@
 	(label "DISCH" (at 88.9 105.41 90) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "0549bdca-1ac0-55f2-9074-18ada73a6785"))
 	(wire (pts (xy 88.9 115.57) (xy 88.9 118.11)) (stroke (width 0) (type default)) (uuid "79ebb6cf-ea14-51b2-b5f7-8fd596544506"))
 	(label "TRIG" (at 88.9 118.11 270) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "ea5050db-2e95-5170-b10e-731be1ed9375"))
-	(symbol (lib_id "Device:C") (at 101.6 111.76 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "3bad2aec-0df2-5f9f-87e6-a8a5c64c87ec")
+	(symbol (lib_id "Device:C_Polarized") (at 101.6 111.76 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "3bad2aec-0df2-5f9f-87e6-a8a5c64c87ec")
 		(property "Reference" "C1"
-			(at 104.902 110.49 0)
+			(at 105.156 110.49 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2225,7 +2415,7 @@
 			)
 		)
 		(property "Value" "10uF"
-			(at 104.902 113.03 0)
+			(at 105.156 113.03 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2257,7 +2447,7 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Polarized capacitor"
 			(at 101.6 111.76 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2642,17 +2832,6 @@
 			)
 		)
 		(property "ki_keywords" "LED diode"
-			(at 50.8 170.18 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC" "C2895470"
 			(at 50.8 170.18 0)
 			(show_name no)
 			(do_not_autoplace no)

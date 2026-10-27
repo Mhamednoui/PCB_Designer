@@ -1,0 +1,47 @@
+{
+  "id": "cap-disc-5mm-p5.00",
+  "kind": "generic",
+  "package": {
+    "name": "C_Disc_D5.0mm_W2.5mm_P5.00mm",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Device:C",
+    "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm"
+  },
+  "tht": {
+    "lead_d_mm": 0.5
+  },
+  "pins": {
+    "1": {
+      "name": "~",
+      "class": "passive",
+      "also": "unnamed pin 1 (KiCad shows ~)"
+    },
+    "2": {
+      "name": "~",
+      "class": "passive",
+      "also": "unnamed pin 2 (KiCad shows ~)"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pin numbers and pad multiset only. lead_d_mm 0.5 = typical ceramic disc lead (0.5-0.6); KiCad drill 0.8."
+    }
+  ],
+  "value_range": [
+    1e-11,
+    1e-06
+  ],
+  "polarity": {
+    "polarised": false
+  },
+  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. Unpolarised. Covers 100nF, 10nF, 1nF decoupling/filter discs in all 3 fixtures. Voltage rating not recorded: pick per board.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}
