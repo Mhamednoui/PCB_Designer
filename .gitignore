@@ -58,3 +58,6 @@ projects/*/out/netlist.net
 
 # gerber LVS result (rewritten by every lvs run)
 projects/*/out/lvs.json
+
+# Mutation-suite scratch project copies
+projects/_mut_*/

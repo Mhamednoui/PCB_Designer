@@ -64,10 +64,23 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | MD-T8 | Fix the 2 real decoupling-placement defects `review` found: blinky C3 (15.2 mm from U1 pin 8), reflex C13 (36.5 mm from U3); full rebuild of both | `projects/{blinky-555,reflex-machine}/gen/make_pcb.py` + regenerated outputs | medium | MD-T5 | `review` green on both; full pipeline 0/0/0 | 🔄 |
 | MD-T9 | Native pad-to-pin decap check in `check` (≤5 mm THT / ≤3 mm SMD; modules reported as SKIP); route retries Freerouting ≤3× until 0 unconnected; `finish` re-run once on native crash | `tools/boardgen/{pcb,decap_check}.py` | medium | MD-T8 | M-decap-far caught by `check`; fixtures green | ✅ |
 | MD-T10 | reflex fixture: +12V_IN (J1→F1→pour) sized for 10 A per IPC-2221 | `projects/reflex-machine/gen/{make_pcb,netlist}.py` + outputs | medium | MD-T2b | reflex `check` green | 🔄 |
-| MD-T7 | Mutation suite: each of the 16 mistake classes injected into a temp copy, asserts the pipeline exits non-zero at the expected stage; reports catch rate | `tests/mutations/` (new) | high | MD-T1..T6 | 16/16 caught; runtime reported | ⬜ |
+| MD-T7 | Mutation suite (data-driven `tests/mutations/mutations.json`, P1-T4 extends it): each of the 16 mistake classes injected into a temp copy, asserts the pipeline exits non-zero at the expected stage; reports catch rate | `tests/mutations/` (new) | high | MD-T1..T6 | 16/16 caught; runtime reported | 🔄 |
 **DoD:** G0 met; all 3 fixtures pass every new stage (or carry written waivers).
 
-### MP Production-ready outputs (both assembly modes)
+### P1 Parts registry - tasks P1-T1..T9 are specified in `docs/design/P1_PARTS_REGISTRY.md` §7 (decisions §9); status tracked here
+| ID | St |
+|---|---|
+| P1-T1 schema + loader | 🔄 |
+| P1-T2 cache + `parts new/refresh` | ⬜ |
+| P1-T3 bind/assist/sign | ⬜ |
+| P1-T4 test records + mutations | ⬜ |
+| P1-T5 lint PR- rules | ⬜ |
+| P1-T6 `parts` stage | ⬜ |
+| P1-T7 generic/connector/mechanical records | ⬜ |
+| P1-T8 crosschecked records for real parts | ⬜ |
+| P1-T9 migrate fixtures, strict mode | ⬜ |
+
+### MP Production-ready outputs (both assembly modes) - MP-T1/T2 superseded by P1 above; MP-T3 remains (P5)
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
 | MP-T1 | `ASSEMBLY` mode in `netlist.py` + mode rules in `lint`: `hand` forbids SMD footprints / fine pitch; `pcba` requires an LCSC number per part, footprint package == LCSC package | `tools/boardgen/lint_netlist.py`, `tools/boardgen/parts.py` (new) | medium | MD-T1 | a 0603 part on a `hand` board fails; a `pcba` part without LCSC fails | ⬜ |
