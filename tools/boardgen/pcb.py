@@ -88,7 +88,29 @@ def main(nl, placements, argv=None, **cfg):
     stage = argv[1] if len(argv) > 1 else "place"
     if stage not in stages:
         raise SystemExit("unknown stage %r - use one of: %s" % (stage, " | ".join(stages)))
+    if stage == "finish" and not os.environ.get("BOARDGEN_FINISH_CHILD"):
+        sys.exit(_finish_with_retry(argv))
     stages[stage]()
+
+
+def _is_native_crash(rc):
+    """Windows access violation etc. (0xC0000005, 0xC0000409 ...) or a POSIX signal death (negative rc).
+    A Python exception exits 1 and is never treated as a crash."""
+    return rc < 0 or (rc & 0xFFFFFFFF) >= 0xC0000000
+
+
+def _finish_with_retry(argv):
+    """The zone filler occasionally dies natively (0xC0000005) - which no try/except in-process can catch.
+    So `finish` re-executes itself as a child; a native crash is retried once, any other failure
+    (including a real Python exception, whose traceback the child already printed) is passed through."""
+    env = dict(os.environ, BOARDGEN_FINISH_CHILD="1")
+    for attempt in (1, 2):
+        rc = subprocess.run([sys.executable] + list(argv), env=env).returncode
+        if rc == 0 or not _is_native_crash(rc):
+            return rc
+        print("finish crashed natively (exit 0x%X) on attempt %d/2%s"
+              % (rc & 0xFFFFFFFF, attempt, " - retrying once" if attempt == 1 else ""))
+    return rc
 
 
 def sync_routed_project():
@@ -381,13 +403,57 @@ def _require_freerouting():
                          % FREEROUTING)
 
 
+ROUTE_ATTEMPTS = 3
+
+
+def _unconnected_nets(path):
+    """Names of non-GND nets with unconnected items on the board file `path` (GND is left to the pours in
+    `finish`). Asks kicad-cli DRC: the pcbnew SWIG connectivity/ratsnest objects are opaque or stale."""
+    import re
+    rpt = os.path.join(OUT, "route_drc.json")
+    if os.path.exists(rpt):
+        os.remove(rpt)
+    subprocess.run([CLI, "pcb", "drc", "--format", "json", "-o", rpt, path], capture_output=True, text=True)
+    if not os.path.exists(rpt):
+        raise SystemExit("route check: kicad-cli produced no DRC report for %s" % path)
+    with open(rpt, encoding="utf-8") as f:
+        items = json.load(f).get("unconnected_items", [])
+    nets = set()
+    for v in items:
+        for i in v.get("items", []):
+            nets.update(m for m in re.findall(r"\[([^\]]+)\]", i.get("description", "")) if m != "GND")
+    os.remove(rpt)
+    return sorted(nets)
+
+
 def stage_route(passes=40):
+    """Freerouting is nondeterministic (it once left a net open, a rerun was fine), so a run that leaves
+    non-GND nets unconnected is retried from the same starting board, up to ROUTE_ATTEMPTS times."""
     _require_freerouting()
     sync_routed_project()
     route_netclasses(write_fab_rules())    # wide nets get a wide netclass so the router obeys the DRC rules
     board = pcbnew.LoadBoard(ROUTED)       # no pours / stitching here; previous routes kept
     fanout_gnd(board)                      # GND vias first, so the router respects them
     pcbnew.SaveBoard(ROUTED, board)
+    with open(ROUTED, "rb") as f:
+        start = f.read()                   # every attempt starts from this exact board
+    left = []
+    for attempt in range(1, ROUTE_ATTEMPTS + 1):
+        if attempt > 1:
+            with open(ROUTED, "wb") as f:
+                f.write(start)
+        print("=== route attempt %d/%d ===" % (attempt, ROUTE_ATTEMPTS))
+        left = _route_attempt(passes)
+        if not left:
+            return
+        print("attempt %d left %d net(s) unconnected: %s" % (attempt, len(left), ", ".join(left)))
+    raise SystemExit("route FAILED: %d net(s) still unconnected after %d Freerouting attempts: %s"
+                     % (len(left), ROUTE_ATTEMPTS, ", ".join(left)))
+
+
+def _route_attempt(passes):
+    """One Freerouting run from the board in ROUTED, imported back into ROUTED. -> unconnected net names."""
+    board = pcbnew.LoadBoard(ROUTED)
     # Detach GND: every GND pad (+ its fan-out track/via) gets its own one-pad net, so the
     # router keeps clearance around it but never tries to route GND (the pours do that).
     tracks = list(board.GetTracks())
@@ -415,10 +481,13 @@ def stage_route(passes=40):
     ok = pcbnew.ExportSpecctraDSN(board, dsn)
     print("DSN export:", ok, dsn)
     cmd = [FREEROUTING, "-de", dsn, "-do", ses, "-mp", str(passes), "--gui.enabled=false"]
-    print("running:", " ".join(cmd))
+    print("running:", " ".join(cmd), "(no seed option: result varies run to run)")
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=3600)
-    tail = (r.stdout + r.stderr).strip().splitlines()[-25:]
-    print("\n".join(tail))
+    out = (r.stdout + r.stderr).strip()
+    import re
+    ver = re.search(r"[Ff]reerouting[^\d\n]{0,12}(v?\d+\.\d+(?:\.\d+)?)", out)
+    print("freerouting version: %s, options: -mp %d" % (ver.group(1) if ver else "unknown (not in log)", passes))
+    print("\n".join(out.splitlines()[-25:]))
     if not os.path.exists(ses):
         raise SystemExit("freerouting produced no session file")
     board = pcbnew.LoadBoard(ROUTED)       # reload with GND intact, then import routes
@@ -437,6 +506,7 @@ def stage_route(passes=40):
           % (ok, len(board.GetTracks()), remapped, len(left)))
     pcbnew.SaveBoard(ROUTED, board)
     strip_unused_dummy_nets()
+    return _unconnected_nets(ROUTED)
 
 
 def strip_unused_dummy_nets(path=None):
@@ -769,7 +839,14 @@ def stage_check():
     warnings = sum(1 for v in d.get("violations", []) if v.get("severity") == "warning")
     print("DRC gate: %d errors, %d unconnected, %d parity, %d warnings -> %s"
           % (errors, unconnected, parity, warnings, "FAIL" if errors or unconnected or parity else "PASS"))
-    if errors or unconnected or parity:
+    from boardgen import decap_check          # native pad-to-pin decoupling distance (needs pcbnew)
+    examined, dbad, dinfo = decap_check.run(pcbnew.LoadBoard(PCB), NL, os.path.basename(NL.PRJ_DIR))
+    print("decap distance: %d IC supply pins examined, %d violations" % (examined, len(dbad)))
+    for line in dinfo + dbad:
+        print(line)
+    if examined == 0:
+        print("  note: 0 supply pins examined - nothing was checked (no U* part with a power_in pin?)")
+    if errors or unconnected or parity or dbad:
         sys.exit(1)
 
 

@@ -166,29 +166,46 @@ def rule_spec(M):
             M.add("WARN", "spec", net, "NET_SPEC 'v' must be a number or (min, max), ignored", nets=[net])
 
 
-def rule_decoupling(M):
-    caps = [p for p in M.parts.values() if p["lib_id"].startswith("Device:C") and len(p["pins"]) == 2]
+def ic_supply_pins(M):
+    """Yield (ref, supply_net or None, [pins], note) per IC (ref starts with U): one item per non-ground
+    power_in net; note is "nosym" (symbol missing) or "nosupply" (no such pin) with net None. Shared with
+    the PCB decap-distance check (decap_check.py)."""
     for ref, p in sorted(M.parts.items()):
         if not ref.startswith("U"):
             continue
         sp = symbol_pins(M.NL, p["lib_id"])
         if sp is None:
-            M.add("WARN", "decoupling", ref, "symbol %s not found, cannot judge supply pins" % p["lib_id"],
-                  refs=[ref])
+            yield ref, None, [], "nosym"
             continue
         supply = {}
         for pin, net in p["pins"].items():
             if sp.get(pin, ("", ""))[1] == "power_in" and not M.is_ground(net):
                 supply.setdefault(net, []).append(pin)
         if not supply:
+            yield ref, None, [], "nosupply"
+        for net, pins in sorted(supply.items()):
+            yield ref, net, sorted(pins), ""
+
+
+def decoupling_caps(M):
+    return [p for p in M.parts.values() if p["lib_id"].startswith("Device:C") and len(p["pins"]) == 2]
+
+
+def rule_decoupling(M):
+    caps = decoupling_caps(M)
+    for ref, net, pins, note in ic_supply_pins(M):
+        if note == "nosym":
+            M.add("WARN", "decoupling", ref, "symbol %s not found, cannot judge supply pins" % M.parts[ref]["lib_id"],
+                  refs=[ref])
+        elif note == "nosupply":
             M.add("WARN", "decoupling", ref, "no power_in pin on a non-ground net, decoupling not judged",
                   refs=[ref])
-        for net, pins in sorted(supply.items()):
+        else:
             ok = any(net in c["pins"].values() and any(M.is_ground(n) for n in c["pins"].values())
                      for c in caps)
             if not ok:
                 M.add("ERROR", "decoupling", "%s/%s" % (ref, net),
-                      "supply pin %s on %s has no capacitor to GND" % (",".join(sorted(pins)), net),
+                      "supply pin %s on %s has no capacitor to GND" % (",".join(pins), net),
                       refs=[ref], nets=[net])
 
 
