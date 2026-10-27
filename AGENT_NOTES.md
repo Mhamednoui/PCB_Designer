@@ -172,3 +172,14 @@ Proposed checks, cheapest first:
 4. Gate fab limits: `fabreport` exits 1 on any `**CHECK**` unless waived in netlist.py; emit a per-project `.kicad_dru` (`hole_to_hole >= 0.5`, `track_width min 0.127`) so KiCad DRC itself sees JLC limits (j). Declare `NET_CURRENT={"VCC":0.1}` -> `.kicad_dru` `track_width` rule with a NetClass condition, X from IPC-2221 1 oz (i with relaxed min).
 5. Promote ERC warnings `ground_pin_not_ground` and `isolated_pin_label` to errors in `check_sch.py` (2-line change; catches the h-bypass and supply/ground pin swaps before SPICE).
 Surprises: the strongest signal (LED at 3.4 A) was printed in the log and ignored; DRC catches c1/k only as a side effect of geometry, not intent.
+
+## E. Stages added by MD (current state - keep updated)
+Order: lint → sch → sch-check → place → route → finish → check → review → outputs → lvs → fabreport → connections → pinmap → spice → webview.
+- `lint` (`tools/boardgen/lint_netlist.py`, system Python, <1 s): rules decoupling/polarity/led/short/pads/single-pin. NET_SPEC `v` = a net's ACTIVE level (blinky OUT (9,12); reflex MAGn_OUT 0.0 = drain when on) - not only rails.
+- `check` (`pcb.py`): DRC with generated `<id>.kicad_dru` (`fab_rules.py`: JLCPCB 2-layer limits + IPC-2221 width per net from NET_SPEC.i_max). Every rule carries explicit severity, else `.kicad_pro` severities win.
+- `review` (`make_review.py`): kicad-happy sch+pcb+emc, fast mode (no `--full`); gates on deterministic errors + DC-001/DC-002. Output in `test/review/` (self-gitignored).
+- `lvs` (`gerber_lvs.py`): connectivity rebuilt from the fab ZIP only (gerbonara 1.6.3 + shapely 2.1.2, `requirements.txt`); pad positions from .kicad_pcb; self-checks drill hits vs pads.
+- `spice`: auto LED forward 1-25 mA / reverse > -0.1 mA (time-weighted, ignores ns edge spikes); `SPICE["led_limits"]` override.
+- Waivers: `projects/<id>/waivers.json`, shared helper `tools/boardgen/waivers.py`; `why` mandatory; unused → WARN.
+Traps: mutate netlist.py with `python -B` (stale .pyc within 1 s); agent worktrees start from `main` - brief must `git reset --hard improve/roadmap-v1`; worktree agents can't edit main-checkout files (write notes to scratchpad).
+Open real findings: reflex +12V/GND tracks 1.5 mm vs 10 A declared (IPC-2221 wants ~7.2 mm @1 oz/10 °C) - MD-T2b refining rule for pours.
