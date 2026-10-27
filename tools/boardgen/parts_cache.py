@@ -11,6 +11,7 @@ Set PARTS_OFFLINE=1 (or pass offline=True) to force the offline path.
 import datetime
 import json
 import os
+import re
 import time
 import urllib.request
 from pathlib import Path
@@ -139,3 +140,15 @@ def verify_mpn(found, expected):
     """Raise MpnMismatch unless the MPNs agree (case/punctuation-insensitive)."""
     if norm_mpn(found) != norm_mpn(expected):
         raise MpnMismatch("LCSC returned MPN %r but %r was requested" % (found, expected))
+
+
+def easyeda_mpn(data):
+    """The manufacturer part number in an EasyEDA component dict: its `Manufacturer Part` field (spec section 9,
+    decision 11). The component TITLE is not usable: EasyEDA appends the LCSC id (`PC817C_C20612594`).
+    Falls back to the title with a trailing `_C<digits>` removed when the field is absent; None if neither exists."""
+    ee = (data or {}).get("easyeda_json") or {}
+    cp = ((ee.get("dataStr") or {}).get("head") or {}).get("c_para") or {}
+    if cp.get("Manufacturer Part"):
+        return cp["Manufacturer Part"]
+    title = ee.get("title")
+    return re.sub(r"_C\d+$", "", title) if title else None

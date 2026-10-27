@@ -36,7 +36,6 @@ from boardgen import parts as _parts                          # noqa: E402
 from boardgen import parts_cache as _cache                    # noqa: E402
 from boardgen import project as _project                      # noqa: E402
 from boardgen import waivers as _waivers                      # noqa: E402
-from boardgen.lint_netlist import prepare_registry            # noqa: E402  (lenient record loading, shared with lint)
 from boardgen.sexp import parse, find_all, find               # noqa: E402
 
 GEO_TOL_MM = 0.15            # pitch / row spacing / drill, spec section 3 PR-GEO
@@ -205,19 +204,6 @@ def fp_path(NL, fp_id):
     return os.path.join(base, lib + ".pretty", name + ".kicad_mod")
 
 
-class Trace:
-    """Wraps parts.registry_part to remember which refs were declared through the registry."""
-    def __init__(self):
-        self.refs = {}
-        self._orig = _parts.registry_part
-        _parts.registry_part = self
-
-    def __call__(self, ref, part_id, value, pins, group):
-        d = self._orig(ref, part_id, value, pins, group)
-        self.refs[ref] = part_id
-        return d
-
-
 class Fetch:
     """One cached lookup: .f (parts_cache.Fetched or None), .why (reason it is missing), .offline (cache fallback)."""
     def __init__(self, fn, lcsc, offline):
@@ -296,9 +282,8 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
         if jd is not None:
             sources.append(("jlcsearch mfr", jd.get("mfr")))
         if ed is not None:
-            c = (((ed.get("easyeda_json") or {}).get("dataStr") or {}).get("head") or {}).get("c_para") or {}
-            if c.get("Manufacturer Part"):
-                sources.append(("EasyEDA Manufacturer Part", c["Manufacturer Part"]))
+            if _cache.easyeda_mpn(ed):
+                sources.append(("EasyEDA Manufacturer Part", _cache.easyeda_mpn(ed)))
         if not sources:
             nj("MPN", jl if jl.not_judged() else ee)
         else:
@@ -442,8 +427,8 @@ def main(argv):
     if not pid:
         raise SystemExit("usage: check_parts.py <project-id> [--offline]")
     offline = True if ("--offline" in argv or _cache.is_offline()) else None
-    prepare_registry()
-    trace = Trace()
+    _parts.use_lenient_registry()               # record problems are reported by lint (PR-HASH/PR-TIER), not here
+    _parts.begin_netlist_load()                 # fail closed: a bad registry_part() call aborts the stage
     try:
         NL = _project.load_netlist(pid)
     except _parts.RegistryError as e:
@@ -453,7 +438,7 @@ def main(argv):
     assembly = str(getattr(NL, "ASSEMBLY", "hand")).lower()
     boards = int(getattr(NL, "BOARDS", DEFAULT_BOARDS))
     all_refs = [p["ref"] for p in NL.PARTS]
-    reg_refs = dict(trace.refs)
+    reg_refs = _parts.registered_refs()
     skipped = [r for r in all_refs if r not in reg_refs]
     findings, rparts, stock, groups, unjudged = [], [], [], {}, set()
     if reg_refs:

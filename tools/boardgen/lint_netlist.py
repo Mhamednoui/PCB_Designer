@@ -1,12 +1,12 @@
 """Netlist design-rule lint (stage `lint`): `lint_netlist.py <project-id>`. Pure Python, no KiCad process.
 Reads PARTS + optional NET_SPEC from netlist.py, pin types from the symbol lib, pads from the footprint.
 Rules: decoupling, polarity, led, short, pads, single-pin; for parts declared through the parts registry
-(`registry_part`, docs/design/P1_PARTS_REGISTRY.md): PR-REF, PR-HASH, PR-TIER, PR-SYM, PR-PAD, PR-HOLE, PR-PKG-NAME.
+(`registry_part`, docs/design/P1_PARTS_REGISTRY.md): PR-REF (also unknown/ambiguous pin names, undeclared NC pins),
+PR-HASH, PR-TIER, PR-SYM, PR-PAD, PR-HOLE (ERROR: lead does not fit; WARN: below the recommended margin), PR-PKG-NAME.
 `PARTS_STRICT = True` in netlist.py makes any part NOT declared through the registry a PR-REF error;
 otherwise those parts keep the FAMILY-map fallback. Output: `ERROR|WARN rule ref/net: message`;
 unjudgeable things are WARN. Exit 1 on any unwaived ERROR. Waivers: projects/<id>/waivers.json =
 [{"check":"lint","rule":..,"refs":[..] | "nets":[..],"why":".."}]; unused waivers are reported as WARN."""
-import json
 import math
 import os
 import re
@@ -367,7 +367,8 @@ def rule_single_pin(M):
 
 
 # ── registry rules (PR-*) ───────────────────────────────────────────────────────────────────────
-HOLE_CLEARANCE_MM = 0.20                                      # drill must exceed lead size by this much
+HOLE_MARGIN_ROUND_MM = 0.20                                   # decision 10: round lead, recommended drill >= lead_d + 0.20
+HOLE_MARGIN_RECT_MM = 0.10                                    # square/rect lead, recommended drill >= diagonal + 0.10
 CLASS_OK = {                                                   # registry pin class -> KiCad electrical types accepted
     "power_in": {"power_in"}, "power_out": {"power_out"}, "input": {"input"}, "output": {"output", "tri_state"},
     "bidirectional": {"bidirectional", "tri_state"},
@@ -389,13 +390,14 @@ def _plist(pins):
 
 
 def _tht_lead(rec):
-    """Lead size (mm; rectangular leads use the diagonal) or None if the record has none."""
+    """(lead size in mm, recommended margin in mm) or None if the record has no lead size. A round lead is its
+    diameter; a rectangular/square lead is its diagonal (the datasheet MAXIMUM, worst case)."""
     t = rec.get("tht") or {}
     if "lead_d_mm" in t:
-        return float(t["lead_d_mm"])
+        return float(t["lead_d_mm"]), HOLE_MARGIN_ROUND_MM
     if "lead_mm" in t:
         w, th = (float(v) for v in t["lead_mm"])
-        return math.hypot(w, th)
+        return math.hypot(w, th), HOLE_MARGIN_RECT_MM
     return None
 
 
@@ -460,8 +462,8 @@ def rule_registry(M, reg_refs, rec_problems):
                       % (_plist(missing), pid), refs=[ref])
         # PR-HOLE: THT drill vs lead
         if pads is not None and rec["package"].get("mount") == "tht" and rec["kind"] in ("part", "generic"):
-            lead = _tht_lead(rec)
-            if lead is None:
+            lm = _tht_lead(rec)
+            if lm is None:
                 M.add("WARN", "PR-HOLE", ref, "record %s is through-hole but has no lead size (tht), hole not judged"
                       % pid, refs=[ref])
             else:
@@ -469,9 +471,12 @@ def rule_registry(M, reg_refs, rec_problems):
                 if any(d is None for d in drills):
                     M.add("ERROR", "PR-HOLE", ref, "record %s is through-hole but footprint %s has a pad without a "
                           "drill" % (pid, fp), refs=[ref])
-                elif drills and min(drills) < lead + HOLE_CLEARANCE_MM - 1e-9:
-                    M.add("ERROR", "PR-HOLE", ref, "drill %.2f < lead %.2f + %.2f"
-                          % (min(drills), lead, HOLE_CLEARANCE_MM), refs=[ref])
+                elif drills and min(drills) < lm[0] - 1e-9:
+                    M.add("ERROR", "PR-HOLE", ref, "drill %.2f < lead %.2f: the lead does not fit the hole"
+                          % (min(drills), lm[0]), refs=[ref])
+                elif drills and min(drills) < lm[0] + lm[1] - 1e-9:
+                    M.add("WARN", "PR-HOLE", ref, "drill %.2f < lead %.2f + %.2f: fits, below the recommended margin"
+                          % (min(drills), lm[0], lm[1]), refs=[ref])
         # PR-PKG-NAME
         pkg = rec["package"].get("name", "")
         if pkg and _squash(pkg) not in _squash(fp.split(":", 1)[-1]):
@@ -483,59 +488,6 @@ def rule_strict(M, reg_refs):
     for ref in sorted(set(M.parts) - set(reg_refs)):
         M.add("ERROR", "PR-REF", ref, "part %s (%s) is not declared through the registry (PARTS_STRICT)"
               % (ref, M.parts[ref]["lib_id"]), refs=[ref])
-
-
-def prepare_registry():
-    """Load every schema-valid record leniently into parts._registry (a record with a broken hash or tier
-    stays usable so lint reports it per use instead of crashing the netlist import).
-    Returns {record id: [problem messages]}."""
-    recs, problems = {}, {}
-    for f in sorted(_parts.RECORDS_DIR.glob("*.json")):
-        try:
-            rec = json.loads(f.read_text(encoding="utf-8"))
-            errs = _parts.validate(rec, f.name)
-        except ValueError as e:
-            problems.setdefault(f.name, []).append("%s: (root): invalid JSON: %s" % (f.name, e))
-            continue
-        if errs:
-            problems.setdefault(rec.get("id", f.name) if isinstance(rec, dict) else f.name, []).extend(errs)
-            continue
-        pid, msgs = rec["id"], []
-        if rec["verification"] != "unverified" and rec.get("signed_hash") is None:
-            msgs.append("%s: tier %s needs a signed_hash (PR-TIER)" % (pid, rec["verification"]))
-        if rec["verification"] != "unverified" and not rec.get("evidence"):
-            msgs.append("%s: tier %s needs at least one evidence entry (PR-TIER)" % (pid, rec["verification"]))
-        if not _parts.hash_ok(rec):
-            msgs.append("%s: signed fields changed since sign-off (PR-HASH)" % pid)
-        recs.setdefault(pid, rec)
-        if msgs:
-            problems[pid] = msgs
-    _parts._registry = recs
-    return problems
-
-
-class RegistryTrace:
-    """Wraps parts.registry_part: remembers ref -> record id, and turns an unknown pin into a finding
-    (the part dict is still built so later rules run). An unknown id is fatal: nothing to build from."""
-    def __init__(self):
-        self.refs, self.findings = {}, []
-        self._orig = _parts.registry_part
-        _parts.registry_part = self
-
-    def __call__(self, ref, part_id, value, pins, group):
-        try:
-            d = self._orig(ref, part_id, value, pins, group)
-        except _parts.RegistryError as e:
-            rec = _parts.registry().get(part_id)
-            msg = str(e) if str(e).startswith(ref + ":") else "%s: %s" % (ref, e)
-            self.findings.append(Finding("ERROR", "PR-REF", ref, msg, refs=[ref]))
-            if rec is None:
-                raise
-            d = dict(ref=ref, lib_id=rec["kicad"]["symbol"], value=value, footprint=rec["kicad"]["footprint"],
-                     pins={str(k): v for k, v in pins.items() if v}, group=group,
-                     lcsc=(rec.get("lcsc") or {}).get("id", ""))
-        self.refs[ref] = part_id
-        return d
 
 
 def judged_by_family(M, ref):
@@ -565,18 +517,19 @@ def main(argv):
     pid = _project.project_id_from_argv(["x"] + argv[1:])
     if not pid:
         raise SystemExit("usage: lint_netlist.py <project-id>")
-    rec_problems = prepare_registry()
-    trace = RegistryTrace()
+    rec_problems = _parts.use_lenient_registry()
+    _parts.begin_netlist_load(lenient=True)
     try:
         NL = _project.load_netlist(pid)
-    except _parts.RegistryError:
-        for f in trace.findings:
-            print(f.line())
-        print("FAILED: %d lint errors (netlist.py could not be built from the registry)" % len(trace.findings))
+    except _parts.RegistryError as e:
+        print("ERROR PR-REF netlist.py: %s" % str(e).replace("\n", "\n    "))
+        print("FAILED: netlist.py could not be built from the registry")
         return 1
     M = Model(NL)
-    M.reg_refs = dict(trace.refs)
-    M.findings += trace.findings
+    M.reg_refs = _parts.registered_refs()
+    for ref, msgs in sorted(_parts.build_problems().items()):
+        for msg in msgs:
+            M.add("ERROR", "PR-REF", ref, msg, refs=[ref])
     for rule in (rule_spec, rule_decoupling, rule_polarity, rule_led, rule_short, rule_pads, rule_single_pin):
         rule(M)
     rule_registry(M, M.reg_refs, rec_problems)

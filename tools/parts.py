@@ -116,7 +116,7 @@ def draft(lcsc, offline=None):
     cp = ee["dataStr"]["head"]["c_para"]
     mpn = cp.get("Manufacturer Part") or j.data["mfr"]
     pc.verify_mpn(j.data["mfr"], mpn)
-    pc.verify_mpn(ee.get("title"), mpn)
+    pc.verify_mpn(pc.easyeda_mpn(e.data), mpn)       # the Manufacturer Part field, not the title (title = MPN_Cxxxx)
     pkg = j.data.get("package") or ""
     cls = "basic" if j.data.get("is_basic") else "preferred" if j.data.get("is_preferred") else "extended"
     rec = {"id": None, "kind": "part", "mpn": mpn}
@@ -170,13 +170,13 @@ def dumps(rec):
 
 def rec_path(pid):
     """Existing file whose record has this id (file name need not match the id), else <id>.json."""
-    for f in sorted(parts.RECORDS_DIR.glob("*.json")):
+    for f in sorted(parts.records_dir().glob("*.json")):
         try:
             if json.loads(f.read_text(encoding="utf-8")).get("id") == pid:
                 return f
         except ValueError:
             pass
-    return parts.RECORDS_DIR / (pid + ".json")
+    return parts.records_dir() / (pid + ".json")
 
 
 def save(rec):
@@ -224,7 +224,7 @@ def cmd_new(a):
 
 
 def cmd_refresh(a):
-    ids = sorted(json.loads(f.read_text(encoding="utf-8"))["id"] for f in parts.RECORDS_DIR.glob("*.json")) if a.all else [a.id]
+    ids = sorted(json.loads(f.read_text(encoding="utf-8"))["id"] for f in parts.records_dir().glob("*.json")) if a.all else [a.id]
     rc = 0
     for pid in ids:
         p = rec_path(pid)
