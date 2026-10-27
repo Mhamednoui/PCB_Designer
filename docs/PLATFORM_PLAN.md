@@ -223,3 +223,32 @@ driven by a concrete complex target, not by the fixtures alone.
 - Fraction of reference board built from blocks; hand-placed coordinates remaining (target 0).
 - End-to-end runtime per fixture.
 - Open risk-register rows without a gate.
+
+---
+
+## 9. Independent verification strategy (decided 2026-10-27)
+
+**Principle: no single tool's opinion is trusted.** Every property that can reach fabrication is checked by
+engines that share no code. KiCad ERC/DRC remain, but as one voice among several.
+
+| Layer | What it proves | Engine (independent of KiCad?) | Phase |
+|---|---|---|---|
+| `lint` | structural design rules on `netlist.py` | own Python - yes | P0 ✅ |
+| **Electrical static analyzer** | every pin within its registry abs-max; no output-vs-output contention; no floating CMOS input; open-drain nets pulled up; per-rail current budget; regulator/resistor/MOSFET dissipation; level mismatches | own Python graph engine (networkx-style voltage/current propagation over nets, regulators, dividers, pin classes from the registry) - yes | **P2 core** |
+| **Executable requirements** | the board does what the brief asked: `REQUIREMENTS` in `netlist.py` (graph-path, "through part class", voltage, current, simulated behaviour) | own Python + LTspice - yes | **P2** |
+| SPICE | analog behaviour, LED currents, timing | LTspice - yes | P0 ✅ |
+| `sch-check` | schematic == netlist.py | KiCad netlist export + own diff - partial | P0 ✅ |
+| `check` DRC | fab limits, current widths, decap distance | KiCad DRC + own decap check - partial | P0 ✅ |
+| **Gerber DRC (`fabcheck`)** | clearance, annular ring, hole-to-hole, copper-to-edge, min width - measured on the fab files | own shapely geometry (reuses `lvs`) - yes | **P5** |
+| `lvs` | fab-file connectivity == netlist.py | own gerbonara/shapely - yes | P0 ✅ |
+| **IPC-D-356 for fab e-test** | the *physical* bare board matches our netlist (flying probe at the fab) | the fab's tester - yes | **P5** |
+| `parts` + registry | parts real, pinouts crosschecked vs datasheet, geometry vs LCSC | LCSC/EasyEDA/datasheet - yes | P1 |
+| **Generator fuzzing** | random valid netlists → pipeline fails correctly or yields DRC+LVS-clean boards | Hypothesis (property-based) - yes | **P6** |
+| Mutation suite | each gate actually fires | own harness | P0 ✅ |
+| **AI design review** | "second engineer" read of datasheets vs netlist | LLM agent - advisory only | P6 |
+
+**Why not a machine-learning classifier as a gate:** it outputs probabilities, there is no labelled corpus of
+PCB wiring defects to train on, and its errors are unexplainable. A 98 %-accurate gate ships 1 bad board in
+50 with a green light. ML/LLM is used where it is strong - *finding* candidate problems (design review,
+datasheet extraction) - and **every confirmed finding is converted into a deterministic rule + mutation**,
+so the platform's guarantees only ever come from checks that are exact, explainable and tested.

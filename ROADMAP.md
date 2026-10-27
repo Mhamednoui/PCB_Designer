@@ -101,6 +101,16 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | MV-T1 | Reference complex board built through the platform only: PCBA, e.g. ESP32-S3 module + USB-C (power + data) + 3V3 LDO + ESD + I2C sensor + status LEDs + buttons | `projects/ref-esp32/` (new) | high | MP, MS | every stage green; fab zip + BOM + CPL pass JLCPCB upload checks | ⬜ |
 | MV-T2 | Rebuild the 3 fixtures from their `netlist.py` with all new gates | `projects/*` | medium | MD, MP | all green or written waivers | ⬜ |
 
+### Independent verification (PLATFORM_PLAN §9) - queued
+| ID | Task | Phase | St |
+|---|---|---|---|
+| IV-1 | Electrical static analyzer (voltage/current propagation, abs-max per pin, contention, floating inputs, pull-ups, rail budget, dissipation) | P2 | ⬜ |
+| IV-2 | Executable `REQUIREMENTS` in netlist.py (graph paths, part-class-in-path, voltage/current, simulated behaviour) | P2 | ⬜ |
+| IV-3 | Gerber-level DRC `fabcheck` (own geometry, reuses lvs) | P5 | ⬜ |
+| IV-4 | IPC-D-356 export for fab electrical test | P5 | ⬜ |
+| IV-5 | Property-based generator fuzzing (Hypothesis) | P6 | ⬜ |
+| IV-6 | AI design-review agent (advisory; confirmed findings → rule + mutation) | P6 | ⬜ |
+
 ## Backlog (after MV)
 ### M2 Test
 | ID | Task | Files | Effort | Deps | Acceptance | St |
