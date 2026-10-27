@@ -37,7 +37,15 @@ registry entry and toolchain are identical to its last SUCCESSFUL run, and whose
 and untouched, is reported `cached` and skipped. Never cached: failed stages, stages with no declared inputs,
 design stages (sch/place/route/finish: they rewrite the design, and Freerouting is nondeterministic), and
 anything the registry marks with a `no_cache_reason`. State: projects/<id>/.pipeline_cache.json (git-ignored).
-`--no-cache` forces every stage to run (the mutation suite always passes it).
+`--no-cache` forces every stage to run (the mutation suite always passes it). The toolchain part of the key is
+tools/boardgen/toolchain.py: KiCad, KiCad-Python, Python, Freerouting, LTspice, gerbonara and shapely VERSIONS.
+
+RUN REPORT
+Every run that executes stages writes projects/<id>/out/run/<UTC timestamp>/{report.json, report.html,
+<stage>.log} (git-ignored; the last 10 runs are kept) and prints the path last. It records the git commit and
+dirty flag, every tool version, and per stage: command, cwd, declared-input hashes, status (ok / FAILED /
+cached / skipped), exit code, duration, parsed counts (DRC gate, decap, ...), the failure reason and the last
+60 lines of output. Code: tools/boardgen/run_report.py. Output is echoed live AND captured (stdout+stderr merged).
 """
 import argparse
 import glob
@@ -50,7 +58,7 @@ import time
 
 WORKSPACE_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(WORKSPACE_ROOT, "tools"))
-from boardgen import kicad_paths  # noqa: E402
+from boardgen import kicad_paths, run_report, toolchain  # noqa: E402
 
 KICAD_PYTHON = kicad_paths.PYTHON
 
@@ -165,24 +173,6 @@ def resolve_cwd(entry, project_id):
 
 # ----------------------------------------------------------------------------------------------- cache
 _FILE_HASHES = {}      # (path, size, mtime_ns) -> sha256, so a big .kicad_pcb is hashed once per run
-_TOOLCHAIN = []
-
-
-def _stat_sig(path):
-    try:
-        st = os.stat(path)
-        return "%s|%d|%d" % (path, st.st_size, st.st_mtime_ns)
-    except OSError:
-        return "%s|missing" % path
-
-
-def toolchain_fingerprint():
-    """Interpreter + KiCad install identity. Stat-based (no process spawn): a KiCad upgrade replaces these
-    binaries, which changes the key and invalidates every cached result produced by the old one."""
-    if not _TOOLCHAIN:
-        _TOOLCHAIN.append("|".join([sys.version, kicad_paths.VERSION, _stat_sig(kicad_paths.PYTHON),
-                                    _stat_sig(kicad_paths.CLI)]))
-    return _TOOLCHAIN[0]
 
 
 def expand(patterns, project_id):
@@ -227,7 +217,7 @@ def uncacheable_reason(entry, project_id):
 def input_key(entry, project_id):
     files, _ = expand(entry["inputs"], project_id)
     blob = json.dumps({"entry": entry, "argv": resolve_command(entry, project_id),
-                       "toolchain": toolchain_fingerprint(),
+                       "toolchain": toolchain.fingerprint(),
                        "inputs": [(rel, _file_hash(rel)) for rel in files]}, sort_keys=True)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
@@ -243,6 +233,23 @@ def outputs_signature(entry, project_id):
             st = os.stat(os.path.join(WORKSPACE_ROOT, rel))
             sig.append("%s|%d|%d" % (rel, st.st_size, st.st_mtime_ns))
     return sorted(sig)
+
+
+def declared_inputs(entry, project_id):
+    """[{path, sha256}] for the registry's declared inputs of a stage (empty for stages that declare none)."""
+    files, _ = expand(entry["inputs"], project_id)
+    return [{"path": rel, "sha256": _file_hash(rel)} for rel in files]
+
+
+# The files that DEFINE a design. Recorded in every run report so even a stage with no declared inputs
+# (place/route/outputs/webview) can be tied to the exact design it ran on.
+SNAPSHOT_GLOBS = ["projects/{project}/gen/*.py", "projects/{project}/*.kicad_pcb", "projects/{project}/*.kicad_sch",
+                  "projects/{project}/*.kicad_pro", "projects/{project}/waivers.json"]
+
+
+def design_snapshot(project_id):
+    files, _ = expand(SNAPSHOT_GLOBS, project_id)
+    return [{"path": rel, "sha256": _file_hash(rel)} for rel in files]
 
 
 def cache_path(project_id):
@@ -289,16 +296,33 @@ def cache_lookup(entry, project_id, cache):
 
 
 # ----------------------------------------------------------------------------------------------- run
-def run_stage(name, cwd, cmd):
+STAGE_ENV = {"PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8"}   # live, loss-free output for the report
+
+
+def run_stage(name, cwd, cmd, log_path=None):
+    """Run one stage, echoing its output live AND capturing it (stdout+stderr merged, in order).
+    -> (ok, seconds, exit_code, full_text). The full text is also written to log_path when given."""
     print(f"\n=== {name} ===")
     started = time.time()
-    result = subprocess.run(cmd, cwd=cwd)
+    chunks = []
+    proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                            env=dict(os.environ, **STAGE_ENV))
+    for raw in proc.stdout:
+        line = raw.decode("utf-8", "replace").replace("\r\n", "\n")
+        chunks.append(line)
+        sys.stdout.write(line)
+        sys.stdout.flush()
+    code = proc.wait()
     elapsed = time.time() - started
-    if result.returncode != 0:
-        print(f"--- {name} FAILED after {elapsed:.1f}s (exit {result.returncode})")
-        return False, elapsed
+    text = "".join(chunks)
+    if log_path:
+        with open(log_path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+    if code != 0:
+        print(f"--- {name} FAILED after {elapsed:.1f}s (exit {code})")
+        return False, elapsed, code, text
     print(f"--- {name} ok ({elapsed:.1f}s)")
-    return True, elapsed
+    return True, elapsed, code, text
 
 
 def print_summary(rows):
@@ -329,6 +353,11 @@ def describe(entry, project_id):
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):      # a stage may print characters the Windows console codec lacks
+        try:
+            stream.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
     parser = argparse.ArgumentParser(description="Run the board pipeline for a project.")
     parser.add_argument("project_id", nargs="?")
     parser.add_argument("--only", action="append", default=[],
@@ -407,41 +436,76 @@ def main():
         print(f"(skipping stages this project doesn't have: {', '.join(skipped)})")
 
     cache = load_cache(args.project_id)
-    rows, failed = [], None
-    for entry in planned:
-        name = entry["name"]
-        if failed:
-            rows.append((name, "skipped", None))
-            continue
-
-        key = None
-        t_check = time.time()
-        if not args.no_cache:
-            key, _, rec = cache_lookup(entry, args.project_id, cache)
-            if rec:
-                print(f"\n=== {name} ===")
-                print(f"--- {name} cached (inputs unchanged since {rec.get('when', '?')}; "
-                      f"last run {rec.get('seconds', 0):.1f}s; --no-cache to force)")
-                rows.append((name, "cached", time.time() - t_check))
+    pdir = project_paths(args.project_id)["dir"]
+    run_dir = run_report.make_run_dir(pdir)
+    report = run_report.new_report(args.project_id, sys.argv[1:], toolchain.versions(),
+                                   run_report.git_info(WORKSPACE_ROOT), design_snapshot(args.project_id))
+    report["not_applicable"] = skipped
+    report["deselected"] = [e["name"] for e, ok in stages if ok and e["name"] not in planned_names]
+    t_run = time.time()
+    rows, failed, result = [], None, "interrupted"
+    try:
+        for entry in planned:
+            name = entry["name"]
+            command = resolve_command(entry, args.project_id)
+            rec_stage = run_report.stage_record(
+                entry, command, resolve_cwd(entry, args.project_id), {k: STAGE_ENV[k] for k in sorted(STAGE_ENV)},
+                declared_inputs(entry, args.project_id), None)
+            report["stages"].append(rec_stage)
+            if failed:
+                rec_stage["status"] = "skipped"
+                rec_stage["cache_note"] = "not run: stage '%s' failed earlier in this run" % failed
+                rows.append((name, "skipped", None))
                 continue
-        elif not uncacheable_reason(entry, args.project_id):
-            key = input_key(entry, args.project_id)      # still record the run so the NEXT one can be cached
 
-        ok, secs = run_stage(name, resolve_cwd(entry, args.project_id), resolve_command(entry, args.project_id))
-        rows.append((name, "ok" if ok else "FAILED", secs))
-        if ok:
-            out_sig = outputs_signature(entry, args.project_id) if key else None
-            if key and out_sig is not None:
-                cache["stages"][name] = {"key": key, "outputs": out_sig,
-                                         "seconds": round(secs, 2), "when": time.strftime("%Y-%m-%d %H:%M:%S")}
+            key = None
+            t_check = time.time()
+            if not args.no_cache:
+                key, why, rec = cache_lookup(entry, args.project_id, cache)
+                rec_stage["cache_key"], rec_stage["cache_note"] = key, why
+                if rec:
+                    print(f"\n=== {name} ===")
+                    print(f"--- {name} cached (inputs unchanged since {rec.get('when', '?')}; "
+                          f"last run {rec.get('seconds', 0):.1f}s; --no-cache to force)")
+                    rec_stage["status"], rec_stage["duration_s"] = "cached", round(time.time() - t_check, 2)
+                    rec_stage["cache_note"] = "unchanged since the last successful run (%s); its log is in that run's folder" % rec.get("when", "?")
+                    rows.append((name, "cached", time.time() - t_check))
+                    continue
+            elif not uncacheable_reason(entry, args.project_id):
+                key = input_key(entry, args.project_id)  # still record the run so the NEXT one can be cached
+                rec_stage["cache_key"], rec_stage["cache_note"] = key, "--no-cache: forced"
             else:
-                cache["stages"].pop(name, None)
-        else:
-            cache["stages"].pop(name, None)             # a failed stage is never cached
-            failed = name
-        save_cache(args.project_id, cache)
+                rec_stage["cache_note"] = uncacheable_reason(entry, args.project_id)
 
-    print_summary(rows)
+            rec_stage["status"] = "interrupted"          # stays so only if the run is killed mid-stage
+            log_name = name + ".log"
+            ok, secs, code, text = run_stage(name, rec_stage["cwd"], command, os.path.join(run_dir, log_name))
+            counts, failed_line, summary = run_report.parse_output(text)
+            rec_stage.update(status="ok" if ok else "FAILED", exit_code=code, duration_s=round(secs, 2),
+                             counts=counts, summary=summary, log=log_name, tail=run_report.tail_lines(text))
+            if not ok:
+                last = next((l.strip() for l in reversed(text.splitlines()) if l.strip()), "(no output)")
+                rec_stage["failure"] = failed_line or "exit code %s: %s" % (code, last)
+            rows.append((name, "ok" if ok else "FAILED", secs))
+            if ok:
+                out_sig = outputs_signature(entry, args.project_id) if key else None
+                if key and out_sig is not None:
+                    cache["stages"][name] = {"key": key, "outputs": out_sig,
+                                             "seconds": round(secs, 2), "when": time.strftime("%Y-%m-%d %H:%M:%S")}
+                else:
+                    cache["stages"].pop(name, None)
+            else:
+                cache["stages"].pop(name, None)             # a failed stage is never cached
+                failed = name
+            save_cache(args.project_id, cache)
+        result = "FAILED" if failed else "ok"
+    finally:
+        run_report.finish_report(report, t_run, time.time(), result)
+        run_report.write_report(run_dir, report)
+        run_report.prune(pdir)
+        print_summary(rows)
+        print("\nrun report: " + os.path.join(run_dir, "report.html"))
+
     if failed:
         print(f"\npipeline stopped at '{failed}'. Fix it, then re-run with "
               f"--only {failed} (or --skip the stages already done).")

@@ -69,7 +69,7 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 PROJECTS = os.path.join(ROOT, "projects")
 MUTATIONS = os.path.join(HERE, "mutations.json")
 TEXT_EXT = (".kicad_pro", ".kicad_sch", ".kicad_pcb", ".kicad_dru", ".py", ".json", ".md", ".ino", ".toml")
-IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "docs", ".pio", "*-routed.*", "*-backup*",
+IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "docs", ".pio", "*-routed.*", "*-backup*", "run",
                                 "*.lck", "review", ".pipeline_cache.json")
 TIMEOUT_S = 900
 
