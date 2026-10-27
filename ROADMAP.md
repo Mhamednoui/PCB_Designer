@@ -10,9 +10,14 @@ board generator is copy-pasted three times and already drifting, and nothing is 
 clone that tells you exactly what's missing, and docs lean enough to load every session.**
 Signed-off boards (reflex-machine, uno-toggle) are never rebuilt in place by this roadmap.
 
+**Top priority (user, 2026-10-27): design + PCB correctness on complex boards.** Today's gates prove the
+board is *consistent* (netlist = schematic = copper), not that the *design is right*: the catch matrix
+(`AGENT_NOTES.md` §D-X) shows only 5/12 common mistakes caught. Milestone MD closes that gap and comes first.
+
 ## 2. Goals (measurable)
 | ID | Goal | Measure |
 |---|---|---|
+| G0 | **Mistakes are caught, not just consistency** | every mistake class in §D-X + PCB_CREATION_GUIDE §6 (16 total) makes `pipeline.py` exit non-zero, proven by an automated mutation suite (MD-T7); catch rate 16/16 |
 | G1 | Honest pipeline | every stage exits non-zero when the "done" criteria (PCB_CREATION_GUIDE §2 step 6) fail; a negative test proves it |
 | G2 | No duplicated generator code | `make_pcb.py` shared core in `tools/boardgen/pcb.py`; per-project file ≤100 lines (blinky/uno), ≤200 (reflex); 0 diverged shared functions |
 | G3 | Automated regression suite | `python -m unittest discover tests` green in <90 s locally; non-KiCad subset green in GitHub CI; tracked tree clean after a run |
@@ -30,10 +35,34 @@ Signed-off boards (reflex-machine, uno-toggle) are never rebuilt in place by thi
 | M1-T3 | Extract `make_pcb.py` into `tools/boardgen/pcb.py` per §A plan (blinky version wins; 5 hooks); `stage_check`/`stage_finish` exit 1 on violations | `tools/boardgen/pcb.py` (new), `projects/*/gen/make_pcb.py` | high | - | blinky `--force` rebuild = 0/0/0 + 3 silk; uno/reflex: `check` results unchanged + `place` into a scratch copy diffs only in expected silk text (see D1) | ✅ |
 **DoD:** G1 + G2 met; blinky full rebuild green; uno/reflex boards untouched in git.
 
+### MD Design & PCB correctness (top priority)
+Evidence: `AGENT_NOTES.md` §D-R (best practice), §D-K (kicad-happy analyzers), §D-X (catch matrix).
+**Shared data contract** (all MD tasks use it; MD-T1 adds it to the 3 projects' `netlist.py`; others default sensibly when absent):
+```python
+NET_SPEC = {                                   # optional, per net
+    "VCC": {"v": (9.0, 12.0), "i_max": 0.05},  # volts: number or (min, max); i_max: continuous amps
+    "GND": {"v": 0.0},
+}   # undeclared nets: v inferred from name (GND=0, +5V=5, +3V3=3.3, +12V=12), i_max default 0.3 A
+```
+**Waivers** (one file per project, shared by every MD checker): `projects/<id>/waivers.json` =
+`[{"check": "<stage>", "rule": "<id>", "refs": [...] | "nets": [...], "why": "<required>"}]`; unused waivers are reported.
+New stages are registered in `pipeline.py` by the supervisor at merge time - agents do not edit `pipeline.py`.
+
+| ID | Task | Files | Effort | Deps | Acceptance | St |
+|---|---|---|---|---|---|---|
+| MD-T1 | `lint` stage (pure Python, <1 s, runs before `sch`): decoupling cap on every IC supply pin; polarised cap + on the higher-voltage net; LED anode toward higher potential, series resistor present, estimated current in 1-25 mA; footprint pad count/numbers ⊇ symbol pins used; no part shorted (all pins one net); single-pin nets. Add `NET_SPEC` to the 3 projects | `tools/boardgen/lint_netlist.py` (new), `projects/*/gen/netlist.py` | high | - | §D-X b,c,d,f,g,h caught on blinky copies; 3 real projects pass (or waive with reason) | ⬜ |
+| MD-T2 | Fab + current rules: JLCPCB 2-layer limits (§D-R) + per-net min track width from `NET_SPEC.i_max` (IPC-2221 external, 10 °C rise, 1 oz) emitted as the project's `.kicad_dru` at `place`, so DRC enforces them; `fabreport` exits 1 on any `**CHECK**` | `tools/boardgen/fab_rules.py` (new), `tools/boardgen/pcb.py`, `tools/boardgen/make_fab_report.py` | high | - | §D-X i,j caught; blinky rebuild passes; uno/reflex `check` result reported (not rebuilt) | ⬜ |
+| MD-T3 | SPICE assertions: signed forward current window (1-25 mA) + reverse-current cap auto-applied to every LED; clear error for 0 Ω / unsupported values instead of "not a binary raw file" | `tools/boardgen/make_spice.py` | medium | - | §D-X b,f,h caught by `spice` on blinky; blinky still passes | ⬜ |
+| MD-T4 | ERC strictness + generic firmware pin check: promote `ground_pin_not_ground`, `isolated_pin_label`, `power_pin_not_driven` to failing; move `pinmap` into shared `tools/boardgen/check_pinmap.py` reading `FIRMWARE = {...}` from `netlist.py` (+ optional Wokwi `diagram.json` diff) | `tools/boardgen/check_sch.py`, `tools/boardgen/check_pinmap.py` (new), `projects/{uno-toggle,reflex-machine}/gen/netlist.py` (FIRMWARE only), `projects/reflex-machine/test/pinmap.py` (delete after port) | medium | MD-T1 merged (netlist.py) | §D-X l caught on uno; reflex 26/0 unchanged | ⬜ |
+| MD-T5 | `review` stage: kicad-happy schematic+PCB+EMC analyzers → `test/review/review.json`; fail on unwaived deterministic errors + DC-001/DC-002 (decoupling distance); waivers per contract | `tools/boardgen/make_review.py` (new), `projects/*/waivers.json` | medium | MD-T1 (waiver format) | reflex flags U3/C13; blinky/uno pass with documented waivers | ⬜ |
+| MD-T6 | `lvs` stage: independent connectivity from the **gerbers + drill actually sent to the fab** (gerbonara/shapely), diffed against `netlist.py` | `tools/boardgen/gerber_lvs.py` (new) | high | - | 0 diffs on all 3 boards; a cut track injected into a gerber copy → exit 1 | ⬜ |
+| MD-T7 | Mutation suite: each of the 16 mistake classes injected into a temp copy, asserts the pipeline exits non-zero at the expected stage; reports catch rate | `tests/mutations/` (new) | high | MD-T1..T6 | 16/16 caught; runtime reported | ⬜ |
+**DoD:** G0 met; all 3 boards pass every new stage (or carry written waivers); reflex-machine design findings reported to the user.
+
 ### M2 Test
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
-| M2-T1 | Smoke suite per §B (compile, `--list`, blinky 0/0/0/0 on a temp copy, pinmap, negative pin test, `kicad_pcb.py`/`vcd.py` units); KiCad tests skip cleanly if KiCad absent | `tests/` (new) | medium | M1 | green <90 s; negative test fails on pre-M1 code | ⬜ |
+| M2-T1 | Smoke suite (fast subset; mutations live in MD-T7) per §B (compile, `--list`, blinky 0/0/0/0 on a temp copy, pinmap, negative pin test, `kicad_pcb.py`/`vcd.py` units); KiCad tests skip cleanly if KiCad absent | `tests/` (new) | medium | M1 | green <90 s; negative test fails on pre-M1 code | ⬜ |
 | M2-T2 | GitHub Actions running the non-KiCad subset on push/PR (see D5) | `.github/workflows/test.yml` | low | M2-T1 | CI green on the branch | ⬜ |
 **DoD:** G3 met.
 
@@ -54,12 +83,16 @@ Signed-off boards (reflex-machine, uno-toggle) are never rebuilt in place by thi
 **DoD:** G5 met; AGENT_NOTES has no open item without an owner or a "won't fix".
 
 ## 4. Parallelization (max 3 agents; worktrees when parallel)
+- **MD first.** Wave MD-a: MD-T1 ‖ MD-T2 ‖ MD-T3 (disjoint files). Wave MD-b: MD-T4 ‖ MD-T5 ‖ MD-T6. Then MD-T7.
+- Worktrees branch from a stale base: every brief starts with `git reset --hard improve/roadmap-v1`.
+  Agents in worktrees cannot edit the main `AGENT_NOTES.md`; they write notes to the scratchpad and the supervisor merges.
 - Wave 1: M1-T1 ‖ M1-T2 ‖ M1-T3 (disjoint files). T3's worktree needs a junction to the git-ignored `tools/freerouting`.
 - Wave 2: M2-T1 ‖ M3-T1 ‖ M4-T1
 - Wave 3: M2-T2 ‖ M3-T2 ‖ M3-T3
 - Wave 4: M4-T2 → M4-T3 (sequential; both touch docs)
 
 ## 5. Risks & decisions needing the user
+- **D6 (open)** reflex-machine: 74HC595 U3's only decoupling cap C13 is 36.5 mm away (§D-K, emc DC-002) - a real design defect. Fixing it means moving C13 and rebuilding a signed-off board with `--force`. Asked the user whether the board has already been ordered.
 - **D1** M1-T3 changes what uno-toggle/reflex-machine *would* produce on their next rebuild (silk text 0.7→0.9 mm, reflex GND-seed fix). Not rebuilt now - verified only by scratch-copy diff + `check`. OK?
 - **D2** Untrack the volatile check outputs `projects/*/out/{drc.json,erc.json,netlist.net}` (git index only; files stay on disk). OK?
 - **D3** M4-T3 deletes/moves files (duplicate renders, `CODES/` move, `skidl_REPL.*`) and drops `konnect` from `.mcp.json` unless you plan to install it.

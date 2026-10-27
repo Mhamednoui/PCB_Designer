@@ -86,10 +86,89 @@ DX / DOCS
 
 ## D. Design & PCB correctness (Phase D research - user's top priority, 2026-10-27)
 ### D-R. External best practice (web research agent, <=40 lines)
-(placeholder D-R)
+### D-R: professional verification and what to automate (researched 2026-10-27; items marked [unverified] come from search snippets or memory)
+1. **Fab DRC rules.** Best maintained: https://github.com/Cimos/kicad-druid (successor of Cimos/KiCad-CustomDesignRules, which is frozen). It has JLCPCB and PCBWay `.kicad_dru` files plus test boards, KiCad 8 syntax, claimed forward-compatible with 9/10 and CI-linted. The last-commit date was not visible, so check it and test-load the file in KiCad 10.
+   Other repos: labtroll/KiCad-DesignRules (KiCad 7), ziteh/kicad-design-rules.
+   JLCPCB 2-layer numbers, https://jlcpcb.com/capabilities/pcb-capabilities: track/space 0.10/0.10 mm at 1 oz (0.16 at 2 oz); min PTH drill 0.15 mm; PTH annular ring 0.25 mm recommended, 0.18 mm absolute minimum; via 0.15 hole / 0.25 mm diameter; via hole-to-hole 0.20 mm; pad (PTH) hole-to-hole 0.45 mm; copper to routed edge >=0.20 mm (V-cut 0.40); silk line >=0.15 mm, text height >=1.0 mm.
+   Our reflex GND holes at 0.489 mm gap sit right at the 0.45 mm limit. Set `hole_to_hole` to 0.45 or more so DRC catches it.
+   PLUG-IN: put the `.dru` in `tools/boardgen/` and have `make_pcb.py finish/check` copy it next to the `.kicad_pro`. A project-wide pro setting in `.kicad_pro` can also be used. Also add a "fab limits" gate to `make_fab_report.py` that reads the same numbers.
+2. **Track width vs current.** IPC-2221: I = k*dT^0.44*A^0.725 (A in mil^2, k=0.048 external, 0.024 internal). It is conservative (https://resources.altium.com/p/ipc-2221-calculator-pcb-trace-current-and-heating). IPC-2152 is newer and test-based, and gives narrower widths for external copper with planes nearby (https://www.protoexpress.com/blog/how-to-optimize-your-pcb-trace-using-ipc-2152-standard/). Its curves are not a closed form and I found no Python package. Use IPC-2221 as the conservative gate.
+   KiCad netclass widths are only defaults. Constraint minimums can only be enforced by a custom rule, e.g. `(rule "pwr_w" (condition "A.NetClass=='Power'") (constraint track_width (min 1.0mm)))` [syntax from memory; check https://docs.kicad.org/10.0/en/pcbnew/pcbnew.html custom rules]. No existing script found.
+   PLUG-IN: add `CURRENT_A = {net: amps}` to `netlist.py`. A new `tools/boardgen/check_current.py` (stage after `check`) walks every segment of that net in the .kicad_pcb and computes the minimum width from IPC-2221 at 1 oz, dT=10 C. It also checks via count/size and pad neck-down, and writes the rules into the generated `.kicad_dru`.
+3. **Independent fab-output connectivity.**
+   - `kicad-cli pcb export ipcd356 -o x.d356 board.kicad_pcb` exists (https://docs.kicad.org/10.0/en/cli/cli.pdf). It lists net, ref-pin and test-point coordinates, and is generated from the PCB, so it is a formal netlist artifact but not independent of the .kicad_pcb.
+   - Truly independent: gerbonara + shapely rebuilds nets from gerber and Excellon geometry. A KiCad forum thread proposes exactly this LVS (https://forum.kicad.info/t/layout-vs-schematic-on-gerbers/68387). It is only a proposal and I found no released repo. Through-hole vias only, which suits us. Gerbonara itself: https://github.com/jaseg/gerbonara [from memory, not fetched].
+   - Altium and Cadence do the same by importing gerber + IPC-356 and comparing extracted vs imported nets (https://www.altium.com/documentation/knowledge-base/altium-designer/generate-ipc-d-356a-document-and-compare-to-extracted-netlist).
+   - JLCPCB and PCBWay e-test policy: could not confirm that either accepts or requires IPC-356. They flying-probe or e-test against the gerbers themselves. Verify on the order page.
+   PLUG-IN: new stage `gerber-lvs` in `pipeline.py` after `outputs`. Use gerbonara to flood-fill copper (layers + .drl plated holes), map pads to refs using the D356 or CPL coordinates, and diff against `netlist.py`. Add a fault-injection self-test (delete a trace and expect FAIL).
+4. **Schematic-review checklist, automatable parts.** Items below are checkable from `netlist.py` plus symbol data:
+   - Unpowered IC: each IC has a power_in pin on a net with a source.
+   - Missing decoupling: each VCC pin has a cap to GND on the same net.
+   - Floating input: a non-passive input pin on a single-pin net.
+   - Voltage mismatch: needs per-pin V ratings (see 5).
+   - Polarity: electrolytic, diode and LED orientation via pin names.
+   - Connector pin-1 mirroring: render the footprint and compare to the datasheet by eye.
+   - Current and power ratings: needs data.
+   The kicad-happy skill already has detectors for some of this (see `.claude/skills/kicad`). Run its analyzer as a new gate. Pinout variants (TO-92 EBC/CBE, SOT-23, 78xx vs LM317) are NOT detectable by rule. They need a hand-verified datasheet pin table per part (see 6).
+5. **Code-first EDA ideas.** atopile (https://docs.atopile.io) has parameters with tolerance and `assert` equations solved by a constraint solver, plus ato-lock reproducibility [from memory; the docs page I tried 404'd]. Borrow the idea, not the tool. Add a `RATINGS` table to `netlist.py`: per part `{vmax, imax, pin_vmax:{pin:V}}` and per net `{volts, amps}`. A new `check_ratings.py` fails if net volts > any connected pin rating, or Vin to a 3.3 V pin is unprotected. This catches the 5 V to ESP32 class of mistake that ERC cannot.
+6. **Symbol pin <-> pad <-> datasheet.** KiCad ERC does NOT catch a nonexistent pin number (our own lesson, `docs/LESSONS_LEARNED.md` sec. 11); `sch-check` does. Extend that: for every part, check pin count in symbol == pad count in footprint (pad numbers equal). Add a per-part `DATASHEET_PINS = {part: {pin: name}}` signed off once from the datasheet (the datasheets skill can extract it), and diff it against the symbol. LCSC/EasyEDA data (`easyeda2kicad`) is an independent second source of the symbol/footprint for the same part; diff its pin names against the KiCad library symbol as a cross-check [idea, untested].
+7. **Autorouting.** Freerouting (https://github.com/freerouting/freerouting; JAR needs JRE 25; releases every 2 to 3 months; no documented power-net guidance, option `-inc GND,VCC` ignores named classes). Good for simple 2-layer THT. Weak on long power paths, thick-trace clearance and via-count control. Recommendation: pre-route or pour power/GND yourself (what we already do: GND pours + pre-routes), set per-netclass width in the DSN, route the rest, then run the checks from 1, 2 and 3. Pre-route high-current nets as wide explicit traces (not pours alone) so check_current can verify them. Pours are fine for GND and low-current rails but need a thermal-relief and connectivity check.
+
 
 ### D-K. Installed kicad-happy analyzers as gates (<=40 lines)
-(placeholder D-K)
+### D-K: kicad-happy analyzers as a gate (run 2026-10-27, outputs in %TEMP%\dk\*.json, nothing under projects/)
+Commands (all exit 0): `analyze_schematic.py projects/X/X.kicad_sch -o s.json`; `analyze_pcb.py X.kicad_pcb --full --schematic s.json -o p.json`; `analyze_emc.py -s s.json -p p.json -o e.json`. Findings are in `d["findings"][]`: `rule_id, severity (error|warning|info), confidence (deterministic|heuristic), components[], nets[], summary, description`.
+Runtime (sch+pcb+emc): blinky 1.5 s, uno-toggle 2.4 s, reflex 42.7 s (analyze_pcb --full = 42 s of it).
+Findings error/warn/info (sch | pcb | emc): blinky 2/0/6 | 0/1/11 | 4/2/2. uno 2/6/3 | 1/1/6 | 2/5/1. reflex 2/13/58 | 0/2/70 | 57/78/9.
+Errors judged (70 total): ~3 real, 6 procedural, ~61 false positive/noise (~87 % FP, ~4 % real).
+- REAL reflex: emc DC-002 "no decoupling near U3" (74HC595). U3 at (86,52) (make_pcb.py:43); its only cap C13 at (86,88.5) (make_pcb.py:55-56, netlist.py:178) = 36.5 mm away; nearest of any cap is 32 mm. Fix: move C13 next to U3 (not a fab blocker; user decision).
+- Marginal reflex: DC-001 U1/C7 9.2 mm (C7 = 5V output cap of a module that has its own) and warning U2/C12 6.1 mm -> waive with justification.
+- REAL (probable) blinky: DC-002 no decoupling near U1 (555); C1..C3 are timing/control, not checked further.
+- Procedural, every board: DS-001 no datasheets dir, SS-001 "0/N parts have MPNs" - policy not design; waive.
+- FALSE POSITIVE: GP-001 (96 reflex, 5 blinky, 6 uno): heuristic plane-gap on 2-layer THT boards with GND pour + 202 stitch vias, DRC clean. IO-001 x15 (J1..J15 "no ferrite/ESD"): button inputs do have RC filters (C9-C11), analyzer can't see. RP-001 x17: plausible, low value on 2-layer. PU-001 x10 (A1/A2 RESET/SPI/I2C): unused pins. RS-001 (+12V_IN, PWR12_LED, PWR5_LED): fed by connector, FP. PM-002 A1 "16 mm off board" (reflex), "0.0 mm from edge" (uno): origin-based test on shield footprint, KiCad DRC edge clearance clean. GP-004/005, TE-001: noise.
+Capability map:
+- pin<->pad mapping: NO (trusts pad_nets; no datasheet pinout check; DS-001 admits it). boardgen sch-check stays the only one.
+- missing decoupling: YES (DC-001/002, DC-DET), distance based; found U3.
+- floating inputs: PARTIAL (PU-001 pullup heuristic; nothing beyond ERC).
+- voltage domain / level mismatch: PARTIAL (VD-001..004 derating, VD-DET dividers, PD-DET); Mega 5V -> ESP32 3.3V serial path only listed as divider R62/R63, not judged.
+- power tree / regulator: PARTIAL (RS-001, PR-DET, PS-001); no datasheets so values unverified.
+- polarity: NO (only a silkscreen "polarity_reminder", analyze_pcb.py:3473).
+- trace width vs current: PARTIAL (analyze_current_capacity analyze_pcb.py:2544, IPC-2221, CP-001..003; needs per-net current we don't supply; reflex gave nothing above info).
+- fab DFM JLCPCB: PARTIAL (DFM-001 size tier, annular ring, drill sizes). Did NOT report the 0.489 mm GND hole gap; no hole_to_hole rule. Keep DRC + make_fab_report.
+- thermal: PARTIAL (analyze_thermal.py TH-DET, separate script, not run; needs power data).
+- connector issues: PARTIAL (IO-001 filter/ESD presence, CK-003 clock near connector; no pinout/mating check).
+Verdict: ADVISORY layer (found 1 real placement defect nothing else did); not a hard gate without waivers (~87 % of errors are noise).
+Proposed `review` stage (tools/boardgen/make_review.py, read-only so safe on signed-off boards, output projects/<id>/test/review/review.json):
+ 1. Run the 3 commands above with cwd=project, `PYTHONIOENCODING=utf-8`, system python (0.3-42 s); keep s/p/e json beside review.json.
+ 2. Merge findings: {source: sch|pcb|emc, rule_id, severity, confidence, components, nets, summary, waived, waiver_reason}; plus counts per severity and {tool_versions, runtime_s}.
+ 3. FAIL on unwaived: severity=error AND confidence=deterministic, EXCEPT rule_ids DS-001, SS-001, TE-001, GP-005 (always warn); plus any DC-001/DC-002 error (the only rule that found a real defect, heuristic included). Everything else warns; info ignored. Exit 1 so pipeline.py stops.
+ 4. Waivers: projects/<id>/review_waivers.json = {"waivers":[{"rule_id":"GP-001","match":{"nets":["/MAG3_LED"]}|{"components":["J6"]},"justification":"non-empty text required","approved_by":"name","date":"2026-10-27"}]}. Match = same rule_id and ref/net overlap; "*" only if rule_id is listed in the file's "allow_wildcard". Empty justification = error. Unused waivers reported as stale; new unwaived findings fail, so waiving GP-001 on one net never hides one elsewhere. Seed reflex waivers with the noise above but leave DC-002/U3 unwaived until C13 is moved.
 
 ### D-X. Mistake catch matrix: which gate catches which error class (<=40 lines)
-(placeholder D-X)
+### D-X result (run 2026-10-27, throwaway worktree, `--force`, each stage run alone via `--only` so verdicts are per stage; full chain = 19 s on blinky)
+Fixtures: blinky-555 (a-k), uno-toggle (l). Injection = one edit to `gen/netlist.py` (or `make_pcb.py`/`.kicad_pro`), restored after. Already covered in PCB_CREATION_GUIDE s3/s6 (wrong pin number, net typo, fp name typo, 4-layer outputs) - not redone.
+
+| # | injection | verdict | evidence (stage: message) |
+|---|---|---|---|
+| a | U1 OUT(3)<->DISCH(7) | CAUGHT (spice only) | spice rc=1 `FAIL OUT.freq_hz = None (target 1.39 +/-10%)`. TRIG<->THRES is a no-op here (pins 2,6 share a net). GND(1)<->VCC(8): ERC *warning* `ground_pin_not_ground` (exit 0) + spice FAIL |
+| b | D1 anode/cathode reversed | UNCAUGHT | all stages rc=0; spice PASS (timing unaffected). `I(D1)` IS measured (14.81 -> 8.01 mA, unsigned peak) but never asserted |
+| c | wrong footprint | PARTIAL | U1 -> TO-92 (3 pads): check `schematic_parity: 5 net_conflict`, rc=1. U1 -> DIP-14: only by luck (courtyard/shorting DRC errors because it hits neighbours). D1 -> `C_Disc` (same 2 pad numbers): UNCAUGHT everywhere |
+| d | C3 decoupling removed | UNCAUGHT | all rc=0 (`8 parts, 22 pins`, ERC 0). No "IC has no bypass cap" rule |
+| e | U1 pin 8 on CONT / on typo net `VCC1` shared with pin 4 | CAUGHT | sch-check rc=1 `ERC error power_pin_not_driven ... U1 Pin 8 [VCC, Power input]` (netlist compare says 0 mismatches: it is self-consistent) + spice FAIL |
+| f | LED_A renamed VCC (LED straight across supply) | UNCAUGHT | all rc=0, ERC 0, spice PASS. `I(D1) peak_ma: 3426.33` printed, not asserted |
+| g | C1 electrolytic reversed | UNCAUGHT | all rc=0. Symbol is non-polar `Device:C`; polarity exists only as footprint pad 1 + silk text, no stage reads it |
+| h | R3 bypassed: both pins on LED_A / R3 value 1R | WEAK / UNCAUGHT | both-pins: ERC *warning* `isolated_pin_label 'OUT'`, rc=0, DRC+spice PASS. 1R: all PASS, `I(D1) 768 mA` unasserted. 0R: spice crashes `transient.raw is not a binary LTspice raw file` (opaque, incidental) |
+| i | track width 0.15 mm | CAUGHT only by default rule | netclass 0.15 vs `min_track_width 0.2`: check rc=1 `error/track_width: 22`. Lower min to 0.127 (JLC min): PASS everywhere. No current-vs-width check at all |
+| j | GND via 0.9 mm from C3 GND pad (hole gap 0.30 mm) | FLAGGED, NOT GATED | DRC PASS (0.25 rule); fabreport rc=0 but MANUFACTURING.md row `Closest two holes ... 0.3 mm \| >= 0.5 mm \| **CHECK**` |
+| k | D1 moved to x=68 (pad 0.5 mm from edge) | CAUGHT | check rc=1 `copper_edge_clearance: Segment on Edge.Cuts ... PTH pad 2 of D1` + `unconnected_items: 1` |
+| l | uno LED1 D8->D7 in netlist.py only | UNCAUGHT | all rc=0 incl. connections (53 pins, 0 diffs) and webview; firmware `LED1 = 8` and `test/wokwi/diagram.json` still say D8. uno has no pinmap stage |
+
+Tally: 3 clean catches (a, e, k) + 2 conditional (c needs a different pad count, i needs the default min width) = 5/12; 2 flagged-not-gated (h ERC warning, j CHECK row); 5 UNCAUGHT (b, d, f, g, l). Common cause: the netlist is the single source of truth, so sch/connections/parity all agree with the error; only DRC (physical) and the SPICE `expect` (which asserts only OUT freq/duty) see anything.
+
+Proposed checks, cheapest first:
+1. SPICE signed forward LED current. `make_spice.py` already computes `I(D1)`. Add `expect: {"I(D1)": {"fwd_ma": [2,25], "rev_ma_max": 0.1}}` in netlist.py, or auto-apply to every `Device:LED` (no per-board data). ~20 lines; catches b, f, h(1R) and resistor-value typos. Also turn the 0R raw-file crash into a real message.
+2. New pure-python stage `tools/boardgen/lint_netlist.py` (before `sch`, <1 s, no KiCad) over `PARTS` + `POWER_FLAG_NETS` (+ optional `POLAR`/`NET_ROLE`): (d) every IC supply-pin net needs a cap to GND; (g) polarised cap (footprint `CP_*`) pin1 net must outrank pin2 (supply > signal > GND), and use `Device:CP`; (b/f) LED anode never directly on a ground/supply net, every supply->LED->ground path needs a series R with (Vsupply-2)/R <= 25 mA (parse value); (c2) symbol-family vs footprint-family map (`Device:LED`->`LED_*`, `Device:R`->`Resistor_*`, `Device:C`->`Capacitor_*`, ICs->`Package_*`) and pad count == pin count. Catches b, c2, d, f, g, h; ~120 lines.
+3. Generalise `test/pinmap.py` into a shared stage: parse `const uint8_t NAME = N`/`#define` from a `FIRMWARE=` path declared in netlist.py, map via the shield header net names (`D8`->`LED1`), and diff against `test/wokwi/diagram.json` pin refs. Catches l for every MCU board; ~60 lines.
+4. Gate fab limits: `fabreport` exits 1 on any `**CHECK**` unless waived in netlist.py; emit a per-project `.kicad_dru` (`hole_to_hole >= 0.5`, `track_width min 0.127`) so KiCad DRC itself sees JLC limits (j). Declare `NET_CURRENT={"VCC":0.1}` -> `.kicad_dru` `track_width` rule with a NetClass condition, X from IPC-2221 1 oz (i with relaxed min).
+5. Promote ERC warnings `ground_pin_not_ground` and `isolated_pin_label` to errors in `check_sch.py` (2-line change; catches the h-bypass and supply/ground pin swaps before SPICE).
+Surprises: the strongest signal (LED at 3.4 A) was printed in the log and ignored; DRC catches c1/k only as a side effect of geometry, not intent.
