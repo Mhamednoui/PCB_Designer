@@ -1,0 +1,32 @@
+{
+  "id": "bc847-sot23",
+  "kind": "part",
+  "mpn": "BC847",
+  "status": "draft",
+  "verification": "unverified",
+  "package": {
+    "name": "SOT-23",
+    "mount": "smd"
+  },
+  "kicad": {
+    "symbol": "Transistor_BJT:BC847",
+    "footprint": "Package_TO_SOT_SMD:SOT-23"
+  },
+  "pins": {
+    "1": {
+      "name": "B",
+      "class": "input"
+    },
+    "2": {
+      "name": "E",
+      "class": "passive"
+    },
+    "3": {
+      "name": "C",
+      "class": "passive"
+    }
+  },
+  "evidence": [],
+  "signed_hash": null,
+  "notes": "TEST DATA (tests/parts): not a datasheet-checked record."
+}

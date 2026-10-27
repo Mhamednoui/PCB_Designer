@@ -1,0 +1,45 @@
+{
+  "id": "diode-do41-p7.62-h",
+  "kind": "generic",
+  "package": {
+    "name": "DO-41 axial horizontal P7.62",
+    "mount": "tht"
+  },
+  "kicad": {
+    "symbol": "Device:D",
+    "footprint": "Diode_THT:D_DO-41_SOD81_P7.62mm_Horizontal"
+  },
+  "tht": {
+    "lead_d_mm": 0.86
+  },
+  "pins": {
+    "1": {
+      "name": "K",
+      "class": "passive",
+      "also": "cathode (band end)"
+    },
+    "2": {
+      "name": "A",
+      "class": "passive",
+      "also": "anode"
+    }
+  },
+  "evidence": [
+    {
+      "section": "pins",
+      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+      "verified_by": "agent-P1-T7",
+      "date": "2026-10-27",
+      "notes": "Scope: pin numbers and pad multiset only. lead_d_mm 0.86 = typical DO-41 lead (0.71-0.86); KiCad drill 1.1. Polarity: symbol Device:D pin 1 = K, pin 2 = A (sym_pins); footprint pad 1 (roundrect) carries the 'K' silkscreen text."
+    }
+  ],
+  "polarity": {
+    "polarised": true,
+    "pin1": "cathode (K), band on the body",
+    "pin1_footprint_marker": "roundrect pad 1 plus 'K' silk text"
+  },
+  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED rectifier family (reflex D2 1N4007). Pin 1 = cathode (banded end), pin 2 = anode. Specific MPN (1N4007) gets its own part record in P1-T8.",
+  "status": "draft",
+  "verification": "unverified",
+  "signed_hash": null
+}

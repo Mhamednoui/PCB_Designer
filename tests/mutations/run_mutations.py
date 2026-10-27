@@ -39,6 +39,11 @@ turn a mutation into a no-op):
                                                                   set a nested JSON value (rules off in .kicad_pro)
     {"type": "zip_replace", "zip": "out/fab/{prj}_gerbers_JLCPCB.zip", "member": "*F_Cu.gtl",
      "old": "..", "new": "..", "regex": false}                    edit text inside one member of the fab zip
+    {"type": "records", "from": "tests/parts/records"}            copy that records dir into the project as `records/`
+                                                                  and point the parts registry at it (env
+                                                                  PARTS_RECORDS_DIR + the hook tests/parts/hook), so a
+                                                                  later `replace` on `records/<id>.json` mutates a
+                                                                  TEST record, never parts/records
     {"type": "zip_append", "zip": "..", "member": "*F_Cu.gtl", "text": "..."}
                                                                   insert text before the member's final M02*
 
@@ -187,8 +192,21 @@ def op_zip_append(dst, pid, op):
     _edit_zip(_path(dst, op["zip"], pid), op["member"], fn)
 
 
+ENV_EXTRA = {}     # project id -> extra environment for that entry's pipeline run
+
+
+def op_records(dst, pid, op):
+    src = os.path.join(ROOT, op.get("from", "tests/parts/records"))
+    if not os.path.isdir(src):
+        raise SetupError("records dir %s does not exist" % src)
+    shutil.copytree(src, os.path.join(dst, "records"))
+    hook = os.path.join(ROOT, "tests", "parts", "hook")
+    ENV_EXTRA[pid] = {"PARTS_RECORDS_DIR": os.path.join(dst, "records"),
+                      "PYTHONPATH": hook + os.pathsep + os.environ.get("PYTHONPATH", "")}
+
+
 OPS = {"none": lambda *a: None, "replace": op_replace, "placements": op_placements, "net_spec": op_net_spec,
-       "json_set": op_json_set, "zip_replace": op_zip_replace, "zip_append": op_zip_append}
+       "json_set": op_json_set, "records": op_records, "zip_replace": op_zip_replace, "zip_append": op_zip_append}
 
 
 def apply_ops(dst, pid, op):
@@ -210,7 +228,7 @@ def run_entry(e, keep):
             apply_ops(dst, pid, e["op"])
         except (SetupError, KeyError, OSError, ValueError) as ex:
             return "-", "ERROR", time.time() - t0, "setup failed: %s: %s" % (type(ex).__name__, ex)
-        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONIOENCODING="utf-8")
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONIOENCODING="utf-8", **ENV_EXTRA.get(pid, {}))
         cmd = [sys.executable, "-B", "pipeline.py", pid, "--force", "--only", ",".join(e["stages"])]
         try:
             r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, timeout=TIMEOUT_S,
