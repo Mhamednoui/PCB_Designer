@@ -27,7 +27,7 @@ STAGES (each is skipped automatically when it doesn't apply to the project)
   outputs   gerbers/BOM/CPL/STEP/PDF/renders                             (needs gen/make_outputs.py)
   fabreport MANUFACTURING.md: size, layers, holes, parts, order-form answers (any scripted board)
   connections CONNECTIONS.md: every pin of every part and where its copper goes, in plain words
-  pinmap    firmware pin map vs netlist cross-check                      (needs test/pinmap.py)
+  pinmap    firmware pin map vs netlist cross-check                      (needs FIRMWARE in netlist.py)
   spice     transient LTspice run of the whole board + expected-vs-measured (needs a SPICE block in netlist.py)
   webview   export GLB, cache icons, build manifest, onboard to viewer   (needs any .kicad_pcb)
 
@@ -74,13 +74,16 @@ def build_stages(project_id):
     def shared(name, *args):
         return [KICAD_PYTHON, os.path.join(BOARDGEN, name), *args]
 
-    def has_spice_block():
+    def has_block(name):
         # A plain text check - importing netlist.py here would drag in the project's own imports.
         path = os.path.join(gen, "netlist.py")
         if not os.path.isfile(path):
             return False
         with open(path, encoding="utf-8") as f:
-            return any(line.startswith("SPICE = ") for line in f)
+            return any(line.startswith(name + " = ") for line in f)
+
+    def has_spice_block():
+        return has_block("SPICE")
 
     return [
         # Design-rule lint of netlist.py itself (pure Python, <1 s): catches design mistakes ERC/DRC cannot.
@@ -100,7 +103,8 @@ def build_stages(project_id):
         # Read-only: measures the finished board + its drill file, so it's safe on a signed-off board.
         ("fabreport", scripted, WORKSPACE_ROOT, shared("make_fab_report.py", project_id)),
         ("connections", scripted, WORKSPACE_ROOT, shared("make_connections.py", project_id)),
-        ("pinmap", os.path.isfile(os.path.join(test, "pinmap.py")), test, [sys.executable, "pinmap.py"]),
+        ("pinmap", has_block("FIRMWARE"), WORKSPACE_ROOT,
+         [sys.executable, os.path.join(BOARDGEN, "check_pinmap.py"), project_id]),
         ("spice", has_spice_block(), WORKSPACE_ROOT,
          [sys.executable, os.path.join(BOARDGEN, "make_spice.py"), project_id]),
         ("webview", True, os.path.join(WORKSPACE_ROOT, "webview", "tools"),

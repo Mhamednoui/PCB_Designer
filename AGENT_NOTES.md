@@ -186,3 +186,4 @@ Open real findings: reflex +12V/GND tracks 1.5 mm vs 10 A declared (IPC-2221 wan
 - (MD-T8) kicad-happy `analyze_pcb.py` decap distance is origin-to-origin when pad data is missing → blind at some rotations; not trustworthy as sole gate (MD-T9 adds a native pad-to-pin check).
 - (MD-T8) Freerouting nondeterministic (1 run left SPARE_D13 unconnected; rerun ok); `finish` crashed once 0xC0000005, ok on rerun → MD-T9 retries.
 - (MD-T2b) reflex +12V_IN J1→F1 is the only non-poured 10 A path: 1.5/2.5 mm vs 7.2 mm needed (1 oz, 10 °C) → MD-T10.
+- (MD-T4) `pinmap` stage = `tools/boardgen/check_pinmap.py`, enabled by a `FIRMWARE = {...}` block in netlist.py (schema in its docstring). Old `test/pinmap.py` deleted - docs still mention it (P7 doc sweep). `ground_pin_not_ground` promotion never observed firing (KiCad raised `power_pin_not_driven` instead) - unproven path.
