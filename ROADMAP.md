@@ -71,8 +71,8 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | ID | St |
 |---|---|
 | P1-T1 schema + loader | ✅ |
-| P1-T2 cache + `parts new/refresh` | 🔄 |
-| P1-T3 bind/assist/sign | ⬜ |
+| P1-T2 cache + `parts new/refresh` | ✅ |
+| P1-T3 bind/assist/sign | 🔄 |
 | P1-T4 test records + mutations | ⬜ |
 | P1-T5 lint PR- rules | ⬜ |
 | P1-T6 `parts` stage | ⬜ |
