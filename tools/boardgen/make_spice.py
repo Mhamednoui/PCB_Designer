@@ -45,8 +45,11 @@ TIMERS_555 = {"Timer:NE555P", "Timer:NE555D", "Timer:NE555", "Timer:LM555xM", "T
               "Timer:NA555D", "Timer:SE555D", "Timer:TLC555xD", "Timer:TLC555xP"}
 
 
-def spice_value(value, kind):
-    """KiCad value text -> SPICE number: '10uF'->'10u', '470R'->'470', '4k7'->'4.7k', '1M'->'1Meg'."""
+def spice_value(value, kind, ref="?"):
+    """KiCad value text -> SPICE number: '10uF'->'10u', '470R'->'470', '4k7'->'4.7k', '1M'->'1Meg'.
+    A 0 ohm resistor (a jumper) is modelled as 1 milliohm - LTspice rejects a true 0 ohm R."""
+    if not value or not value.strip():
+        raise SystemExit("%s: empty %s value - set one in netlist.py (e.g. '470R')" % (ref, kind))
     v = value.strip().replace("µ", "u").replace("Ω", "")
     v = re.sub(r"(?i)(f|ohm)$", "", v)
     m = re.fullmatch(r"(\d+)([RrKkMmUuNnPp])(\d+)", v)          # 4k7 / 4R7 style
@@ -58,8 +61,16 @@ def spice_value(value, kind):
     if kind == "R" and re.search(r"M$", v):
         v = v[:-1] + "Meg"
     if not re.fullmatch(r"\d+(\.\d+)?([a-zA-Z]+)?", v):
-        raise SystemExit("can't read value %r as a %s" % (value, kind))
+        raise SystemExit("%s: can't read value %r as a %s for SPICE (use e.g. '470R', '4k7', '10uF')"
+                         % (ref, value, kind))
+    if kind == "R" and float(re.match(r"\d+(\.\d+)?", v).group(0)) == 0:
+        print("note: %s is %r (0 ohm) - modelled as 1 mohm" % (ref, value))
+        return "1m"
     return v
+
+
+def is_led(lib):
+    return lib.startswith("Device:LED")
 
 
 def node(net, names):
@@ -86,10 +97,10 @@ def build_circuit(nl, supplies, tstop):
         if lib.startswith("Connector") or lib.startswith("Mechanical"):
             skipped.append(ref)
         elif lib in ("Device:R", "Device:R_Small"):
-            lines.append("%s %s %s %s" % (element("R", ref), pin("1"), pin("2"), spice_value(p["value"], "R")))
+            lines.append("%s %s %s %s" % (element("R", ref), pin("1"), pin("2"), spice_value(p["value"], "R", ref)))
         elif lib in ("Device:C", "Device:C_Small", "Device:C_Polarized", "Device:CP"):
-            lines.append("%s %s %s %s" % (element("C", ref), pin("1"), pin("2"), spice_value(p["value"], "C")))
-        elif lib in ("Device:LED", "Device:LED_Small"):
+            lines.append("%s %s %s %s" % (element("C", ref), pin("1"), pin("2"), spice_value(p["value"], "C", ref)))
+        elif is_led(lib):
             # KiCad Device:LED: pin 1 = K, pin 2 = A. SPICE D: anode first.
             lines.append("%s %s %s LED_GENERIC" % (element("D", ref), pin("2"), pin("1")))
             models.add(LED_MODEL)
@@ -167,6 +178,23 @@ def resample(t, y, n):
     return out
 
 
+def settled_means(t, y, bins=100):
+    """Time-weighted mean of y in `bins` equal slices of the settled (second) half of the run.
+    A diode's junction capacitance makes a ~nanosecond reverse spike at every switching edge (-1.9 mA
+    on blinky's LED); that is not a reverse current the part sees, so assert on sliced means, not
+    raw samples. Sustained reversal or overcurrent still shows."""
+    t0, t1 = t[-1] / 2, t[-1]
+    sums, spans = [0.0] * bins, [0.0] * bins
+    for i in range(1, len(t)):
+        if t[i] <= t0:
+            continue
+        dt = t[i] - max(t[i - 1], t0)
+        b = min(bins - 1, int((t[i] - t0) / (t1 - t0) * bins))
+        sums[b] += dt * (y[i] + y[i - 1]) / 2
+        spans[b] += dt
+    return [s_ / d for s_, d in zip(sums, spans) if d > 0] or list(y)
+
+
 def measure(t, y):
     # Levels come from the settled second half - the power-up transient (every node starting at 0 V)
     # would otherwise drag min and the switching threshold down, e.g. a 3-6 V timing ramp reads 0-6 V.
@@ -228,12 +256,22 @@ def main():
     with open(cir, "w", encoding="ascii") as f:
         f.write(deck)
 
-    proc = subprocess.run([find_ltspice(), "-b", cir], capture_output=True, timeout=300)
     raw = os.path.splitext(cir)[0] + ".raw"
-    if not os.path.isfile(raw):
-        log = os.path.splitext(cir)[0] + ".log"
-        detail = open(log, encoding="utf-8", errors="replace").read() if os.path.isfile(log) else ""
-        raise SystemExit("LTspice produced no waveforms (exit %s)\n%s" % (proc.returncode, detail))
+    log = os.path.splitext(cir)[0] + ".log"
+    for stale in (raw, log):            # a leftover from an earlier run must not mask a failed one
+        if os.path.isfile(stale):
+            os.remove(stale)
+    proc = subprocess.run([find_ltspice(), "-b", cir], capture_output=True, timeout=300)
+    detail = ""
+    if os.path.isfile(log):
+        blob = open(log, "rb").read()
+        detail = blob.decode("utf-16", "replace") if blob[:2] in (b"\xff\xfe", b"\xfe\xff") \
+            else blob.decode("utf-8", "replace")
+    if not os.path.isfile(raw) or proc.returncode != 0:
+        tail = "\n".join(detail.strip().splitlines()[-15:])
+        raise SystemExit("LTspice failed (exit %s, %s) - last lines of %s:\n%s"
+                         % (proc.returncode, "no .raw written" if not os.path.isfile(raw) else "raw exists",
+                            log, tail or "(no log written)"))
     vectors = read_raw(raw)
     # a few MB each and fully reproducible - transient.json is what's kept
     for leftover in (raw, os.path.splitext(cir)[0] + ".op.raw"):
@@ -242,7 +280,7 @@ def main():
     lookup = {k.lower(): k for k in vectors}
     t = vectors["time"]
 
-    traces, metrics = {}, {}
+    traces, metrics, led_refs = {}, {}, []
     for net in cfg.get("probes", []):
         key = lookup.get("v(%s)" % node(net, names).lower())
         if not key:
@@ -251,12 +289,16 @@ def main():
         metrics[net] = measure(t, vectors[key])
         metrics[net]["unit"] = "V"
     for p in nl.PARTS:
-        if p["lib_id"] in ("Device:LED", "Device:LED_Small"):
+        if is_led(p["lib_id"]):
             key = lookup.get("i(%s)" % element("D", p["ref"]).lower())
             if key:
-                amps = [abs(a) * 1000 for a in vectors[key]]
+                # SIGNED: LTspice's I(D) is anode->cathode, so forward is positive.
+                amps = [a * 1000 for a in vectors[key]]
+                settled = settled_means(t, amps)
                 traces["I(%s)" % p["ref"]] = resample(t, amps, args.points)
-                metrics["I(%s)" % p["ref"]] = {"peak_ma": round(max(amps), 2), "unit": "mA"}
+                metrics["I(%s)" % p["ref"]] = {"peak_ma": round(max(settled), 2),
+                                               "reverse_ma": round(min(settled), 3), "unit": "mA"}
+                led_refs.append(p["ref"])
 
     checks = []
     for net, want in cfg.get("expect", {}).items():
@@ -270,10 +312,28 @@ def main():
             checks.append({"net": net, "field": field, "target": target, "value": value,
                            "tol_pct": tol, "ok": ok})
 
+    # Automatic LED assertions on the settled half of the run. Override with SPICE["led_limits"].
+    limits = cfg.get("led_limits", {})
+    led_checks = []
+    for ref in led_refs:
+        lo, hi = limits.get(ref, (1.0, 25.0))
+        m = metrics["I(%s)" % ref]
+        why = []
+        if m["peak_ma"] < lo:
+            why.append("forward peak %.2f mA < %g mA (never lights, or reversed/open)" % (m["peak_ma"], lo))
+        if m["peak_ma"] > hi:
+            why.append("forward peak %.2f mA > %g mA (overcurrent / series resistor shorted)" % (m["peak_ma"], hi))
+        if m["reverse_ma"] < -0.1:
+            why.append("reverse current %.3f mA beyond -0.1 mA" % m["reverse_ma"])
+        led_checks.append({"ref": ref, "peak_ma": m["peak_ma"], "reverse_ma": m["reverse_ma"],
+                           "min_ma": lo, "max_ma": hi, "ok": not why, "why": "; ".join(why)})
+
     result = {
+        "led_checks": led_checks,
         "project": args.project, "tstop_s": tstop, "points": args.points,
         "supplies": supplies, "skipped_parts": skipped,
-        "metrics": metrics, "checks": checks, "ok": all(c["ok"] for c in checks),
+        "metrics": metrics, "checks": checks,
+        "ok": all(c["ok"] for c in checks) and all(c["ok"] for c in led_checks),
         "traces": traces,
     }
     with open(os.path.join(work, "transient.json"), "w", encoding="utf-8") as f:
@@ -286,7 +346,15 @@ def main():
     for c in checks:
         print("  %s %s.%s = %s (target %s +/-%s%%)" % ("PASS" if c["ok"] else "FAIL", c["net"],
               c["field"], c["value"], c["target"], c["tol_pct"]))
+    for c in led_checks:
+        print("  %s %s: forward %.2f mA (limit %g-%g), reverse %.3f mA%s"
+              % ("PASS" if c["ok"] else "FAIL", c["ref"], c["peak_ma"], c["min_ma"], c["max_ma"],
+                 c["reverse_ma"], "" if c["ok"] else " -> " + c["why"]))
     print("wrote %s" % os.path.join(work, "transient.json"))
+    if not result["ok"]:
+        bad = ["%s.%s" % (c["net"], c["field"]) for c in checks if not c["ok"]]
+        bad += ["%s (%s)" % (c["ref"], c["why"]) for c in led_checks if not c["ok"]]
+        print("FAILED: " + "; ".join(bad))
     sys.exit(0 if result["ok"] else 1)
 
 
