@@ -26,6 +26,7 @@ import pcbnew
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from boardgen.project import PROJECTS  # noqa: E402
 from boardgen.kicad_paths import CLI as KICAD_CLI  # noqa: E402
+from boardgen import fab_rules  # noqa: E402
 from boardgen.fab_rules import LIMITS as _DRC_LIMITS  # noqa: E402  (same numbers the .kicad_dru enforces)
 
 NM = 1e6  # pcbnew internal units are nanometres
@@ -508,6 +509,44 @@ def build(project):
     if c["hole_gap_where"]:
         w("Closest two holes: %s." % c["hole_gap_where"])
         w("")
+
+    # Current-carrying nets (NET_SPEC i_max -> IPC-2221 width). Stub-routed nets are gated by the DRC
+    # rule (error); poured nets carry the total in the pour, so DRC only warns - they are listed HERE
+    # so they are reviewed rather than dropped. The pour's own neck width is not measured.
+    try:
+        import boardgen.project as _project
+        _nl = _project.load_netlist(project)
+    except SystemExit:
+        _nl = None            # imported board without gen/netlist.py: no NET_SPEC to check against
+    if _nl is not None:
+        reqs = fab_rules.requirements(_nl, pcb_path)
+        w("## Current-carrying nets (%s)" % fab_rules.describe_params(_nl))
+        w("")
+        if not reqs:
+            w("No net needs more than the default %s mm track (NET_SPEC i_max)." % f3(fab_rules.min_width(fab_rules.params(_nl)["oz"])))
+            w("")
+        else:
+            w("| Net | i_max | Needs (IPC-2221) | Carried by | Narrowest track | Tracks below need | |")
+            w("|---|---|---|---|---|---|---|")
+            for r in reqs:
+                tw = [mm(t.GetWidth()) for t in c["tracks"] if t.GetNetname() == r["board_net"]]
+                below = sum(1 for x in tw if x < r["width"] - 1e-6)
+                carried = ("pour on %s" % "+".join(r["layers"])) if r["poured"] else "tracks"
+                if r["poured"]:
+                    verdict_ = "pour-carried: **review** pour neck / thermals"
+                else:
+                    verdict_ = "OK" if not below else "**CHECK**"
+                    if below:
+                        failed.append("net %s needs %s mm (%g A), %d track(s) narrower, narrowest %s mm"
+                                      % (r["net"], f3(r["width"]), r["i_max"], below, f3(min(tw))))
+                w("| %s | %g A | %s mm | %s | %s | %d of %d | %s |" % (
+                    r["net"], r["i_max"], f3(r["width"]), carried, (f3(min(tw)) + " mm") if tw else "no tracks",
+                    below, len(tw), verdict_))
+            w("")
+            w("Pour-carried nets are not failed: the zone, not each stub, carries the current. Review them "
+              "by eye - the narrowest copper between the source (connector/fuse) and the loads sets the "
+              "real limit, and this report does not measure it.")
+            w("")
     w("How to read a **CHECK**: a copper or hole row is a real risk - fix it or ask the fab (the "
       "fabreport stage exits 1 while any is left). A *silkscreen* row is marked *advisory* instead: it is "
       "cosmetic, the fab still prints it, just fainter or blurrier (KiCad's own footprint outlines are "

@@ -99,17 +99,29 @@ def sync_routed_project():
 
 def write_fab_rules():
     """(Re)write <project>.kicad_dru: JLCPCB limits + per-net current widths from NL.NET_SPEC. Called by
-    `place` and again by `check`, so DRC on an already-routed board always evaluates the current rules."""
-    path, widths = fab_rules.write_rules(NL.PRJ_DIR, NL, GLOBAL_NETS)
-    print("DRC rules -> %s%s" % (os.path.basename(path),
-          ("; current-based min track width: " + ", ".join("%s %.2f mm" % kv for kv in sorted(widths.items())))
-          if widths else ""))
-    return widths
+    `place` and again by `check`, so DRC on an already-routed board always evaluates the current rules
+    (and sees the board's pours, which downgrade a poured net's rule to a warning).
+    Returns the requirements list (see fab_rules.requirements)."""
+    path, reqs = fab_rules.write_rules(NL.PRJ_DIR, NL, GLOBAL_NETS)
+    print("DRC rules -> %s (%s)" % (os.path.basename(path), fab_rules.describe_params(NL)))
+    for r in reqs:
+        print("  current rule %-10s i_max %-5g A -> min track %.2f mm  [%s]"
+              % (r["net"], r["i_max"], r["width"], ("warning, poured on " + "+".join(r["layers"])) if r["poured"] else "error"))
+    return reqs
+
+
+POUR_ONLY_ABOVE_MM = 2.0   # a net needing more than this cannot be autorouted as a track
 
 
 def route_netclasses(widths):
     """Make the autorouter lay tracks at least as wide as the DRC rules demand: one netclass per wide net,
     written into the throwaway -routed.kicad_pro only (the project's own .kicad_pro is left alone)."""
+    widths = {r["net"]: r["width"] for r in widths}
+    wide = sorted(n for n, w in widths.items() if w > POUR_ONLY_ABOVE_MM)
+    if wide:
+        print("  not given a router netclass (wider than %g mm - needs a pour or bus bar): %s"
+              % (POUR_ONLY_ABOVE_MM, ", ".join(wide)))
+    widths = {n: w for n, w in widths.items() if w <= POUR_ONLY_ABOVE_MM}
     if not widths:
         return
     path = os.path.join(NL.PRJ_DIR, NL.PRJ_NAME + "-routed.kicad_pro")
