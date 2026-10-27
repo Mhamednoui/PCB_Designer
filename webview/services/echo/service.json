@@ -1,0 +1,7 @@
+{
+  "name": "echo",
+  "port": 8801,
+  "health": "/health",
+  "description": "Reference service - proves the registry/proxy contract. Copy this folder to start a new one.",
+  "start": ["python", "service.py"]
+}

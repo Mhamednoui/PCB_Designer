@@ -1,0 +1,42 @@
+Qty,Value,Designators,Footprint,LCSC,Assembly
+1,Arduino Mega 2560 R3,A1,Arduino_Mega2560_R3_Shield,,hand solder / plug-in
+1,ESP32 DevKit V1 (30 pin),A2,ESP32_DevKit_V1_30pin_Socket,,hand solder / plug-in
+1,1000uF 25V,C1,CP_Radial_D10.0mm_P5.00mm,C48935382,hand solder / plug-in
+2,220uF 25V,"C2,C6",CP_Radial_D6.3mm_P2.50mm,C47344177,hand solder / plug-in
+7,100nF,"C3,C7,C9,C10,C11,C12,C13",C_Disc_D5.0mm_W2.5mm_P5.00mm,,hand solder / plug-in
+1,1nF,C8,C_Disc_D5.0mm_W2.5mm_P5.00mm,C49002957,hand solder / plug-in
+1,P6KE15A,D1,D_DO-15_P10.16mm_Horizontal,C294003,hand solder / plug-in
+1,1N4007,D2,D_DO-41_SOD81_P7.62mm_Horizontal,C2985028,hand solder / plug-in
+2,GREEN,"D3,D4",LED_D5.0mm,,hand solder / plug-in
+10,1N5822,"D11,D12,D13,D14,D15,D16,D17,D18,D19,D20",D_DO-201AD_P5.08mm_Vertical_CathodeUp,C2476,hand solder / plug-in
+10,RED,"D21,D22,D23,D24,D25,D26,D27,D28,D29,D30",LED_D3.0mm,C2895470,hand solder / plug-in
+1,10A mini blade,F1,Fuseholder_Blade_Mini_Keystone_3568,,hand solder / plug-in
+1,12V_IN,J1,TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal,,hand solder / plug-in
+1,MAG1,J2,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG2,J3,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG3,J4,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG4,J5,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG5,J6,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG6,J7,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG7,J8,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG8,J9,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG9,J10,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,MAG10,J11,"TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",,hand solder / plug-in
+1,COIN,J12,"TerminalBlock_Phoenix_PT-1,5-3-3.5-H_1x03_P3.50mm_Horizontal",,hand solder / plug-in
+1,BUTTONS,J13,"TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal",,hand solder / plug-in
+1,STATUS_LEDS,J14,"TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal",,hand solder / plug-in
+1,7SEG,J15,"TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal",,hand solder / plug-in
+1,MEGA SPARE,J16,PinHeader_2x10_P2.54mm_Vertical,,hand solder / plug-in
+1,ESP32 SPARE,J17,PinHeader_2x04_P2.54mm_Vertical,,hand solder / plug-in
+10,IRLZ44N,"Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8,Q9,Q10",TO-220-3_Vertical,C38774,hand solder / plug-in
+1,4.7k,R1,R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+6,1k,"R2,R43,R44,R45,R46,R62",R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+10,100R,"R11,R12,R13,R14,R15,R16,R17,R18,R19,R20",R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+15,10k,"R21,R22,R23,R24,R25,R26,R27,R28,R29,R30,R42,R47,R48,R49,R50",R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,C2649453,hand solder / plug-in
+11,2.2k,"R31,R32,R33,R34,R35,R36,R37,R38,R39,R40,R41",R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+4,330R,"R51,R52,R53,R54",R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+7,470R,"R55,R56,R57,R58,R59,R60,R61",R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+1,2k,R63,R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+1,5V 2A module (K7805-2000R3),U1,Converter_DCDC_RECOM_R-78B-2.0_THT,C18212380,hand solder / plug-in
+1,PC817,U2,DIP-4_W7.62mm,C20612594,hand solder / plug-in
+1,74HC595N,U3,DIP-16_W7.62mm,C507175,hand solder / plug-in

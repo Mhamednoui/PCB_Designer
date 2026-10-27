@@ -1,0 +1,203 @@
+:root {
+  --bg: #14161a;
+  --panel: #1c1f26;
+  --border: #2c2f38;
+  --text: #e6e8eb;
+  --muted: #8a8f9a;
+  --accent: #4f9dff;
+  --ok: #4caf7a;
+  --fail: #e0605a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; height: 100%;
+  background: var(--bg); color: var(--text);
+  font: 14px/1.4 -apple-system, Segoe UI, Roboto, sans-serif;
+  /* Deliberately NOT `overflow: auto`. A scrollable page competes with the 3D view for mouse-wheel
+     events (the wheel scrolls the page instead of zooming the camera). The flex layout below already
+     makes everything fit without scrolling, so the page itself never needs to scroll. */
+  overflow: hidden;
+}
+
+#topbar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--border);
+}
+#brand { font-weight: 600; margin-right: 8px; }
+#topbar select, #topbar button, #topbar input {
+  background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  border-radius: 4px; padding: 5px 10px; cursor: pointer;
+}
+#topbar input[type="number"] { width: 56px; cursor: text; padding: 3px 6px; }
+#topbar button:hover:not(:disabled) { border-color: var(--accent); }
+#topbar button:disabled { opacity: 0.4; cursor: not-allowed; }
+#camera-presets { display: flex; gap: 4px; align-items: center; }
+#zoom-readout { color: var(--muted); font-size: 11px; font-family: monospace; white-space: nowrap; margin-left: 4px; }
+#sim-controls { display: flex; align-items: center; gap: 8px; }
+#sim-limit-label { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 12px; }
+#sim-status { color: var(--muted); font-size: 12px; white-space: nowrap; }
+#console-toggle { margin-left: auto; }
+
+/* body-flex: a real column layout (topbar's height already excluded), not an overlay - opening the
+   console shrinks main's box so #viewport/#dashboard resize and stay fully visible + interactive,
+   instead of the console covering the bottom of the screen. */
+#body-flex {
+  display: flex; flex-direction: column;
+  height: calc(100vh - 46px);
+}
+main {
+  display: flex; flex: 1; min-height: 0; /* min-height:0 lets flex children actually shrink */
+}
+/* touch-action/overscroll-behavior: make the 3D view own wheel + touch gestures outright, so nothing
+   bubbles up and gets interpreted as page scrolling instead of camera zoom. */
+#viewport {
+  flex: 1; position: relative; min-width: 0; touch-action: none; overscroll-behavior: contain;
+  /* subtle vignette so the board sits in a space rather than floating on flat colour */
+  background: radial-gradient(ellipse at 50% 40%, #1d2029 0%, #14161a 70%);
+  cursor: grab;
+}
+#viewport:active { cursor: grabbing; }
+#viewport canvas { display: block; touch-action: none; background: transparent; }
+
+#dashboard {
+  width: 320px; flex-shrink: 0; overflow-y: auto; padding: 12px 14px;
+  background: var(--panel); border-left: 1px solid var(--border);
+}
+#dashboard h2 {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--muted); margin: 16px 0 8px;
+}
+#dashboard h2:first-child { margin-top: 0; }
+
+#activity-log {
+  max-height: 160px; overflow-y: auto; margin-bottom: 4px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+  padding: 6px 8px; font-size: 12px;
+}
+#activity-log:empty::before { content: "Nothing yet - start a simulation and press something."; color: var(--muted); }
+.activity-line { padding: 2px 0; }
+.activity-line .t { color: var(--muted); margin-right: 6px; }
+.activity-line.press { color: var(--accent); }
+.activity-line.on { color: var(--ok); }
+.activity-line.off { color: var(--muted); }
+
+.io-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 4px; margin-bottom: 4px;
+  border: 1px solid transparent; cursor: default;
+}
+.io-item:hover { border-color: var(--accent); background: var(--bg); }
+/* flashed when the matching part is clicked in the 3D view, so the two stay visibly in sync */
+.io-item.selected {
+  border-color: var(--accent);
+  background: rgba(79, 157, 255, 0.14);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+.io-item img { width: 22px; height: 22px; filter: invert(0.9); flex-shrink: 0; }
+.io-item .io-label { flex: 1; }
+.io-item .io-net { color: var(--muted); font-size: 11px; }
+.io-item.input .io-label::before { content: "\25B8  "; color: var(--accent); }
+
+.io-press {
+  background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  border-radius: 4px; padding: 3px 10px; cursor: pointer; font-size: 11px; flex-shrink: 0;
+}
+.io-press:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.io-press:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.io-indicator {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  background: #3a3d46; border: 1px solid var(--border);
+  transition: background 0.1s ease, box-shadow 0.1s ease;
+}
+.io-indicator.on {
+  background: #ffcc33; box-shadow: 0 0 6px 1px rgba(255, 204, 51, 0.8);
+}
+
+.io-digit {
+  min-width: 20px; text-align: center; flex-shrink: 0;
+  font-family: monospace; font-weight: bold; font-size: 13px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: 1px 4px;
+  color: #ffcc33;
+}
+
+#sim-toggle.running { border-color: var(--fail); color: var(--fail); }
+
+/* A real flex item, not a fixed overlay: open = takes 38% of the vertical space (main shrinks to fit,
+   #viewport/#dashboard resize via their own flex/min-height:0 rules and stay fully visible), closed =
+   0 height. This is what actually fixes "the console covers the rest of the page" - see ROADMAP.md. */
+#console {
+  flex: 0 0 0; overflow: hidden; min-height: 0;
+  background: var(--panel); border-top: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  transition: flex-basis 0.15s ease;
+}
+#console:not(.closed) { flex: 0 0 38%; }
+#console-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 12px; border-bottom: 1px solid var(--border);
+}
+#console-header span:first-child { font-weight: 600; }
+#console-actions { flex: 1; display: flex; gap: 6px; flex-wrap: wrap; }
+#console-actions button {
+  background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;
+}
+#console-actions button:hover { border-color: var(--accent); }
+#console-close {
+  background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer;
+}
+#console-log { flex: 1; overflow-y: auto; padding: 10px 12px; font-family: monospace; font-size: 12px; }
+.log-entry { margin-bottom: 10px; border-left: 3px solid var(--border); padding-left: 8px; }
+.log-entry.ok { border-color: var(--ok); }
+.log-entry.fail { border-color: var(--fail); }
+.log-entry .log-meta { color: var(--muted); margin-bottom: 2px; }
+.log-entry pre { white-space: pre-wrap; margin: 0; }
+
+/* Input widgets. Each input type in io_map.json renders its own control - see INPUT_WIDGETS in main.js.
+   Adding a new kind of input (sound sensor, temperature, ...) is one entry there plus styling here. */
+.io-toggle.on { border-color: var(--ok); color: var(--ok); }
+.io-analog { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.io-analog input[type="range"] { width: 92px; accent-color: var(--accent); cursor: pointer; }
+.io-analog input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
+.io-analog-value {
+  min-width: 34px; text-align: right; font-family: monospace; font-size: 11px; color: var(--accent);
+}
+.io-pulse-count {
+  width: 46px; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  border-radius: 4px; padding: 3px 5px; font-size: 11px; text-align: center;
+}
+.io-type {
+  background: var(--bg); color: var(--muted); border: 1px solid var(--border);
+  border-radius: 4px; font-size: 10px; padding: 2px 3px; cursor: pointer; flex-shrink: 0;
+}
+.io-type:hover { color: var(--text); border-color: var(--accent); }
+
+/* Console tabs: Output (action results) / Serial (live firmware output) / Analyzer (VCD capture) */
+#console-tabs { display: flex; gap: 4px; }
+#console-tabs .tab {
+  background: none; border: 1px solid transparent; color: var(--muted);
+  border-radius: 4px; padding: 3px 9px; cursor: pointer; font-size: 12px;
+}
+#console-tabs .tab:hover { color: var(--text); }
+#console-tabs .tab.active { color: var(--accent); border-color: var(--border); background: var(--bg); }
+.tab-panel { flex: 1; overflow-y: auto; padding: 10px 12px; font-family: monospace; font-size: 12px; }
+.tab-panel.hidden { display: none; }
+#console-serial { white-space: pre-wrap; color: var(--ok); }
+#console-serial:empty::before {
+  content: "No serial output yet. This is what the firmware is printing - start a simulation.";
+  color: var(--muted);
+}
+#console-capture table { border-collapse: collapse; width: 100%; }
+#console-capture th, #console-capture td { text-align: left; padding: 3px 8px; border-bottom: 1px solid var(--border); }
+#console-capture th { color: var(--muted); font-weight: normal; }
+.io-net { cursor: pointer; }
+.io-net:hover { color: var(--accent); text-decoration: underline; }
+.io-tone { cursor: pointer; }
+
+/* SPICE playback waveforms (Analyzer tab) */
+.wave-row { position: relative; margin-top: 6px; border: 1px solid var(--border); border-radius: 4px; }
+.wave-row canvas { display: block; width: 100%; }
+.wave-playhead { position: absolute; top: 0; bottom: 0; left: 0; width: 2px; background: var(--fail); opacity: 0.8; pointer-events: none; }

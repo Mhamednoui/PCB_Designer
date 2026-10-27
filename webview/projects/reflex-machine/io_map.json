@@ -1,0 +1,26 @@
+{
+  "inputs": [
+    { "net": "BTN_S1", "type": "button", "label": "S1 (speed 1)", "ref": "J13" },
+    { "net": "BTN_S2", "type": "button", "label": "S2 (speed 2)", "ref": "J13" },
+    { "net": "BTN_S3", "type": "button", "label": "S3 (speed 3)", "ref": "J13" },
+    { "net": "BTN_RST", "type": "button", "label": "RST / Start", "ref": "J13" },
+    { "net": "COIN_IN", "type": "coin", "label": "Coin input", "ref": "U2" }
+  ],
+  "outputs": [
+    { "net": "MAG1_PWM", "type": "led", "label": "Magnet 1", "ref": "Q1" },
+    { "net": "MAG2_PWM", "type": "led", "label": "Magnet 2", "ref": "Q2" },
+    { "net": "MAG3_PWM", "type": "led", "label": "Magnet 3", "ref": "Q3" },
+    { "net": "MAG4_PWM", "type": "led", "label": "Magnet 4", "ref": "Q4" },
+    { "net": "MAG5_PWM", "type": "led", "label": "Magnet 5", "ref": "Q5" },
+    { "net": "MAG6_PWM", "type": "led", "label": "Magnet 6", "ref": "Q6" },
+    { "net": "MAG7_PWM", "type": "led", "label": "Magnet 7", "ref": "Q7" },
+    { "net": "MAG8_PWM", "type": "led", "label": "Magnet 8", "ref": "Q8" },
+    { "net": "MAG9_PWM", "type": "led", "label": "Magnet 9", "ref": "Q9" },
+    { "net": "MAG10_PWM", "type": "led", "label": "Magnet 10", "ref": "Q10" },
+    { "net": "LED1", "type": "led", "label": "Status LED 1", "ref": "J14" },
+    { "net": "LED2", "type": "led", "label": "Status LED 2", "ref": "J14" },
+    { "net": "LED3", "type": "led", "label": "Status LED 3", "ref": "J14" },
+    { "net": "LED4", "type": "led", "label": "Status LED 4", "ref": "J14" },
+    { "net": "SEG_DATA", "type": "seven-segment", "label": "Score display (74HC595 -> 7-seg)", "ref": "U3" }
+  ]
+}

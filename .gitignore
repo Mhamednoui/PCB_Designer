@@ -1,0 +1,49 @@
+# Runtime artifacts - regenerated, never edited by hand
+__pycache__/
+*.pyc
+webview/server/server.log
+webview/projects/*/run_log.jsonl
+webview/projects/*/capture.vcd
+webview/projects/*/model.glb
+
+# KiCad per-user state (the .kicad_pro IS tracked - it holds the design rules)
+*.kicad_prl
+*-backup/
+fp-info-cache
+
+# Generated intermediates from the route stage
+projects/*/*-routed.kicad_pcb
+projects/*/*-routed.kicad_pro
+projects/*/*-routed.kicad_prl
+projects/*/out/route.dsn
+projects/*/out/route.ses
+
+# Local tool clones and virtualenv
+.venv/
+tools/freerouting/
+
+# --- Baseline additions (git init) ---
+downloads/
+# Third-party clones under tools/ (only boardgen/, sym_pins.py, fp_bbox.py are ours)
+tools/Fabrication-Toolkit/
+tools/InteractiveHtmlBom/
+tools/KiKit/
+tools/Konnect/
+tools/arduino-kicad-library/
+tools/awesome-kicad/
+tools/easyeda2kicad.py/
+tools/freerouting/
+tools/kicad-happy/
+tools/kicad-mcp-server/
+tools/skidl/
+tools/skidl_REPL.*
+
+# KiCad / runtime junk
+*-backups/
+*.lck
+~*.lck
+.pio/
+projects/**/test/spice/*.raw
+projects/**/test/spice/*.log
+.claude/settings.local.json
+.history/

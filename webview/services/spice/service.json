@@ -1,0 +1,7 @@
+{
+  "name": "spice",
+  "port": 8801,
+  "health": "/health",
+  "description": "Transient SPICE simulation (LTspice) of a board's netlist.py - live simulation for boards with no MCU",
+  "start": ["python", "service.py"]
+}

@@ -1,0 +1,35 @@
+name: Reflex Machine - input wiring check (button/coin -> correct Mega pin)
+version: 1
+author: reflex-machine test pipeline
+steps:
+  - delay: 200ms
+
+  - set-control: { part-id: btn_s1, control: pressed, value: 1 }
+  - delay: 30ms
+  - expect-pin: { part-id: mega, pin: "22", value: 0 }
+  - set-control: { part-id: btn_s1, control: pressed, value: 0 }
+  - delay: 30ms
+
+  - set-control: { part-id: btn_s2, control: pressed, value: 1 }
+  - delay: 30ms
+  - expect-pin: { part-id: mega, pin: "24", value: 0 }
+  - set-control: { part-id: btn_s2, control: pressed, value: 0 }
+  - delay: 30ms
+
+  - set-control: { part-id: btn_s3, control: pressed, value: 1 }
+  - delay: 30ms
+  - expect-pin: { part-id: mega, pin: "26", value: 0 }
+  - set-control: { part-id: btn_s3, control: pressed, value: 0 }
+  - delay: 30ms
+
+  - set-control: { part-id: btn_rst, control: pressed, value: 1 }
+  - delay: 30ms
+  - expect-pin: { part-id: mega, pin: "28", value: 0 }
+  - set-control: { part-id: btn_rst, control: pressed, value: 0 }
+  - delay: 30ms
+
+  - set-control: { part-id: btn_coin, control: pressed, value: 1 }
+  - delay: 30ms
+  - expect-pin: { part-id: mega, pin: "2", value: 0 }
+  - set-control: { part-id: btn_coin, control: pressed, value: 0 }
+  - delay: 30ms

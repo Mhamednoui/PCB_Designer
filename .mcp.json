@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "kicad": {
+      "type": "stdio",
+      "command": "C:\\Program Files\\KiCad\\10.0\\bin\\python.exe",
+      "args": ["-m", "kicad_mcp_server"]
+    },
+    "konnect": {
+      "type": "stdio",
+      "command": "C:\\Users\\nouir\\Documents\\KiCad\\10.0\\3rdparty\\plugins\\com_github_mixelpixx_konnect\\bin\\konnect.exe"
+    }
+  }
+}

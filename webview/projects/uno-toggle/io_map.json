@@ -1,0 +1,31 @@
+{
+  "_README": "Which nets are inputs (buttons/switches/sensors) and outputs (LEDs/actuators/displays). 'ref' picks the component whose icon represents the entry and which part gets highlighted in the 3D view. Net names must match the board exactly - build_manifest.py warns about typos.",
+  "inputs": [
+    {
+      "net": "BTN1",
+      "type": "pulse",
+      "label": "Button 1 (D2)",
+      "ref": "SW1"
+    },
+    {
+      "net": "BTN2",
+      "type": "pulse",
+      "label": "Button 2 (D3)",
+      "ref": "SW2"
+    }
+  ],
+  "outputs": [
+    {
+      "net": "LED1",
+      "type": "led",
+      "label": "LED 1 - red (D8)",
+      "ref": "D1"
+    },
+    {
+      "net": "LED2",
+      "type": "led",
+      "label": "LED 2 - green (D9)",
+      "ref": "D2"
+    }
+  ]
+}

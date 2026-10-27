@@ -1,0 +1,14 @@
+{
+  "_README": "Declare which nets are inputs (buttons/switches/sensors) and outputs (LEDs/actuators/displays). 'ref' is optional but strongly recommended - it picks which component's icon represents the entry and which part gets highlighted in 3D. Net names must match the board exactly; run build_manifest.py to validate them.",
+  "inputs": [
+    { "net": "PC-DATA-OUT", "type": "signal", "label": "PC data out (serial)", "ref": "J1" },
+    { "net": "VPP_ON", "type": "signal", "label": "VPP enable (from PC)", "ref": "J1" }
+  ],
+  "outputs": [
+    { "net": "Net-(D8-A)", "type": "led", "label": "Red LED", "ref": "D8" },
+    { "net": "Net-(D9-A)", "type": "led", "label": "Green LED", "ref": "D9" },
+    { "net": "Net-(D12-A)", "type": "led", "label": "Yellow LED", "ref": "D12" },
+    { "net": "CLOCK-RB6", "type": "signal", "label": "PIC clock (RB6)", "ref": "JP1" },
+    { "net": "DATA-RB7", "type": "signal", "label": "PIC data (RB7)", "ref": "JP1" }
+  ]
+}

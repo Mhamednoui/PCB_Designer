@@ -1,0 +1,1072 @@
+{
+  "id": "pic-programmer",
+  "name": "pic_programmer",
+  "model": "model.glb",
+  "components": [
+    {
+      "ref": "C1",
+      "value": "100\u00b5F",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:CP_Axial_L18.0mm_D6.5mm_P25.00mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C2",
+      "value": "220uF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:CP_Axial_L18.0mm_D6.5mm_P25.00mm_Horizontal",
+      "pins": {
+        "1": "Net-(D1-K)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C3",
+      "value": "22uF/25V",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Axial_L12.0mm_D6.5mm_P20.00mm_Horizontal",
+      "pins": {
+        "1": "VPP",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C4",
+      "value": "0",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.1mm_W3.2mm_P5.00mm",
+      "pins": {
+        "1": "Net-(U4-Vc)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C5",
+      "value": "10nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.1mm_W3.2mm_P5.00mm",
+      "pins": {
+        "1": "Net-(C5-Pad1)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C6",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.1mm_W3.2mm_P5.00mm",
+      "pins": {
+        "1": "pic_sockets/VCC_PIC",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C7",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.1mm_W3.2mm_P5.00mm",
+      "pins": {
+        "1": "pic_sockets/VCC_PIC",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C9",
+      "value": "220nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.1mm_W3.2mm_P5.00mm",
+      "pins": {
+        "1": "VPP",
+        "2": "Net-(Q2-B)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "D1",
+      "value": "1N4004",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P12.70mm_Horizontal",
+      "pins": {
+        "1": "Net-(D1-K)",
+        "2": "Net-(D1-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D10",
+      "value": "SCHOTTKY",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P12.70mm_Horizontal",
+      "pins": {
+        "1": "VPP",
+        "2": "Net-(D10-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D11",
+      "value": "BAT43",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pins": {
+        "1": "Net-(D11-K)",
+        "2": "Net-(D11-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D12",
+      "value": "YELLOW-LED",
+      "symbol": "Device:D",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "Net-(D12-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D2",
+      "value": "BAT43",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "Net-(D2-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D3",
+      "value": "BAT43",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pins": {
+        "1": "Net-(D2-A)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D4",
+      "value": "BAT43",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "Net-(D4-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D5",
+      "value": "BAT43",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pins": {
+        "1": "Net-(D4-A)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D6",
+      "value": "BAT43",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "Net-(D6-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D7",
+      "value": "BAT43",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pins": {
+        "1": "Net-(D6-A)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D8",
+      "value": "RED-LED",
+      "symbol": "Device:D",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "Net-(D8-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "D9",
+      "value": "GREEN-LED",
+      "symbol": "Device:D",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "Net-(D9-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "J1",
+      "value": "DB9-FEMAL",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "Connector_Dsub:DSUB-9_Socket_Horizontal_P2.77x2.84mm_EdgePinOffset7.70mm_Housed_MountingHolesOffset9.12mm",
+      "pins": {
+        "3": "VPP_ON",
+        "4": "PC-DATA-OUT",
+        "5": "GND",
+        "7": "PC-CLOCK-OUT",
+        "8": "PC-DATA-IN"
+      },
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "JP1",
+      "value": "JUMPER",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm",
+      "pins": {
+        "1": "VCC",
+        "2": "pic_sockets/VCC_PIC"
+      },
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "L1",
+      "value": "22uH",
+      "symbol": "Device:L",
+      "footprint": "Inductor_THT:L_Radial_D7.8mm_P5.00mm_Fastron_07HCP",
+      "pins": {
+        "1": "Net-(D10-A)",
+        "2": "VCC"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/L_unit1.svg"
+    },
+    {
+      "ref": "P1",
+      "value": "CONN_2",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "TerminalBlock_Altech:Altech_AK300_1x02_P5.00mm_45-Degree",
+      "pins": {
+        "1": "GND",
+        "2": "Net-(D1-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P101",
+      "value": "CONN_1",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "MountingHole:MountingHole_4.3mm_M4",
+      "pins": {},
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P102",
+      "value": "CONN_1",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "MountingHole:MountingHole_4.3mm_M4",
+      "pins": {},
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P103",
+      "value": "CONN_1",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "MountingHole:MountingHole_4.3mm_M4",
+      "pins": {},
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P104",
+      "value": "CONN_1",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "MountingHole:MountingHole_4.3mm_M4",
+      "pins": {},
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P105",
+      "value": "CONN_1",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "MountingHole:MountingHole_4.3mm_M4",
+      "pins": {},
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P106",
+      "value": "CONN_1",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "MountingHole:MountingHole_4.3mm_M4",
+      "pins": {},
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P2",
+      "value": "SUPP28",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "Package_DIP:DIP-28_W7.62mm_Socket_LongPads",
+      "pins": {
+        "1": "VPP{slash}MCLR",
+        "8": "GND",
+        "19": "GND",
+        "20": "pic_sockets/VCC_PIC",
+        "27": "CLOCK-RB6",
+        "28": "DATA-RB7"
+      },
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "P3",
+      "value": "SUPP40",
+      "symbol": "Connector_Generic:Conn_01x01",
+      "footprint": "footprints:40tex-Ell600",
+      "pins": {
+        "1": "VPP{slash}MCLR",
+        "8": "GND",
+        "11": "pic_sockets/VCC_PIC",
+        "12": "GND",
+        "31": "GND",
+        "32": "pic_sockets/VCC_PIC",
+        "39": "CLOCK-RB6",
+        "40": "DATA-RB7"
+      },
+      "group": null,
+      "icon": "assets/icons/Connector_Generic/Conn_01x01_unit1.svg"
+    },
+    {
+      "ref": "Q1",
+      "value": "BC237",
+      "symbol": "Device:Q_NMOS",
+      "footprint": "footprints:TO-92",
+      "pins": {
+        "1": "Net-(D11-K)",
+        "2": "Net-(Q1-B)",
+        "3": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/Q_NMOS_unit1.svg"
+    },
+    {
+      "ref": "Q2",
+      "value": "BC307",
+      "symbol": "Device:Q_NMOS",
+      "footprint": "footprints:TO-92",
+      "pins": {
+        "1": "Net-(Q2-C)",
+        "2": "Net-(Q2-B)",
+        "3": "VPP"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/Q_NMOS_unit1.svg"
+    },
+    {
+      "ref": "Q3",
+      "value": "BC307",
+      "symbol": "Device:Q_NMOS",
+      "footprint": "footprints:TO-92",
+      "pins": {
+        "1": "pic_sockets/VCC_PIC",
+        "2": "Net-(Q3-B)",
+        "3": "VCC"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/Q_NMOS_unit1.svg"
+    },
+    {
+      "ref": "R1",
+      "value": "10K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "VPP_ON",
+        "2": "Net-(D2-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R10",
+      "value": "5,1K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(U4-Vc)",
+        "2": "Net-(C5-Pad1)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R11",
+      "value": "22K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(D11-K)",
+        "2": "Net-(Q2-B)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R12",
+      "value": "470",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(R12-Pad1)",
+        "2": "DATA-RB7"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R13",
+      "value": "470",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(R13-Pad1)",
+        "2": "CLOCK-RB6"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R14",
+      "value": "470",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "Net-(D9-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R15",
+      "value": "6.2K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(R15-Pad1)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R16",
+      "value": "62K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(R16-Pad1)",
+        "2": "VPP"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R17",
+      "value": "22K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(Q2-C)",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R18",
+      "value": "220",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(Q2-C)",
+        "2": "VPP{slash}MCLR"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R19",
+      "value": "2.2K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(D11-A)",
+        "2": "Net-(Q3-B)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R2",
+      "value": "10K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "VPP_ON",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R20",
+      "value": "2.2K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "Net-(Q3-B)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R21",
+      "value": "470",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(D12-A)",
+        "2": "pic_sockets/VCC_PIC"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R3",
+      "value": "10K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "PC-DATA-OUT",
+        "2": "Net-(D4-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R4",
+      "value": "10K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "PC-DATA-OUT",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R5",
+      "value": "10K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "PC-CLOCK-OUT",
+        "2": "Net-(D6-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R6",
+      "value": "10K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "PC-CLOCK-OUT",
+        "2": "GND"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R7",
+      "value": "10K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "VPP",
+        "2": "Net-(Q2-B)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R8",
+      "value": "1K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(R8-Pad1)",
+        "2": "Net-(Q1-B)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R9",
+      "value": "2.2K",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "Net-(Q2-C)",
+        "2": "Net-(D8-A)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "RV1",
+      "value": "1K",
+      "symbol": "Device:R",
+      "footprint": "footprints:RV2X4",
+      "pins": {
+        "1": "Net-(R15-Pad1)",
+        "2": "Net-(U4-FB+)",
+        "3": "Net-(R16-Pad1)"
+      },
+      "group": null,
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "U1",
+      "value": "24Cxx",
+      "symbol": null,
+      "footprint": "Package_DIP:DIP-8_W7.62mm_Socket_LongPads",
+      "pins": {
+        "1": "GND",
+        "2": "GND",
+        "3": "GND",
+        "4": "GND",
+        "5": "DATA-RB7",
+        "6": "CLOCK-RB6",
+        "8": "pic_sockets/VCC_PIC"
+      },
+      "group": null,
+      "icon": null
+    },
+    {
+      "ref": "U2",
+      "value": "74HC125",
+      "symbol": null,
+      "footprint": "Package_DIP:DIP-14_W7.62mm_LongPads",
+      "pins": {
+        "1": "GND",
+        "2": "Net-(D2-A)",
+        "3": "Net-(R8-Pad1)",
+        "4": "GND",
+        "5": "Net-(D4-A)",
+        "6": "Net-(R12-Pad1)",
+        "7": "GND",
+        "8": "Net-(R13-Pad1)",
+        "9": "Net-(D6-A)",
+        "10": "GND",
+        "11": "PC-DATA-IN",
+        "12": "DATA-RB7",
+        "13": "GND",
+        "14": "VCC"
+      },
+      "group": null,
+      "icon": null
+    },
+    {
+      "ref": "U3",
+      "value": "7805",
+      "symbol": null,
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown",
+      "pins": {
+        "1": "Net-(D1-K)",
+        "2": "GND",
+        "3": "VCC"
+      },
+      "group": null,
+      "icon": null
+    },
+    {
+      "ref": "U4",
+      "value": "LT1373",
+      "symbol": null,
+      "footprint": "Package_DIP:DIP-8_W7.62mm_LongPads",
+      "pins": {
+        "1": "Net-(U4-Vc)",
+        "2": "Net-(U4-FB+)",
+        "5": "VCC",
+        "6": "GND",
+        "7": "GND",
+        "8": "Net-(D10-A)"
+      },
+      "group": null,
+      "icon": null
+    },
+    {
+      "ref": "U5",
+      "value": "PIC_18_PINS",
+      "symbol": null,
+      "footprint": "Package_DIP:DIP-18_W7.62mm_Socket_LongPads",
+      "pins": {
+        "4": "VPP{slash}MCLR",
+        "5": "GND",
+        "12": "CLOCK-RB6",
+        "13": "DATA-RB7",
+        "14": "pic_sockets/VCC_PIC"
+      },
+      "group": null,
+      "icon": null
+    },
+    {
+      "ref": "U6",
+      "value": "PIC_8_PINS",
+      "symbol": null,
+      "footprint": "Package_DIP:DIP-8_W7.62mm_Socket_LongPads",
+      "pins": {
+        "1": "pic_sockets/VCC_PIC",
+        "4": "VPP{slash}MCLR",
+        "6": "CLOCK-RB6",
+        "7": "DATA-RB7",
+        "8": "GND"
+      },
+      "group": null,
+      "icon": null
+    }
+  ],
+  "nets": {
+    "VCC": [
+      "C1.1",
+      "D2.1",
+      "D4.1",
+      "D6.1",
+      "JP1.1",
+      "L1.2",
+      "Q3.3",
+      "R14.1",
+      "R20.1",
+      "U2.14",
+      "U3.3",
+      "U4.5"
+    ],
+    "GND": [
+      "C1.2",
+      "C2.2",
+      "C3.2",
+      "C4.2",
+      "C5.2",
+      "C6.2",
+      "C7.2",
+      "D12.1",
+      "D3.2",
+      "D5.2",
+      "D7.2",
+      "D8.1",
+      "D9.1",
+      "J1.5",
+      "P1.1",
+      "P2.19",
+      "P2.8",
+      "P3.12",
+      "P3.31",
+      "P3.8",
+      "Q1.3",
+      "R15.2",
+      "R17.2",
+      "R2.2",
+      "R4.2",
+      "R6.2",
+      "U1.1",
+      "U1.2",
+      "U1.3",
+      "U1.4",
+      "U2.1",
+      "U2.10",
+      "U2.13",
+      "U2.4",
+      "U2.7",
+      "U3.2",
+      "U4.6",
+      "U4.7",
+      "U5.5",
+      "U6.8"
+    ],
+    "Net-(D1-K)": [
+      "C2.1",
+      "D1.1",
+      "U3.1"
+    ],
+    "VPP{slash}MCLR": [
+      "P2.1",
+      "P3.1",
+      "R18.2",
+      "U5.4",
+      "U6.4"
+    ],
+    "pic_sockets/VCC_PIC": [
+      "C6.1",
+      "C7.1",
+      "JP1.2",
+      "P2.20",
+      "P3.11",
+      "P3.32",
+      "Q3.1",
+      "R21.2",
+      "U1.8",
+      "U5.14",
+      "U6.1"
+    ],
+    "CLOCK-RB6": [
+      "P2.27",
+      "P3.39",
+      "R13.2",
+      "U1.6",
+      "U5.12",
+      "U6.6"
+    ],
+    "DATA-RB7": [
+      "P2.28",
+      "P3.40",
+      "R12.2",
+      "U1.5",
+      "U2.12",
+      "U5.13",
+      "U6.7"
+    ],
+    "Net-(U4-Vc)": [
+      "C4.1",
+      "R10.1",
+      "U4.1"
+    ],
+    "Net-(U4-FB+)": [
+      "RV1.2",
+      "U4.2"
+    ],
+    "Net-(D10-A)": [
+      "D10.2",
+      "L1.1",
+      "U4.8"
+    ],
+    "Net-(D2-A)": [
+      "D2.2",
+      "D3.1",
+      "R1.2",
+      "U2.2"
+    ],
+    "Net-(R8-Pad1)": [
+      "R8.1",
+      "U2.3"
+    ],
+    "Net-(D4-A)": [
+      "D4.2",
+      "D5.1",
+      "R3.2",
+      "U2.5"
+    ],
+    "Net-(R12-Pad1)": [
+      "R12.1",
+      "U2.6"
+    ],
+    "Net-(R13-Pad1)": [
+      "R13.1",
+      "U2.8"
+    ],
+    "Net-(D6-A)": [
+      "D6.2",
+      "D7.1",
+      "R5.2",
+      "U2.9"
+    ],
+    "PC-DATA-IN": [
+      "J1.8",
+      "U2.11"
+    ],
+    "Net-(D11-K)": [
+      "D11.1",
+      "Q1.1",
+      "R11.1"
+    ],
+    "Net-(D11-A)": [
+      "D11.2",
+      "R19.1"
+    ],
+    "VPP_ON": [
+      "J1.3",
+      "R1.1",
+      "R2.1"
+    ],
+    "PC-DATA-OUT": [
+      "J1.4",
+      "R3.1",
+      "R4.1"
+    ],
+    "PC-CLOCK-OUT": [
+      "J1.7",
+      "R5.1",
+      "R6.1"
+    ],
+    "Net-(Q3-B)": [
+      "Q3.2",
+      "R19.2",
+      "R20.2"
+    ],
+    "Net-(Q2-C)": [
+      "Q2.1",
+      "R17.1",
+      "R18.1",
+      "R9.1"
+    ],
+    "Net-(Q2-B)": [
+      "C9.2",
+      "Q2.2",
+      "R11.2",
+      "R7.2"
+    ],
+    "VPP": [
+      "C3.1",
+      "C9.1",
+      "D10.1",
+      "Q2.3",
+      "R16.2",
+      "R7.1"
+    ],
+    "Net-(Q1-B)": [
+      "Q1.2",
+      "R8.2"
+    ],
+    "Net-(C5-Pad1)": [
+      "C5.1",
+      "R10.2"
+    ],
+    "Net-(D8-A)": [
+      "D8.2",
+      "R9.2"
+    ],
+    "Net-(D12-A)": [
+      "D12.2",
+      "R21.1"
+    ],
+    "Net-(R16-Pad1)": [
+      "R16.1",
+      "RV1.3"
+    ],
+    "Net-(R15-Pad1)": [
+      "R15.1",
+      "RV1.1"
+    ],
+    "Net-(D9-A)": [
+      "D9.2",
+      "R14.2"
+    ],
+    "Net-(D1-A)": [
+      "D1.2",
+      "P1.2"
+    ]
+  },
+  "io": [
+    {
+      "net": "PC-DATA-OUT",
+      "type": "signal",
+      "label": "PC data out (serial)",
+      "ref": "J1",
+      "kind": "input"
+    },
+    {
+      "net": "VPP_ON",
+      "type": "signal",
+      "label": "VPP enable (from PC)",
+      "ref": "J1",
+      "kind": "input"
+    },
+    {
+      "net": "Net-(D8-A)",
+      "type": "led",
+      "label": "Red LED",
+      "ref": "D8",
+      "kind": "output"
+    },
+    {
+      "net": "Net-(D9-A)",
+      "type": "led",
+      "label": "Green LED",
+      "ref": "D9",
+      "kind": "output"
+    },
+    {
+      "net": "Net-(D12-A)",
+      "type": "led",
+      "label": "Yellow LED",
+      "ref": "D12",
+      "kind": "output"
+    },
+    {
+      "net": "CLOCK-RB6",
+      "type": "signal",
+      "label": "PIC clock (RB6)",
+      "ref": "JP1",
+      "kind": "output"
+    },
+    {
+      "net": "DATA-RB7",
+      "type": "signal",
+      "label": "PIC data (RB7)",
+      "ref": "JP1",
+      "kind": "output"
+    }
+  ],
+  "actions": [],
+  "live_sim": false
+}

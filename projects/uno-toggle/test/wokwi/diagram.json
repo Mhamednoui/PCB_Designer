@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "author": "generated from projects/uno-toggle/gen/netlist.py - same pins as the real board",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 0, "left": 0, "attrs": {} },
+
+    { "type": "wokwi-pushbutton", "id": "btn1", "top": -120, "left": -180, "attrs": { "color": "green", "label": "BTN1" } },
+    { "type": "wokwi-pushbutton", "id": "btn2", "top": -40, "left": -180, "attrs": { "color": "blue", "label": "BTN2" } },
+
+    { "type": "wokwi-led", "id": "led1", "top": -120, "left": 160, "attrs": { "color": "red", "label": "LED1" } },
+    { "type": "wokwi-led", "id": "led2", "top": -40, "left": 160, "attrs": { "color": "green", "label": "LED2" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": -120, "left": 90, "attrs": { "value": "330" } },
+    { "type": "wokwi-resistor", "id": "r2", "top": -40, "left": 90, "attrs": { "value": "330" } }
+  ],
+  "connections": [
+    ["btn1:1.l", "uno:2", "green", []],
+    ["btn1:2.l", "uno:GND.1", "black", []],
+    ["btn2:1.l", "uno:3", "blue", []],
+    ["btn2:2.l", "uno:GND.1", "black", []],
+
+    ["uno:8", "r1:1", "red", []],
+    ["r1:2", "led1:A", "red", []],
+    ["led1:C", "uno:GND.2", "black", []],
+
+    ["uno:9", "r2:1", "green", []],
+    ["r2:2", "led2:A", "green", []],
+    ["led2:C", "uno:GND.2", "black", []]
+  ]
+}

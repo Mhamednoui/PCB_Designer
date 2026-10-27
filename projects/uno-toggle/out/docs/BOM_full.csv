@@ -1,0 +1,8 @@
+Qty,Value,Designators,Footprint,LCSC,Assembly
+1,Arduino Uno R3,A1,Arduino_Uno_R3_Shield,,hand solder / plug-in
+2,100nF,"C1,C2",C_Disc_D5.0mm_W2.5mm_P5.00mm,,hand solder / plug-in
+1,RED,D1,LED_D5.0mm,C2895470,hand solder / plug-in
+1,GREEN,D2,LED_D5.0mm,,hand solder / plug-in
+2,330R,"R1,R2",R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+1,BTN1,SW1,SW_PUSH_6mm,,hand solder / plug-in
+1,BTN2,SW2,SW_PUSH_6mm,,hand solder / plug-in

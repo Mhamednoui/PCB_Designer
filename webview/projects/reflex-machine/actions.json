@@ -1,0 +1,31 @@
+[
+  {
+    "id": "pinmap-check",
+    "label": "Pin cross-check (firmware vs netlist)",
+    "kind": "script",
+    "cwd": "projects/reflex-machine/test",
+    "cmd": ["python", "pinmap.py"],
+    "cost": "free"
+  },
+  {
+    "id": "electrical-report",
+    "label": "Electrical check report (Stage 1)",
+    "kind": "file",
+    "path": "projects/reflex-machine/test/electrical/REPORT.md",
+    "cost": "free"
+  },
+  {
+    "id": "spice-report",
+    "label": "SPICE report (Stage 2)",
+    "kind": "file",
+    "path": "projects/reflex-machine/test/spice/REPORT.md",
+    "cost": "free"
+  },
+  {
+    "id": "wokwi-report",
+    "label": "Wokwi functional sim report (Stage 3)",
+    "kind": "file",
+    "path": "projects/reflex-machine/test/wokwi/README.md",
+    "cost": "free"
+  }
+]

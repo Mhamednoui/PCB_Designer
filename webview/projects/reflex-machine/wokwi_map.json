@@ -1,0 +1,26 @@
+{
+  "cwd": "projects/reflex-machine/test/wokwi",
+  "inputs": {
+    "BTN_S1": { "partId": "btn_s1", "control": "pressed" },
+    "BTN_S2": { "partId": "btn_s2", "control": "pressed" },
+    "BTN_S3": { "partId": "btn_s3", "control": "pressed" },
+    "BTN_RST": { "partId": "btn_rst", "control": "pressed" },
+    "COIN_IN": { "partId": "btn_coin", "control": "pressed" }
+  },
+  "outputs": {
+    "MAG1_PWM": { "partId": "mega", "pin": "3" },
+    "MAG2_PWM": { "partId": "mega", "pin": "5" },
+    "MAG3_PWM": { "partId": "mega", "pin": "6" },
+    "MAG4_PWM": { "partId": "mega", "pin": "7" },
+    "MAG5_PWM": { "partId": "mega", "pin": "8" },
+    "MAG6_PWM": { "partId": "mega", "pin": "9" },
+    "MAG7_PWM": { "partId": "mega", "pin": "10" },
+    "MAG8_PWM": { "partId": "mega", "pin": "11" },
+    "MAG9_PWM": { "partId": "mega", "pin": "12" },
+    "MAG10_PWM": { "partId": "mega", "pin": "44" },
+    "LED1": { "partId": "mega", "pin": "A3" },
+    "LED2": { "partId": "mega", "pin": "A4" },
+    "LED3": { "partId": "mega", "pin": "A5" },
+    "LED4": { "partId": "mega", "pin": "A6" }
+  }
+}

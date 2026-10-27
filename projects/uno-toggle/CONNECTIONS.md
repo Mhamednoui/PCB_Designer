@@ -1,0 +1,138 @@
+# uno-toggle - every connection, in plain words
+
+_Generated 2026-09-18 15:55 by `tools/boardgen/make_connections.py` from the real board copper (`uno-toggle.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py uno-toggle --only connections`._
+
+## How to use this file
+
+You don't need to read the PCB. Each part below lists its pins and where each pin's copper goes.
+
+1. Start with **Check these first** - parts where a wrong pin order would really matter.
+2. For each, open the datasheet picture (or look at your real part) and confirm the pin names match: e.g. a MOSFET's pin 1 really is G (gate).
+3. When the board arrives, use a multimeter in beep mode: two pins listed as connected must beep.
+   Two pins that are NOT listed together must not beep.
+
+## Automatic cross-check
+
+Every pin on the board copper goes to the same net as in the schematic: **53 pins checked, 0 differences.**
+
+## Check these first - parts not from KiCad's standard library
+
+### A1 - Arduino Uno R3
+
+plug-in board · footprint `arduino-library:Arduino_Uno_R3_Shield` · Shield for Arduino Uno R3
+
+> **Not from KiCad's standard library** (project library `arduino-library` - drawn here or downloaded). Nobody at KiCad has checked it: compare every pin below with a photo or the pinout of YOUR real part.
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 3V3 | 3.3V | *not connected (free pin)* |
+| 5V1 | 5V | *not connected (free pin)* |
+| 5V2 | SPI 5V | *not connected (free pin)* |
+| A0 |  | *not connected (free pin)* |
+| A1 |  | *not connected (free pin)* |
+| A2 |  | *not connected (free pin)* |
+| A3 |  | *not connected (free pin)* |
+| A4 |  | *not connected (free pin)* |
+| A5 |  | *not connected (free pin)* |
+| AREF |  | *not connected (free pin)* |
+| D0 | D0/RX | *not connected (free pin)* |
+| D1 | D1/TX | *not connected (free pin)* |
+| D10 | D10 CS | *not connected (free pin)* |
+| D11 |  | *not connected (free pin)* |
+| D12 |  | *not connected (free pin)* |
+| D13 |  | *not connected (free pin)* |
+| D2 | D2 INT0 | **BTN1** → C1 pin 1, SW1 pin 1, SW1 pin 1 |
+| D3 | D3 INT1 | **BTN2** → C2 pin 1, SW2 pin 1, SW2 pin 1 |
+| D4 |  | *not connected (free pin)* |
+| D5 |  | *not connected (free pin)* |
+| D6 |  | *not connected (free pin)* |
+| D7 |  | *not connected (free pin)* |
+| D8 |  | **LED1** → R1 pin 1 |
+| D9 |  | **LED2** → R2 pin 1 |
+| GND1 | GND | **GND** - ground, shared with 10 other pins |
+| GND2 | GND | **GND** - ground, shared with 10 other pins |
+| GND3 | GND | **GND** - ground, shared with 10 other pins |
+| GND4 | SPI GND | *not connected (free pin)* |
+| IORF | IOREF | *not connected (free pin)* |
+| MISO | SPI MISO | *not connected (free pin)* |
+| MOSI | SPI MOSI | *not connected (free pin)* |
+| RST1 | RESET | *not connected (free pin)* |
+| RST2 | SPI RESET | *not connected (free pin)* |
+| SCK | SPI SCK | *not connected (free pin)* |
+| SCL |  | *not connected (free pin)* |
+| SDA |  | *not connected (free pin)* |
+| VIN |  | *not connected (free pin)* |
+
+## Everything else
+
+### C1 - 100nF
+
+capacitor · footprint `Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm` · Unpolarized capacitor
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 |  | **BTN1** → A1 pin D2 (D2 INT0), SW1 pin 1, SW1 pin 1 |
+| 2 |  | **GND** - ground, shared with 10 other pins |
+
+### C2 - 100nF
+
+capacitor · footprint `Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm` · Unpolarized capacitor
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 |  | **BTN2** → A1 pin D3 (D3 INT1), SW2 pin 1, SW2 pin 1 |
+| 2 |  | **GND** - ground, shared with 10 other pins |
+
+### D1 - RED
+
+diode / LED · footprint `LED_THT:LED_D5.0mm` · Light emitting diode
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 | K | **GND** - ground, shared with 10 other pins |
+| 2 | A | **LED1_A** → R1 pin 2 |
+
+### D2 - GREEN
+
+diode / LED · footprint `LED_THT:LED_D5.0mm` · Light emitting diode
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 | K | **GND** - ground, shared with 10 other pins |
+| 2 | A | **LED2_A** → R2 pin 2 |
+
+### R1 - 330R
+
+resistor · footprint `Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal` · Resistor
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 |  | **LED1** → A1 pin D8 |
+| 2 |  | **LED1_A** → D1 pin 2 (A) |
+
+### R2 - 330R
+
+resistor · footprint `Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal` · Resistor
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 |  | **LED2** → A1 pin D9 |
+| 2 |  | **LED2_A** → D2 pin 2 (A) |
+
+### SW1 - BTN1
+
+switch · footprint `Button_Switch_THT:SW_PUSH_6mm` · Push button switch, generic, two pins
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 |  | **BTN1** → A1 pin D2 (D2 INT0), C1 pin 1 |
+| 2 |  | **GND** - ground, shared with 9 other pins |
+
+### SW2 - BTN2
+
+switch · footprint `Button_Switch_THT:SW_PUSH_6mm` · Push button switch, generic, two pins
+
+| Pin | Name | Goes to |
+|---|---|---|
+| 1 |  | **BTN2** → A1 pin D3 (D3 INT1), C2 pin 1 |
+| 2 |  | **GND** - ground, shared with 9 other pins |

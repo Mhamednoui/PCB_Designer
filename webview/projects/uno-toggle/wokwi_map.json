@@ -1,0 +1,11 @@
+{
+  "cwd": "projects/uno-toggle/test/wokwi",
+  "inputs": {
+    "BTN1": { "partId": "btn1", "control": "pressed" },
+    "BTN2": { "partId": "btn2", "control": "pressed" }
+  },
+  "outputs": {
+    "LED1": { "partId": "uno", "pin": "8" },
+    "LED2": { "partId": "uno", "pin": "9" }
+  }
+}

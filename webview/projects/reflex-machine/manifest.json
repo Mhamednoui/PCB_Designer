@@ -1,0 +1,2378 @@
+{
+  "id": "reflex-machine",
+  "name": "reflex-machine",
+  "model": "model.glb",
+  "components": [
+    {
+      "ref": "J1",
+      "value": "12V_IN",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V_IN",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "F1",
+      "value": "10A mini blade",
+      "symbol": "Device:Fuse",
+      "footprint": "Fuse:Fuseholder_Blade_Mini_Keystone_3568",
+      "pins": {
+        "1": "+12V_IN",
+        "2": "+12V"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/Fuse_unit1.svg"
+    },
+    {
+      "ref": "D1",
+      "value": "P6KE15A",
+      "symbol": "Device:D_Zener",
+      "footprint": "Diode_THT:D_DO-15_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/D_Zener_unit1.svg"
+    },
+    {
+      "ref": "C1",
+      "value": "1000uF 25V",
+      "symbol": "Device:C_Polarized",
+      "footprint": "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm",
+      "pins": {
+        "1": "+12V",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/C_Polarized_unit1.svg"
+    },
+    {
+      "ref": "D2",
+      "value": "1N4007",
+      "symbol": "Device:D",
+      "footprint": "Diode_THT:D_DO-41_SOD81_P7.62mm_Horizontal",
+      "pins": {
+        "1": "+12V_REG",
+        "2": "+12V"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/D_unit1.svg"
+    },
+    {
+      "ref": "U1",
+      "value": "5V 2A module (K7805-2000R3)",
+      "symbol": "Converter_DCDC:R-785.0-1.0",
+      "footprint": "Converter_DCDC:Converter_DCDC_RECOM_R-78B-2.0_THT",
+      "pins": {
+        "1": "+12V_REG",
+        "2": "GND",
+        "3": "+5V"
+      },
+      "group": "power",
+      "icon": "assets/icons/Converter_DCDC/R-785.0-1.0_unit1.svg"
+    },
+    {
+      "ref": "C2",
+      "value": "220uF 25V",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
+      "pins": {
+        "1": "+12V_REG",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C3",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "+12V_REG",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C6",
+      "value": "220uF 25V",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C7",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R1",
+      "value": "4.7k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "PWR12_LED"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D3",
+      "value": "GREEN",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "PWR12_LED"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R2",
+      "value": "1k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+5V",
+        "2": "PWR5_LED"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D4",
+      "value": "GREEN",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "PWR5_LED"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "A1",
+      "value": "Arduino Mega 2560 R3",
+      "symbol": "arduino-library:Arduino_Mega2560_R3_Shield",
+      "footprint": "arduino-library:Arduino_Mega2560_R3_Shield",
+      "pins": {
+        "D2": "COIN_IN",
+        "D18": "MEGA_TX1",
+        "D19": "ESP_TX2",
+        "D22": "BTN_S1",
+        "D24": "BTN_S2",
+        "D26": "BTN_S3",
+        "D28": "BTN_RST",
+        "A0": "SEG_DATA",
+        "A1": "SEG_LATCH",
+        "A2": "SEG_CLOCK",
+        "A3": "LED1",
+        "A4": "LED2",
+        "A5": "LED3",
+        "A6": "LED4",
+        "D20": "I2C_SDA",
+        "D21": "I2C_SCL",
+        "D4": "SPARE_D4",
+        "D13": "SPARE_D13",
+        "A7": "SPARE_A7",
+        "A8": "SPARE_A8",
+        "D14": "SPARE_TX3",
+        "D15": "SPARE_RX3",
+        "D30": "SPARE_D30",
+        "D31": "SPARE_D31",
+        "D32": "SPARE_D32",
+        "D33": "SPARE_D33",
+        "D50": "SPARE_MISO",
+        "D51": "SPARE_MOSI",
+        "D52": "SPARE_SCK",
+        "D53": "SPARE_CS",
+        "5V1": "+5V",
+        "5V3": "+5V",
+        "5V4": "+5V",
+        "3V3": "+3V3",
+        "GND1": "GND",
+        "GND2": "GND",
+        "GND3": "GND",
+        "GND5": "GND",
+        "GND6": "GND",
+        "D3": "MAG1_PWM",
+        "D5": "MAG2_PWM",
+        "D6": "MAG3_PWM",
+        "D7": "MAG4_PWM",
+        "D8": "MAG5_PWM",
+        "D9": "MAG6_PWM",
+        "D10": "MAG7_PWM",
+        "D11": "MAG8_PWM",
+        "D12": "MAG9_PWM",
+        "D44": "MAG10_PWM"
+      },
+      "group": "mcu",
+      "icon": "assets/icons/arduino-library/Arduino_Mega2560_R3_Shield_unit1.svg"
+    },
+    {
+      "ref": "A2",
+      "value": "ESP32 DevKit V1 (30 pin)",
+      "symbol": "reflex:ESP32_DevKit_V1_30pin",
+      "footprint": "reflex:ESP32_DevKit_V1_30pin_Socket",
+      "pins": {
+        "15": "+5V",
+        "14": "GND",
+        "29": "GND",
+        "25": "ESP_RX2",
+        "24": "ESP_TX2",
+        "30": "+3V3_ESP",
+        "8": "ESP_IO25",
+        "9": "ESP_IO26",
+        "10": "ESP_IO27",
+        "6": "ESP_IO32",
+        "7": "ESP_IO33",
+        "11": "ESP_IO14"
+      },
+      "group": "mcu",
+      "icon": "assets/icons/reflex/ESP32_DevKit_V1_30pin_unit1.svg"
+    },
+    {
+      "ref": "R62",
+      "value": "1k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MEGA_TX1",
+        "2": "ESP_RX2"
+      },
+      "group": "serial",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R63",
+      "value": "2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "ESP_RX2",
+        "2": "GND"
+      },
+      "group": "serial",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J2",
+      "value": "MAG1",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG1_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q1",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG1_G",
+        "2": "MAG1_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R11",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG1_PWM",
+        "2": "MAG1_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R21",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG1_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D11",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG1_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D21",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG1_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R31",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG1_LED",
+        "2": "MAG1_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J3",
+      "value": "MAG2",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG2_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q2",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG2_G",
+        "2": "MAG2_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R12",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG2_PWM",
+        "2": "MAG2_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R22",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG2_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D12",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG2_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D22",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG2_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R32",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG2_LED",
+        "2": "MAG2_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J4",
+      "value": "MAG3",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG3_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q3",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG3_G",
+        "2": "MAG3_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R13",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG3_PWM",
+        "2": "MAG3_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R23",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG3_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D13",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG3_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D23",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG3_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R33",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG3_LED",
+        "2": "MAG3_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J5",
+      "value": "MAG4",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG4_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q4",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG4_G",
+        "2": "MAG4_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R14",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG4_PWM",
+        "2": "MAG4_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R24",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG4_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D14",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG4_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D24",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG4_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R34",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG4_LED",
+        "2": "MAG4_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J6",
+      "value": "MAG5",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG5_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q5",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG5_G",
+        "2": "MAG5_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R15",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG5_PWM",
+        "2": "MAG5_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R25",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG5_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D15",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG5_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D25",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG5_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R35",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG5_LED",
+        "2": "MAG5_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J7",
+      "value": "MAG6",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG6_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q6",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG6_G",
+        "2": "MAG6_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R16",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG6_PWM",
+        "2": "MAG6_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R26",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG6_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D16",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG6_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D26",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG6_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R36",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG6_LED",
+        "2": "MAG6_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J8",
+      "value": "MAG7",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG7_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q7",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG7_G",
+        "2": "MAG7_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R17",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG7_PWM",
+        "2": "MAG7_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R27",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG7_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D17",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG7_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D27",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG7_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R37",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG7_LED",
+        "2": "MAG7_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J9",
+      "value": "MAG8",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG8_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q8",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG8_G",
+        "2": "MAG8_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R18",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG8_PWM",
+        "2": "MAG8_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R28",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG8_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D18",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG8_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D28",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG8_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R38",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG8_LED",
+        "2": "MAG8_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J10",
+      "value": "MAG9",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG9_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q9",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG9_G",
+        "2": "MAG9_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R19",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG9_PWM",
+        "2": "MAG9_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R29",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG9_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D19",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG9_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D29",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG9_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R39",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG9_LED",
+        "2": "MAG9_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J11",
+      "value": "MAG10",
+      "symbol": "Connector:Screw_Terminal_01x02",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG10_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x02_unit1.svg"
+    },
+    {
+      "ref": "Q10",
+      "value": "IRLZ44N",
+      "symbol": "Transistor_FET:IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pins": {
+        "1": "MAG10_G",
+        "2": "MAG10_OUT",
+        "3": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Transistor_FET/IRLZ44N_unit1.svg"
+    },
+    {
+      "ref": "R20",
+      "value": "100R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG10_PWM",
+        "2": "MAG10_G"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R30",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG10_G",
+        "2": "GND"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D20",
+      "value": "1N5822",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp",
+      "pins": {
+        "1": "+12V",
+        "2": "MAG10_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/D_Schottky_unit1.svg"
+    },
+    {
+      "ref": "D30",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D3.0mm",
+      "pins": {
+        "1": "MAG10_LED",
+        "2": "+12V"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R40",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "MAG10_LED",
+        "2": "MAG10_OUT"
+      },
+      "group": "magnets",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J12",
+      "value": "COIN",
+      "symbol": "Connector:Screw_Terminal_01x03",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-3-3.5-H_1x03_P3.50mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "GND",
+        "3": "COIN_SIG"
+      },
+      "group": "coin",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x03_unit1.svg"
+    },
+    {
+      "ref": "R41",
+      "value": "2.2k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+12V",
+        "2": "COIN_OPTO_A"
+      },
+      "group": "coin",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "U2",
+      "value": "PC817",
+      "symbol": "Isolator:PC817",
+      "footprint": "Package_DIP:DIP-4_W7.62mm",
+      "pins": {
+        "1": "COIN_OPTO_A",
+        "2": "COIN_SIG",
+        "3": "GND",
+        "4": "COIN_IN"
+      },
+      "group": "coin",
+      "icon": "assets/icons/Isolator/PC817_unit1.svg"
+    },
+    {
+      "ref": "R42",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+5V",
+        "2": "COIN_IN"
+      },
+      "group": "coin",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "C8",
+      "value": "1nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "COIN_IN",
+        "2": "GND"
+      },
+      "group": "coin",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R43",
+      "value": "1k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "BTN_S1_EXT",
+        "2": "BTN_S1"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R47",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+5V",
+        "2": "BTN_S1"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "C9",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "BTN_S1",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R44",
+      "value": "1k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "BTN_S2_EXT",
+        "2": "BTN_S2"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R48",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+5V",
+        "2": "BTN_S2"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "C10",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "BTN_S2",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R45",
+      "value": "1k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "BTN_S3_EXT",
+        "2": "BTN_S3"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R49",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+5V",
+        "2": "BTN_S3"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "C11",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "BTN_S3",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R46",
+      "value": "1k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "BTN_RST_EXT",
+        "2": "BTN_RST"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R50",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "+5V",
+        "2": "BTN_RST"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "C12",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "BTN_RST",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "J13",
+      "value": "BUTTONS",
+      "symbol": "Connector:Screw_Terminal_01x08",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal",
+      "pins": {
+        "1": "BTN_S1_EXT",
+        "2": "GND",
+        "3": "BTN_S2_EXT",
+        "4": "GND",
+        "5": "BTN_S3_EXT",
+        "6": "GND",
+        "7": "BTN_RST_EXT",
+        "8": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x08_unit1.svg"
+    },
+    {
+      "ref": "R51",
+      "value": "330R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "LED1",
+        "2": "LED1_OUT"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R52",
+      "value": "330R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "LED2",
+        "2": "LED2_OUT"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R53",
+      "value": "330R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "LED3",
+        "2": "LED3_OUT"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R54",
+      "value": "330R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "LED4",
+        "2": "LED4_OUT"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J14",
+      "value": "STATUS_LEDS",
+      "symbol": "Connector:Screw_Terminal_01x08",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal",
+      "pins": {
+        "1": "LED1_OUT",
+        "2": "GND",
+        "3": "LED2_OUT",
+        "4": "GND",
+        "5": "LED3_OUT",
+        "6": "GND",
+        "7": "LED4_OUT",
+        "8": "GND"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x08_unit1.svg"
+    },
+    {
+      "ref": "U3",
+      "value": "74HC595N",
+      "symbol": "74xx:74HC595",
+      "footprint": "Package_DIP:DIP-16_W7.62mm",
+      "pins": {
+        "14": "SEG_DATA",
+        "12": "SEG_LATCH",
+        "11": "SEG_CLOCK",
+        "10": "+5V",
+        "13": "GND",
+        "16": "+5V",
+        "8": "GND",
+        "1": "SEG_QB",
+        "2": "SEG_QC",
+        "3": "SEG_QD",
+        "4": "SEG_QE",
+        "5": "SEG_QF",
+        "6": "SEG_QG",
+        "7": "SEG_QH"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/74xx/74HC595_unit1.svg"
+    },
+    {
+      "ref": "C13",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R55",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "SEG_QD",
+        "2": "SEG_A"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R56",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "SEG_QG",
+        "2": "SEG_B"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R57",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "SEG_QF",
+        "2": "SEG_C"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R58",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "SEG_QH",
+        "2": "SEG_D"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R59",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "SEG_QE",
+        "2": "SEG_E"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R60",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "SEG_QC",
+        "2": "SEG_F"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R61",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "SEG_QB",
+        "2": "SEG_G"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "J15",
+      "value": "7SEG",
+      "symbol": "Connector:Screw_Terminal_01x08",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal",
+      "pins": {
+        "8": "GND",
+        "1": "SEG_A",
+        "2": "SEG_B",
+        "3": "SEG_C",
+        "4": "SEG_D",
+        "5": "SEG_E",
+        "6": "SEG_F",
+        "7": "SEG_G"
+      },
+      "group": "sevenseg",
+      "icon": "assets/icons/Connector/Screw_Terminal_01x08_unit1.svg"
+    },
+    {
+      "ref": "J16",
+      "value": "MEGA SPARE",
+      "symbol": "Connector_Generic:Conn_02x10_Odd_Even",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical",
+      "pins": {
+        "1": "+5V",
+        "2": "GND",
+        "3": "+3V3",
+        "4": "GND",
+        "5": "I2C_SDA",
+        "6": "I2C_SCL",
+        "7": "SPARE_TX3",
+        "8": "SPARE_RX3",
+        "9": "SPARE_D4",
+        "10": "SPARE_D13",
+        "11": "SPARE_D30",
+        "12": "SPARE_D31",
+        "13": "SPARE_D32",
+        "14": "SPARE_D33",
+        "15": "SPARE_A7",
+        "16": "SPARE_A8",
+        "17": "SPARE_SCK",
+        "18": "SPARE_MISO",
+        "19": "SPARE_MOSI",
+        "20": "SPARE_CS"
+      },
+      "group": "expansion",
+      "icon": "assets/icons/Connector_Generic/Conn_02x10_Odd_Even_unit1.svg"
+    },
+    {
+      "ref": "J17",
+      "value": "ESP32 SPARE",
+      "symbol": "Connector_Generic:Conn_02x04_Odd_Even",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical",
+      "pins": {
+        "1": "+3V3_ESP",
+        "2": "GND",
+        "3": "ESP_IO25",
+        "4": "ESP_IO26",
+        "5": "ESP_IO27",
+        "6": "ESP_IO32",
+        "7": "ESP_IO33",
+        "8": "ESP_IO14"
+      },
+      "group": "expansion",
+      "icon": "assets/icons/Connector_Generic/Conn_02x04_Odd_Even_unit1.svg"
+    }
+  ],
+  "nets": {
+    "+12V_IN": [
+      "F1.1",
+      "J1.1"
+    ],
+    "GND": [
+      "A1.GND1",
+      "A1.GND2",
+      "A1.GND3",
+      "A1.GND5",
+      "A1.GND6",
+      "A2.14",
+      "A2.29",
+      "C1.2",
+      "C10.2",
+      "C11.2",
+      "C12.2",
+      "C13.2",
+      "C2.2",
+      "C3.2",
+      "C6.2",
+      "C7.2",
+      "C8.2",
+      "C9.2",
+      "D1.2",
+      "D3.1",
+      "D4.1",
+      "J1.2",
+      "J12.2",
+      "J13.2",
+      "J13.4",
+      "J13.6",
+      "J13.8",
+      "J14.2",
+      "J14.4",
+      "J14.6",
+      "J14.8",
+      "J15.8",
+      "J16.2",
+      "J16.4",
+      "J17.2",
+      "Q1.3",
+      "Q10.3",
+      "Q2.3",
+      "Q3.3",
+      "Q4.3",
+      "Q5.3",
+      "Q6.3",
+      "Q7.3",
+      "Q8.3",
+      "Q9.3",
+      "R21.2",
+      "R22.2",
+      "R23.2",
+      "R24.2",
+      "R25.2",
+      "R26.2",
+      "R27.2",
+      "R28.2",
+      "R29.2",
+      "R30.2",
+      "R63.2",
+      "U1.2",
+      "U2.3",
+      "U3.13",
+      "U3.8"
+    ],
+    "+12V": [
+      "C1.1",
+      "D1.1",
+      "D11.1",
+      "D12.1",
+      "D13.1",
+      "D14.1",
+      "D15.1",
+      "D16.1",
+      "D17.1",
+      "D18.1",
+      "D19.1",
+      "D2.2",
+      "D20.1",
+      "D21.2",
+      "D22.2",
+      "D23.2",
+      "D24.2",
+      "D25.2",
+      "D26.2",
+      "D27.2",
+      "D28.2",
+      "D29.2",
+      "D30.2",
+      "F1.2",
+      "J10.1",
+      "J11.1",
+      "J12.1",
+      "J2.1",
+      "J3.1",
+      "J4.1",
+      "J5.1",
+      "J6.1",
+      "J7.1",
+      "J8.1",
+      "J9.1",
+      "R1.1",
+      "R41.1"
+    ],
+    "+12V_REG": [
+      "C2.1",
+      "C3.1",
+      "D2.1",
+      "U1.1"
+    ],
+    "+5V": [
+      "A1.5V1",
+      "A1.5V3",
+      "A1.5V4",
+      "A2.15",
+      "C13.1",
+      "C6.1",
+      "C7.1",
+      "J16.1",
+      "R2.1",
+      "R42.1",
+      "R47.1",
+      "R48.1",
+      "R49.1",
+      "R50.1",
+      "U1.3",
+      "U3.10",
+      "U3.16"
+    ],
+    "PWR12_LED": [
+      "D3.2",
+      "R1.2"
+    ],
+    "PWR5_LED": [
+      "D4.2",
+      "R2.2"
+    ],
+    "COIN_IN": [
+      "A1.D2",
+      "C8.1",
+      "R42.2",
+      "U2.4"
+    ],
+    "MEGA_TX1": [
+      "A1.D18",
+      "R62.1"
+    ],
+    "ESP_TX2": [
+      "A1.D19",
+      "A2.24"
+    ],
+    "BTN_S1": [
+      "A1.D22",
+      "C9.1",
+      "R43.2",
+      "R47.2"
+    ],
+    "BTN_S2": [
+      "A1.D24",
+      "C10.1",
+      "R44.2",
+      "R48.2"
+    ],
+    "BTN_S3": [
+      "A1.D26",
+      "C11.1",
+      "R45.2",
+      "R49.2"
+    ],
+    "BTN_RST": [
+      "A1.D28",
+      "C12.1",
+      "R46.2",
+      "R50.2"
+    ],
+    "SEG_DATA": [
+      "A1.A0",
+      "U3.14"
+    ],
+    "SEG_LATCH": [
+      "A1.A1",
+      "U3.12"
+    ],
+    "SEG_CLOCK": [
+      "A1.A2",
+      "U3.11"
+    ],
+    "LED1": [
+      "A1.A3",
+      "R51.1"
+    ],
+    "LED2": [
+      "A1.A4",
+      "R52.1"
+    ],
+    "LED3": [
+      "A1.A5",
+      "R53.1"
+    ],
+    "LED4": [
+      "A1.A6",
+      "R54.1"
+    ],
+    "I2C_SDA": [
+      "A1.D20",
+      "J16.5"
+    ],
+    "I2C_SCL": [
+      "A1.D21",
+      "J16.6"
+    ],
+    "SPARE_D4": [
+      "A1.D4",
+      "J16.9"
+    ],
+    "SPARE_D13": [
+      "A1.D13",
+      "J16.10"
+    ],
+    "SPARE_A7": [
+      "A1.A7",
+      "J16.15"
+    ],
+    "SPARE_A8": [
+      "A1.A8",
+      "J16.16"
+    ],
+    "SPARE_TX3": [
+      "A1.D14",
+      "J16.7"
+    ],
+    "SPARE_RX3": [
+      "A1.D15",
+      "J16.8"
+    ],
+    "SPARE_D30": [
+      "A1.D30",
+      "J16.11"
+    ],
+    "SPARE_D31": [
+      "A1.D31",
+      "J16.12"
+    ],
+    "SPARE_D32": [
+      "A1.D32",
+      "J16.13"
+    ],
+    "SPARE_D33": [
+      "A1.D33",
+      "J16.14"
+    ],
+    "SPARE_MISO": [
+      "A1.D50",
+      "J16.18"
+    ],
+    "SPARE_MOSI": [
+      "A1.D51",
+      "J16.19"
+    ],
+    "SPARE_SCK": [
+      "A1.D52",
+      "J16.17"
+    ],
+    "SPARE_CS": [
+      "A1.D53",
+      "J16.20"
+    ],
+    "+3V3": [
+      "A1.3V3",
+      "J16.3"
+    ],
+    "MAG1_PWM": [
+      "A1.D3",
+      "R11.1"
+    ],
+    "MAG2_PWM": [
+      "A1.D5",
+      "R12.1"
+    ],
+    "MAG3_PWM": [
+      "A1.D6",
+      "R13.1"
+    ],
+    "MAG4_PWM": [
+      "A1.D7",
+      "R14.1"
+    ],
+    "MAG5_PWM": [
+      "A1.D8",
+      "R15.1"
+    ],
+    "MAG6_PWM": [
+      "A1.D9",
+      "R16.1"
+    ],
+    "MAG7_PWM": [
+      "A1.D10",
+      "R17.1"
+    ],
+    "MAG8_PWM": [
+      "A1.D11",
+      "R18.1"
+    ],
+    "MAG9_PWM": [
+      "A1.D12",
+      "R19.1"
+    ],
+    "MAG10_PWM": [
+      "A1.D44",
+      "R20.1"
+    ],
+    "ESP_RX2": [
+      "A2.25",
+      "R62.2",
+      "R63.1"
+    ],
+    "+3V3_ESP": [
+      "A2.30",
+      "J17.1"
+    ],
+    "ESP_IO25": [
+      "A2.8",
+      "J17.3"
+    ],
+    "ESP_IO26": [
+      "A2.9",
+      "J17.4"
+    ],
+    "ESP_IO27": [
+      "A2.10",
+      "J17.5"
+    ],
+    "ESP_IO32": [
+      "A2.6",
+      "J17.6"
+    ],
+    "ESP_IO33": [
+      "A2.7",
+      "J17.7"
+    ],
+    "ESP_IO14": [
+      "A2.11",
+      "J17.8"
+    ],
+    "MAG1_OUT": [
+      "D11.2",
+      "J2.2",
+      "Q1.2",
+      "R31.2"
+    ],
+    "MAG1_G": [
+      "Q1.1",
+      "R11.2",
+      "R21.1"
+    ],
+    "MAG1_LED": [
+      "D21.1",
+      "R31.1"
+    ],
+    "MAG2_OUT": [
+      "D12.2",
+      "J3.2",
+      "Q2.2",
+      "R32.2"
+    ],
+    "MAG2_G": [
+      "Q2.1",
+      "R12.2",
+      "R22.1"
+    ],
+    "MAG2_LED": [
+      "D22.1",
+      "R32.1"
+    ],
+    "MAG3_OUT": [
+      "D13.2",
+      "J4.2",
+      "Q3.2",
+      "R33.2"
+    ],
+    "MAG3_G": [
+      "Q3.1",
+      "R13.2",
+      "R23.1"
+    ],
+    "MAG3_LED": [
+      "D23.1",
+      "R33.1"
+    ],
+    "MAG4_OUT": [
+      "D14.2",
+      "J5.2",
+      "Q4.2",
+      "R34.2"
+    ],
+    "MAG4_G": [
+      "Q4.1",
+      "R14.2",
+      "R24.1"
+    ],
+    "MAG4_LED": [
+      "D24.1",
+      "R34.1"
+    ],
+    "MAG5_OUT": [
+      "D15.2",
+      "J6.2",
+      "Q5.2",
+      "R35.2"
+    ],
+    "MAG5_G": [
+      "Q5.1",
+      "R15.2",
+      "R25.1"
+    ],
+    "MAG5_LED": [
+      "D25.1",
+      "R35.1"
+    ],
+    "MAG6_OUT": [
+      "D16.2",
+      "J7.2",
+      "Q6.2",
+      "R36.2"
+    ],
+    "MAG6_G": [
+      "Q6.1",
+      "R16.2",
+      "R26.1"
+    ],
+    "MAG6_LED": [
+      "D26.1",
+      "R36.1"
+    ],
+    "MAG7_OUT": [
+      "D17.2",
+      "J8.2",
+      "Q7.2",
+      "R37.2"
+    ],
+    "MAG7_G": [
+      "Q7.1",
+      "R17.2",
+      "R27.1"
+    ],
+    "MAG7_LED": [
+      "D27.1",
+      "R37.1"
+    ],
+    "MAG8_OUT": [
+      "D18.2",
+      "J9.2",
+      "Q8.2",
+      "R38.2"
+    ],
+    "MAG8_G": [
+      "Q8.1",
+      "R18.2",
+      "R28.1"
+    ],
+    "MAG8_LED": [
+      "D28.1",
+      "R38.1"
+    ],
+    "MAG9_OUT": [
+      "D19.2",
+      "J10.2",
+      "Q9.2",
+      "R39.2"
+    ],
+    "MAG9_G": [
+      "Q9.1",
+      "R19.2",
+      "R29.1"
+    ],
+    "MAG9_LED": [
+      "D29.1",
+      "R39.1"
+    ],
+    "MAG10_OUT": [
+      "D20.2",
+      "J11.2",
+      "Q10.2",
+      "R40.2"
+    ],
+    "MAG10_G": [
+      "Q10.1",
+      "R20.2",
+      "R30.1"
+    ],
+    "MAG10_LED": [
+      "D30.1",
+      "R40.1"
+    ],
+    "COIN_SIG": [
+      "J12.3",
+      "U2.2"
+    ],
+    "COIN_OPTO_A": [
+      "R41.2",
+      "U2.1"
+    ],
+    "BTN_S1_EXT": [
+      "J13.1",
+      "R43.1"
+    ],
+    "BTN_S2_EXT": [
+      "J13.3",
+      "R44.1"
+    ],
+    "BTN_S3_EXT": [
+      "J13.5",
+      "R45.1"
+    ],
+    "BTN_RST_EXT": [
+      "J13.7",
+      "R46.1"
+    ],
+    "LED1_OUT": [
+      "J14.1",
+      "R51.2"
+    ],
+    "LED2_OUT": [
+      "J14.3",
+      "R52.2"
+    ],
+    "LED3_OUT": [
+      "J14.5",
+      "R53.2"
+    ],
+    "LED4_OUT": [
+      "J14.7",
+      "R54.2"
+    ],
+    "SEG_QB": [
+      "R61.1",
+      "U3.1"
+    ],
+    "SEG_QC": [
+      "R60.1",
+      "U3.2"
+    ],
+    "SEG_QD": [
+      "R55.1",
+      "U3.3"
+    ],
+    "SEG_QE": [
+      "R59.1",
+      "U3.4"
+    ],
+    "SEG_QF": [
+      "R57.1",
+      "U3.5"
+    ],
+    "SEG_QG": [
+      "R56.1",
+      "U3.6"
+    ],
+    "SEG_QH": [
+      "R58.1",
+      "U3.7"
+    ],
+    "SEG_A": [
+      "J15.1",
+      "R55.2"
+    ],
+    "SEG_B": [
+      "J15.2",
+      "R56.2"
+    ],
+    "SEG_C": [
+      "J15.3",
+      "R57.2"
+    ],
+    "SEG_D": [
+      "J15.4",
+      "R58.2"
+    ],
+    "SEG_E": [
+      "J15.5",
+      "R59.2"
+    ],
+    "SEG_F": [
+      "J15.6",
+      "R60.2"
+    ],
+    "SEG_G": [
+      "J15.7",
+      "R61.2"
+    ]
+  },
+  "io": [
+    {
+      "net": "BTN_S1",
+      "type": "button",
+      "label": "S1 (speed 1)",
+      "ref": "J13",
+      "kind": "input"
+    },
+    {
+      "net": "BTN_S2",
+      "type": "button",
+      "label": "S2 (speed 2)",
+      "ref": "J13",
+      "kind": "input"
+    },
+    {
+      "net": "BTN_S3",
+      "type": "button",
+      "label": "S3 (speed 3)",
+      "ref": "J13",
+      "kind": "input"
+    },
+    {
+      "net": "BTN_RST",
+      "type": "button",
+      "label": "RST / Start",
+      "ref": "J13",
+      "kind": "input"
+    },
+    {
+      "net": "COIN_IN",
+      "type": "coin",
+      "label": "Coin input",
+      "ref": "U2",
+      "kind": "input"
+    },
+    {
+      "net": "MAG1_PWM",
+      "type": "led",
+      "label": "Magnet 1",
+      "ref": "Q1",
+      "kind": "output"
+    },
+    {
+      "net": "MAG2_PWM",
+      "type": "led",
+      "label": "Magnet 2",
+      "ref": "Q2",
+      "kind": "output"
+    },
+    {
+      "net": "MAG3_PWM",
+      "type": "led",
+      "label": "Magnet 3",
+      "ref": "Q3",
+      "kind": "output"
+    },
+    {
+      "net": "MAG4_PWM",
+      "type": "led",
+      "label": "Magnet 4",
+      "ref": "Q4",
+      "kind": "output"
+    },
+    {
+      "net": "MAG5_PWM",
+      "type": "led",
+      "label": "Magnet 5",
+      "ref": "Q5",
+      "kind": "output"
+    },
+    {
+      "net": "MAG6_PWM",
+      "type": "led",
+      "label": "Magnet 6",
+      "ref": "Q6",
+      "kind": "output"
+    },
+    {
+      "net": "MAG7_PWM",
+      "type": "led",
+      "label": "Magnet 7",
+      "ref": "Q7",
+      "kind": "output"
+    },
+    {
+      "net": "MAG8_PWM",
+      "type": "led",
+      "label": "Magnet 8",
+      "ref": "Q8",
+      "kind": "output"
+    },
+    {
+      "net": "MAG9_PWM",
+      "type": "led",
+      "label": "Magnet 9",
+      "ref": "Q9",
+      "kind": "output"
+    },
+    {
+      "net": "MAG10_PWM",
+      "type": "led",
+      "label": "Magnet 10",
+      "ref": "Q10",
+      "kind": "output"
+    },
+    {
+      "net": "LED1",
+      "type": "led",
+      "label": "Status LED 1",
+      "ref": "J14",
+      "kind": "output"
+    },
+    {
+      "net": "LED2",
+      "type": "led",
+      "label": "Status LED 2",
+      "ref": "J14",
+      "kind": "output"
+    },
+    {
+      "net": "LED3",
+      "type": "led",
+      "label": "Status LED 3",
+      "ref": "J14",
+      "kind": "output"
+    },
+    {
+      "net": "LED4",
+      "type": "led",
+      "label": "Status LED 4",
+      "ref": "J14",
+      "kind": "output"
+    },
+    {
+      "net": "SEG_DATA",
+      "type": "seven-segment",
+      "label": "Score display (74HC595 -> 7-seg)",
+      "ref": "U3",
+      "kind": "output"
+    }
+  ],
+  "actions": [
+    {
+      "id": "pinmap-check",
+      "label": "Pin cross-check (firmware vs netlist)",
+      "kind": "script",
+      "cwd": "projects/reflex-machine/test",
+      "cmd": [
+        "python",
+        "pinmap.py"
+      ],
+      "cost": "free"
+    },
+    {
+      "id": "electrical-report",
+      "label": "Electrical check report (Stage 1)",
+      "kind": "file",
+      "path": "projects/reflex-machine/test/electrical/REPORT.md",
+      "cost": "free"
+    },
+    {
+      "id": "spice-report",
+      "label": "SPICE report (Stage 2)",
+      "kind": "file",
+      "path": "projects/reflex-machine/test/spice/REPORT.md",
+      "cost": "free"
+    },
+    {
+      "id": "wokwi-report",
+      "label": "Wokwi functional sim report (Stage 3)",
+      "kind": "file",
+      "path": "projects/reflex-machine/test/wokwi/README.md",
+      "cost": "free"
+    }
+  ],
+  "live_sim": true
+}

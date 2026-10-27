@@ -1,0 +1,10 @@
+Qty,Value,Designators,Footprint,LCSC,Assembly
+1,10uF,C1,CP_Radial_D6.3mm_P2.50mm,,hand solder / plug-in
+1,10nF,C2,C_Disc_D5.0mm_W2.5mm_P5.00mm,,hand solder / plug-in
+1,100nF,C3,C_Disc_D5.0mm_W2.5mm_P5.00mm,,hand solder / plug-in
+1,RED,D1,LED_D5.0mm,C2895470,hand solder / plug-in
+1,9-12V IN,J1,TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,,hand solder / plug-in
+1,10k,R1,R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+1,47k,R2,R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+1,470R,R3,R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,,hand solder / plug-in
+1,NE555P,U1,DIP-8_W7.62mm,,hand solder / plug-in

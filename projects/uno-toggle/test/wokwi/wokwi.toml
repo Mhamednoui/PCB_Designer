@@ -1,0 +1,5 @@
+# Lets `wokwi-cli` (and the webview platform's MCP session) find the real compiled firmware.
+[wokwi]
+version = 1
+firmware = '../../sim/uno/.pio/build/uno/firmware.hex'
+elf = '../../sim/uno/.pio/build/uno/firmware.elf'

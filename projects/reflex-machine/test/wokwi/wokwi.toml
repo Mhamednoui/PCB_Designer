@@ -1,0 +1,8 @@
+# Wokwi Configuration File
+# Reference: https://docs.wokwi.com/vscode/project-config
+# Lets `wokwi-cli mcp .` (and any other wokwi-cli command run in this directory) find the real compiled
+# firmware without needing --elf on the command line every time.
+[wokwi]
+version = 1
+firmware = '../../sim/mega/.pio/build/megaatmega2560/firmware.hex'
+elf = '../../sim/mega/.pio/build/megaatmega2560/firmware.elf'

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 780" width="1040" height="780" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <rect width="1040" height="780" fill="#14161a"/>
+
+  <text x="40" y="44" fill="#e6e8eb" font-size="24" font-weight="600">Where we are vs. the goal</text>
+  <text x="40" y="68" fill="#8a8f9a" font-size="13">Goal: “one prompt → full design + PCB + testing + debugging + a platform to view and run it.”</text>
+
+  <!-- legend -->
+  <g font-size="11">
+    <rect x="770" y="30" width="12" height="12" rx="3" fill="#4caf7a"/><text x="790" y="41" fill="#8a8f9a">done</text>
+    <rect x="840" y="30" width="12" height="12" rx="3" fill="#ffcc33"/><text x="860" y="41" fill="#8a8f9a">partial</text>
+    <rect x="915" y="30" width="12" height="12" rx="3" fill="#8a8f9a"/><text x="935" y="41" fill="#8a8f9a">not started</text>
+  </g>
+
+  <!-- THE GOAL BAR -->
+  <rect x="40" y="92" width="960" height="112" rx="8" fill="#1c1f26" stroke="#4f9dff" stroke-width="1.5"/>
+  <text x="60" y="118" fill="#4f9dff" font-size="13" font-weight="600">THE TARGET · one prompt, then one command</text>
+  <g font-size="10.5" text-anchor="middle">
+    <rect x="60"  y="132" width="140" height="52" rx="5" fill="#14161a" stroke="#4f9dff"/>
+    <text x="130" y="152" fill="#e6e8eb" font-weight="600">Prompt</text><text x="130" y="169" fill="#8a8f9a" font-size="9.5">brief · netlist · io_map</text>
+    <rect x="212" y="132" width="140" height="52" rx="5" fill="#14161a" stroke="#4caf7a"/>
+    <text x="282" y="152" fill="#e6e8eb" font-weight="600">Design</text><text x="282" y="169" fill="#4caf7a" font-size="9.5">sch → PCB → fab</text>
+    <rect x="364" y="132" width="140" height="52" rx="5" fill="#14161a" stroke="#ffcc33"/>
+    <text x="434" y="152" fill="#e6e8eb" font-weight="600">Testing</text><text x="434" y="169" fill="#ffcc33" font-size="9.5">4 stages, not yet 1 cmd</text>
+    <rect x="516" y="132" width="140" height="52" rx="5" fill="#14161a" stroke="#ffcc33"/>
+    <text x="586" y="152" fill="#e6e8eb" font-weight="600">Debugging</text><text x="586" y="169" fill="#ffcc33" font-size="9.5">reports + live sim</text>
+    <rect x="668" y="132" width="140" height="52" rx="5" fill="#14161a" stroke="#4caf7a"/>
+    <text x="738" y="152" fill="#e6e8eb" font-weight="600">Platform</text><text x="738" y="169" fill="#4caf7a" font-size="9.5">3D view + dashboard</text>
+    <rect x="820" y="132" width="160" height="52" rx="5" fill="#14161a" stroke="#4caf7a"/>
+    <text x="900" y="152" fill="#e6e8eb" font-weight="600">Simulation</text><text x="900" y="169" fill="#4caf7a" font-size="9.5">real firmware, live</text>
+  </g>
+
+  <!-- PHASES -->
+  <text x="40" y="238" fill="#e6e8eb" font-size="13" font-weight="600">Platform phases</text>
+
+  <g font-size="11.5">
+    <rect x="40" y="250" width="960" height="46" rx="6" fill="#1c1f26" stroke="#2c2f38"/>
+    <rect x="40" y="250" width="6" height="46" rx="3" fill="#4caf7a"/>
+    <text x="64" y="270" fill="#e6e8eb" font-weight="600">Phase 0 · Foundation</text>
+    <text x="64" y="288" fill="#8a8f9a" font-size="10.5">3D viewer · dashboard with real KiCad icons · output console · backend + manifest contract</text>
+    <text x="980" y="277" fill="#4caf7a" font-size="11" text-anchor="end">DONE</text>
+
+    <rect x="40" y="304" width="960" height="46" rx="6" fill="#1c1f26" stroke="#2c2f38"/>
+    <rect x="40" y="304" width="6" height="46" rx="3" fill="#4caf7a"/>
+    <text x="64" y="324" fill="#e6e8eb" font-weight="600">Phase 1 · Useful to look at</text>
+    <text x="64" y="342" fill="#8a8f9a" font-size="10.5">camera presets · click a dashboard entry to highlight that component in 3D · progressive wheel zoom</text>
+    <text x="980" y="331" fill="#4caf7a" font-size="11" text-anchor="end">DONE</text>
+
+    <rect x="40" y="358" width="960" height="46" rx="6" fill="#1c1f26" stroke="#2c2f38"/>
+    <rect x="40" y="358" width="6" height="46" rx="3" fill="#4caf7a"/>
+    <text x="64" y="378" fill="#e6e8eb" font-weight="600">Phase 2 · Live simulation</text>
+    <text x="64" y="396" fill="#8a8f9a" font-size="10.5">real Wokwi session running real firmware · press inputs · watch outputs · time limit + quota logging</text>
+    <text x="980" y="385" fill="#4caf7a" font-size="11" text-anchor="end">DONE</text>
+
+    <rect x="40" y="412" width="960" height="46" rx="6" fill="#1c1f26" stroke="#2c2f38"/>
+    <rect x="40" y="412" width="6" height="46" rx="3" fill="#4caf7a"/>
+    <text x="64" y="432" fill="#e6e8eb" font-weight="600">Phase 3 · Works for ANY project</text>
+    <text x="64" y="450" fill="#8a8f9a" font-size="10.5">reads any .kicad_pcb · one-command onboarding · proven on KiCad's pic_programmer demo, zero core changes</text>
+    <text x="980" y="439" fill="#4caf7a" font-size="11" text-anchor="end">DONE</text>
+
+    <rect x="40" y="466" width="960" height="46" rx="6" fill="#1c1f26" stroke="#2c2f38"/>
+    <rect x="40" y="466" width="6" height="46" rx="3" fill="#ffcc33"/>
+    <text x="64" y="486" fill="#e6e8eb" font-weight="600">Phase 4 · Separate tools over APIs</text>
+    <text x="64" y="504" fill="#8a8f9a" font-size="10.5">registry + proxy built and proven · reference service included — real capabilities not migrated yet</text>
+    <text x="980" y="493" fill="#ffcc33" font-size="11" text-anchor="end">SEAM READY</text>
+
+    <rect x="40" y="520" width="960" height="46" rx="6" fill="#1c1f26" stroke="#2c2f38"/>
+    <rect x="40" y="520" width="6" height="46" rx="3" fill="#ffcc33"/>
+    <text x="64" y="540" fill="#e6e8eb" font-weight="600">Phase 5 · One prompt → a whole board</text>
+    <text x="64" y="558" fill="#8a8f9a" font-size="10.5">pipeline.py chains design → fab → pin-check → viewer · test stages not yet wired into it</text>
+    <text x="980" y="547" fill="#ffcc33" font-size="11" text-anchor="end">IN PROGRESS</text>
+  </g>
+
+  <!-- NEXT -->
+  <rect x="40" y="592" width="960" height="120" rx="8" fill="#1c1f26" stroke="#4f9dff" stroke-width="1.5"/>
+  <text x="60" y="618" fill="#4f9dff" font-size="13" font-weight="600">THE ONE NEXT THING</text>
+  <text x="60" y="642" fill="#e6e8eb" font-size="12.5">Wire the test stages (SPICE, Wokwi) into pipeline.py as services.</text>
+  <text x="60" y="664" fill="#8a8f9a" font-size="11.5">That is the single remaining gap between “design + view” and the full “design + testing + debugging + simulation” goal —</text>
+  <text x="60" y="682" fill="#8a8f9a" font-size="11.5">and it uses the Phase 4 seam that is already built and proven, so it adds capability without touching the core.</text>
+  <text x="60" y="702" fill="#ffcc33" font-size="11">One thing at a time. Everything else stays on the roadmap until this is done.</text>
+
+  <text x="40" y="748" fill="#8a8f9a" font-size="11">Status source of truth: webview/ROADMAP.md · session history: CLAUDE.md · lessons: docs/LESSONS_LEARNED.md</text>
+</svg>

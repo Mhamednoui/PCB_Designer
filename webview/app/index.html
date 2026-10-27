@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PCB Webview Platform</title>
+<link rel="stylesheet" href="style.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.js",
+    "three/addons/": "./vendor/three/addons/"
+  }
+}
+</script>
+</head>
+<body>
+  <header id="topbar">
+    <div id="brand">PCB Webview Platform</div>
+    <select id="project-picker" title="Project"></select>
+    <div id="camera-presets">
+      <button type="button" data-view="iso">Iso</button>
+      <button type="button" data-view="top">Top</button>
+      <button type="button" data-view="bottom">Bottom</button>
+      <button type="button" id="zoom-out" title="Zoom out">&minus;</button>
+      <button type="button" id="zoom-in" title="Zoom in">+</button>
+      <span id="zoom-readout" title="Camera distance (min - max). If the wheel doesn't change this number, the wheel event isn't reaching the 3D view at all."></span>
+    </div>
+    <div id="sim-controls">
+      <label id="sim-limit-label">Limit
+        <input id="sim-limit" type="number" min="1" max="300" step="1" value="10" title="Auto-stop after this many seconds" />s
+      </label>
+      <button id="sim-toggle" type="button" disabled>Start Simulation</button>
+      <span id="sim-status"></span>
+    </div>
+    <button id="console-toggle" type="button">Output Console</button>
+  </header>
+
+  <div id="body-flex">
+    <main>
+      <div id="viewport"></div>
+
+      <aside id="dashboard">
+        <h2>Activity</h2>
+        <div id="activity-log"></div>
+        <h2>Inputs</h2>
+        <div id="inputs-list" class="io-list"></div>
+        <h2>Outputs</h2>
+        <div id="outputs-list" class="io-list"></div>
+      </aside>
+    </main>
+
+    <section id="console" class="closed">
+      <div id="console-header">
+        <span id="console-tabs">
+          <button type="button" class="tab active" data-tab="log">Output</button>
+          <button type="button" class="tab" data-tab="serial">Serial</button>
+          <button type="button" class="tab" data-tab="capture">Analyzer</button>
+        </span>
+        <span id="console-actions"></span>
+        <button type="button" id="console-close">&times;</button>
+      </div>
+      <div id="console-log" class="tab-panel"></div>
+      <div id="console-serial" class="tab-panel hidden"></div>
+      <div id="console-capture" class="tab-panel hidden"></div>
+    </section>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

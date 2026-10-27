@@ -1,0 +1,10 @@
+{
+  "inputs": [
+    { "net": "VCC", "type": "analog", "label": "Supply voltage", "ref": "J1",
+      "min": 9, "max": 12, "step": 0.5, "default": 9, "unit": "V" }
+  ],
+  "outputs": [
+    { "net": "OUT", "type": "led", "label": "LED D1 (555 output)", "ref": "D1" },
+    { "net": "TRIG", "type": "voltage", "label": "Timing capacitor C1", "ref": "C1" }
+  ]
+}

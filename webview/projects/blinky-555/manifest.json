@@ -1,0 +1,203 @@
+{
+  "id": "blinky-555",
+  "name": "blinky-555",
+  "model": "model.glb",
+  "components": [
+    {
+      "ref": "J1",
+      "value": "9-12V IN",
+      "symbol": "Connector:Conn_01x02_Pin",
+      "footprint": "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm",
+      "pins": {
+        "1": "VCC",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Connector/Conn_01x02_Pin_unit1.svg"
+    },
+    {
+      "ref": "C3",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "VCC",
+        "2": "GND"
+      },
+      "group": "power",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "U1",
+      "value": "NE555P",
+      "symbol": "Timer:NE555P",
+      "footprint": "Package_DIP:DIP-8_W7.62mm",
+      "pins": {
+        "1": "GND",
+        "2": "TRIG",
+        "3": "OUT",
+        "4": "VCC",
+        "5": "CONT",
+        "6": "TRIG",
+        "7": "DISCH",
+        "8": "VCC"
+      },
+      "group": "timer",
+      "icon": "assets/icons/Timer/NE555P_unit1.svg"
+    },
+    {
+      "ref": "R1",
+      "value": "10k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "DISCH"
+      },
+      "group": "timer",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "R2",
+      "value": "47k",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "DISCH",
+        "2": "TRIG"
+      },
+      "group": "timer",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "C1",
+      "value": "10uF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
+      "pins": {
+        "1": "TRIG",
+        "2": "GND"
+      },
+      "group": "timer",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C2",
+      "value": "10nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "CONT",
+        "2": "GND"
+      },
+      "group": "timer",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R3",
+      "value": "470R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "OUT",
+        "2": "LED_A"
+      },
+      "group": "led",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D1",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "LED_A"
+      },
+      "group": "led",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    }
+  ],
+  "nets": {
+    "VCC": [
+      "C3.1",
+      "J1.1",
+      "R1.1",
+      "U1.4",
+      "U1.8"
+    ],
+    "GND": [
+      "C1.2",
+      "C2.2",
+      "C3.2",
+      "D1.1",
+      "J1.2",
+      "U1.1"
+    ],
+    "TRIG": [
+      "C1.1",
+      "R2.2",
+      "U1.2",
+      "U1.6"
+    ],
+    "OUT": [
+      "R3.1",
+      "U1.3"
+    ],
+    "CONT": [
+      "C2.1",
+      "U1.5"
+    ],
+    "DISCH": [
+      "R1.2",
+      "R2.1",
+      "U1.7"
+    ],
+    "LED_A": [
+      "D1.2",
+      "R3.2"
+    ]
+  },
+  "io": [
+    {
+      "net": "VCC",
+      "type": "analog",
+      "label": "Supply voltage",
+      "ref": "J1",
+      "min": 9,
+      "max": 12,
+      "step": 0.5,
+      "default": 9,
+      "unit": "V",
+      "kind": "input"
+    },
+    {
+      "net": "OUT",
+      "type": "led",
+      "label": "LED D1 (555 output)",
+      "ref": "D1",
+      "kind": "output"
+    },
+    {
+      "net": "TRIG",
+      "type": "voltage",
+      "label": "Timing capacitor C1",
+      "ref": "C1",
+      "kind": "output"
+    }
+  ],
+  "actions": [],
+  "live_sim": false,
+  "spice_sim": true,
+  "spice": {
+    "supplies": {
+      "VCC": 9.0
+    },
+    "tstop": 4.0,
+    "probes": [
+      "OUT",
+      "TRIG",
+      "VCC"
+    ]
+  }
+}

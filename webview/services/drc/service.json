@@ -1,0 +1,7 @@
+{
+  "name": "drc",
+  "port": 8802,
+  "health": "/health",
+  "description": "Runs KiCad DRC/ERC on a project's real board and schematic, returns structured results",
+  "start": ["python", "service.py"]
+}

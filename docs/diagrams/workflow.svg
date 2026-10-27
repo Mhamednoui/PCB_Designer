@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 700" width="1040" height="700" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <rect width="1040" height="700" fill="#14161a"/>
+
+  <text x="40" y="44" fill="#e6e8eb" font-size="24" font-weight="600">Workflow — from an idea to a tested, viewable board</text>
+  <text x="40" y="68" fill="#8a8f9a" font-size="13">The split that matters: judgement is the prompt, everything mechanical is one command.</text>
+
+  <!-- STEP 1 -->
+  <rect x="40" y="92" width="960" height="132" rx="8" fill="#1c1f26" stroke="#4f9dff" stroke-width="1.5"/>
+  <text x="60" y="120" fill="#4f9dff" font-size="13" font-weight="600">1 · THE PROMPT</text>
+  <text x="185" y="120" fill="#8a8f9a" font-size="12">you + Claude — real engineering judgement, not something a script can invent</text>
+  <text x="60" y="142" fill="#8a8f9a" font-size="11.5">What the board must do · which parts · the pin map · which nets are inputs vs outputs</text>
+
+  <rect x="60" y="156" width="296" height="48" rx="6" fill="#14161a" stroke="#2c2f38"/>
+  <text x="208" y="176" fill="#e6e8eb" font-size="12.5" text-anchor="middle" font-weight="600">DESIGN_BRIEF.md</text>
+  <text x="208" y="193" fill="#8a8f9a" font-size="10.5" text-anchor="middle">the spec + the decisions behind it</text>
+
+  <rect x="372" y="156" width="296" height="48" rx="6" fill="#14161a" stroke="#2c2f38"/>
+  <text x="520" y="176" fill="#e6e8eb" font-size="12.5" text-anchor="middle" font-weight="600">gen/netlist.py</text>
+  <text x="520" y="193" fill="#8a8f9a" font-size="10.5" text-anchor="middle">every part + every connection (source of truth)</text>
+
+  <rect x="684" y="156" width="296" height="48" rx="6" fill="#14161a" stroke="#2c2f38"/>
+  <text x="832" y="176" fill="#e6e8eb" font-size="12.5" text-anchor="middle" font-weight="600">io_map.json</text>
+  <text x="832" y="193" fill="#8a8f9a" font-size="10.5" text-anchor="middle">which nets are inputs / outputs + labels</text>
+
+  <path d="M520 224 L520 258" stroke="#4f9dff" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- STEP 2 -->
+  <rect x="40" y="262" width="960" height="186" rx="8" fill="#1c1f26" stroke="#4caf7a" stroke-width="1.5"/>
+  <text x="60" y="290" fill="#4caf7a" font-size="13" font-weight="600">2 · ONE COMMAND</text>
+  <text x="200" y="290" fill="#8a8f9a" font-size="12">everything below here is mechanical — no judgement required</text>
+  <rect x="60" y="302" width="330" height="28" rx="5" fill="#14161a" stroke="#2c2f38"/>
+  <text x="74" y="321" fill="#4caf7a" font-size="13" font-family="monospace">python pipeline.py &lt;project-id&gt;</text>
+
+  <g font-size="10.5" text-anchor="middle">
+    <rect x="49"  y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="96"  y="367" fill="#e6e8eb" font-weight="600">sch</text><text x="96" y="381" fill="#8a8f9a" font-size="9">schematic</text>
+    <rect x="155" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="202" y="367" fill="#e6e8eb" font-weight="600">sch-check</text><text x="202" y="381" fill="#8a8f9a" font-size="9">netlist + ERC</text>
+    <rect x="261" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="308" y="367" fill="#e6e8eb" font-weight="600">place</text><text x="308" y="381" fill="#8a8f9a" font-size="9">footprints</text>
+    <rect x="367" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="414" y="367" fill="#e6e8eb" font-weight="600">route</text><text x="414" y="381" fill="#8a8f9a" font-size="9">autoroute</text>
+    <rect x="473" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="520" y="367" fill="#e6e8eb" font-weight="600">finish</text><text x="520" y="381" fill="#8a8f9a" font-size="9">pours + vias</text>
+    <rect x="579" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="626" y="367" fill="#e6e8eb" font-weight="600">check</text><text x="626" y="381" fill="#8a8f9a" font-size="9">DRC + parity</text>
+    <rect x="685" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="732" y="367" fill="#e6e8eb" font-weight="600">outputs</text><text x="732" y="381" fill="#8a8f9a" font-size="9">gerbers/BOM</text>
+    <rect x="791" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="838" y="367" fill="#e6e8eb" font-weight="600">pinmap</text><text x="838" y="381" fill="#8a8f9a" font-size="9">code vs board</text>
+    <rect x="897" y="348" width="94" height="42" rx="5" fill="#14161a" stroke="#2c2f38"/>
+    <text x="944" y="367" fill="#e6e8eb" font-weight="600">webview</text><text x="944" y="381" fill="#8a8f9a" font-size="9">onboard viewer</text>
+  </g>
+
+  <text x="60" y="412" fill="#8a8f9a" font-size="11">Stages a project doesn't have are skipped automatically — an imported .kicad_pcb runs only <tspan fill="#e6e8eb">webview</tspan>.</text>
+  <text x="60" y="431" fill="#ffcc33" font-size="11">A board that already has out/fab is protected: re-running the design stages needs --force.</text>
+
+  <path d="M520 448 L520 482" stroke="#4caf7a" stroke-width="2" marker-end="url(#arrowg)"/>
+
+  <!-- STEP 3 -->
+  <rect x="40" y="486" width="960" height="140" rx="8" fill="#1c1f26" stroke="#2c2f38" stroke-width="1.5"/>
+  <text x="60" y="514" fill="#e6e8eb" font-size="13" font-weight="600">3 · WHAT YOU GET</text>
+
+  <rect x="60" y="528" width="296" height="76" rx="6" fill="#14161a" stroke="#2c2f38"/>
+  <text x="208" y="551" fill="#e6e8eb" font-size="12.5" text-anchor="middle" font-weight="600">Manufacturable board</text>
+  <text x="208" y="571" fill="#8a8f9a" font-size="10.5" text-anchor="middle">gerbers · drill · BOM · CPL</text>
+  <text x="208" y="588" fill="#8a8f9a" font-size="10.5" text-anchor="middle">STEP · schematic PDF · renders</text>
+
+  <rect x="372" y="528" width="296" height="76" rx="6" fill="#14161a" stroke="#2c2f38"/>
+  <text x="520" y="551" fill="#e6e8eb" font-size="12.5" text-anchor="middle" font-weight="600">Test + debug evidence</text>
+  <text x="520" y="571" fill="#8a8f9a" font-size="10.5" text-anchor="middle">DRC/ERC · SPICE · pin cross-check</text>
+  <text x="520" y="588" fill="#8a8f9a" font-size="10.5" text-anchor="middle">Wokwi sim · bring-up checklist</text>
+
+  <rect x="684" y="528" width="296" height="76" rx="6" fill="#14161a" stroke="#4f9dff"/>
+  <text x="832" y="551" fill="#e6e8eb" font-size="12.5" text-anchor="middle" font-weight="600">Live platform</text>
+  <text x="832" y="571" fill="#8a8f9a" font-size="10.5" text-anchor="middle">3D board · inputs/outputs dashboard</text>
+  <text x="832" y="588" fill="#8a8f9a" font-size="10.5" text-anchor="middle">press buttons · watch real firmware run</text>
+
+  <text x="40" y="660" fill="#8a8f9a" font-size="11">Reference: docs/NEW_BOARD_PLAYBOOK.md (design) · webview/API.md (platform) · webview/ROADMAP.md (status)</text>
+  <text x="40" y="680" fill="#8a8f9a" font-size="11">Diagrams: docs/diagrams/ — regenerate/edit these as the system changes.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4f9dff"/>
+    </marker>
+    <marker id="arrowg" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#4caf7a"/>
+    </marker>
+  </defs>
+</svg>

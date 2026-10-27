@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "project": "reflex-machine-routed.kicad_pro",
+  "current": "2026-09-17_1759",
+  "runs": {
+    "2026-09-17_1746": {
+      "source_hashes": {
+        "reflex-machine.kicad_sch": "sha256:17e3a68f3d84875a59628638d98422b6b9eaad52815f522ff8a63defe18377a5",
+        "schematic.json": "sha256:fbf67e5efcf98584e20981c70314e2daa76eda9a0cc57126cb2b0b4b30962efe"
+      },
+      "outputs": {
+        "schematic": "schematic.json",
+        "spice": "spice.json"
+      },
+      "scripts": {
+        "schematic": "analyze_schematic.py reflex-machine.kicad_sch"
+      },
+      "generated": "2026-09-17T17:54:20+01:00",
+      "pinned": false
+    },
+    "2026-09-17_1756": {
+      "source_hashes": {
+        "schematic.json": "sha256:fbf67e5efcf98584e20981c70314e2daa76eda9a0cc57126cb2b0b4b30962efe"
+      },
+      "outputs": {
+        "schematic": "schematic.json",
+        "spice": "spice.json"
+      },
+      "scripts": {
+        "spice": "simulate_subcircuits.py"
+      },
+      "generated": "2026-09-17T17:56:28+01:00",
+      "pinned": false
+    },
+    "2026-09-17_1757": {
+      "source_hashes": {
+        "schematic.json": "sha256:fbf67e5efcf98584e20981c70314e2daa76eda9a0cc57126cb2b0b4b30962efe"
+      },
+      "outputs": {
+        "schematic": "schematic.json",
+        "spice": "spice.json"
+      },
+      "scripts": {
+        "spice": "simulate_subcircuits.py"
+      },
+      "generated": "2026-09-17T17:57:54+01:00",
+      "pinned": false
+    },
+    "2026-09-17_1759": {
+      "source_hashes": {
+        "schematic.json": "sha256:fbf67e5efcf98584e20981c70314e2daa76eda9a0cc57126cb2b0b4b30962efe"
+      },
+      "outputs": {
+        "schematic": "schematic.json",
+        "spice": "spice.json"
+      },
+      "scripts": {
+        "spice": "simulate_subcircuits.py"
+      },
+      "generated": "2026-09-17T17:59:11+01:00",
+      "pinned": false
+    }
+  }
+}

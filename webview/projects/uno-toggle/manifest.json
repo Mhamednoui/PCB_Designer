@@ -1,0 +1,191 @@
+{
+  "id": "uno-toggle",
+  "name": "uno-toggle",
+  "model": "model.glb",
+  "components": [
+    {
+      "ref": "A1",
+      "value": "Arduino Uno R3",
+      "symbol": "arduino-library:Arduino_Uno_R3_Shield",
+      "footprint": "arduino-library:Arduino_Uno_R3_Shield",
+      "pins": {
+        "D2": "BTN1",
+        "D3": "BTN2",
+        "D8": "LED1",
+        "D9": "LED2",
+        "GND1": "GND",
+        "GND2": "GND",
+        "GND3": "GND"
+      },
+      "group": "mcu",
+      "icon": "assets/icons/arduino-library/Arduino_Uno_R3_Shield_unit1.svg"
+    },
+    {
+      "ref": "SW1",
+      "value": "BTN1",
+      "symbol": "Switch:SW_Push",
+      "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+      "pins": {
+        "1": "BTN1",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Switch/SW_Push_unit1.svg"
+    },
+    {
+      "ref": "SW2",
+      "value": "BTN2",
+      "symbol": "Switch:SW_Push",
+      "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+      "pins": {
+        "1": "BTN2",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Switch/SW_Push_unit1.svg"
+    },
+    {
+      "ref": "C1",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "BTN1",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "C2",
+      "value": "100nF",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "pins": {
+        "1": "BTN2",
+        "2": "GND"
+      },
+      "group": "buttons",
+      "icon": "assets/icons/Device/C_unit1.svg"
+    },
+    {
+      "ref": "R1",
+      "value": "330R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "LED1",
+        "2": "LED1_A"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D1",
+      "value": "RED",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "LED1_A"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    },
+    {
+      "ref": "R2",
+      "value": "330R",
+      "symbol": "Device:R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "LED2",
+        "2": "LED2_A"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/R_unit1.svg"
+    },
+    {
+      "ref": "D2",
+      "value": "GREEN",
+      "symbol": "Device:LED",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "LED2_A"
+      },
+      "group": "leds",
+      "icon": "assets/icons/Device/LED_unit1.svg"
+    }
+  ],
+  "nets": {
+    "BTN1": [
+      "A1.D2",
+      "C1.1",
+      "SW1.1"
+    ],
+    "BTN2": [
+      "A1.D3",
+      "C2.1",
+      "SW2.1"
+    ],
+    "LED1": [
+      "A1.D8",
+      "R1.1"
+    ],
+    "LED2": [
+      "A1.D9",
+      "R2.1"
+    ],
+    "GND": [
+      "A1.GND1",
+      "A1.GND2",
+      "A1.GND3",
+      "C1.2",
+      "C2.2",
+      "D1.1",
+      "D2.1",
+      "SW1.2",
+      "SW2.2"
+    ],
+    "LED1_A": [
+      "D1.2",
+      "R1.2"
+    ],
+    "LED2_A": [
+      "D2.2",
+      "R2.2"
+    ]
+  },
+  "io": [
+    {
+      "net": "BTN1",
+      "type": "pulse",
+      "label": "Button 1 (D2)",
+      "ref": "SW1",
+      "kind": "input"
+    },
+    {
+      "net": "BTN2",
+      "type": "pulse",
+      "label": "Button 2 (D3)",
+      "ref": "SW2",
+      "kind": "input"
+    },
+    {
+      "net": "LED1",
+      "type": "led",
+      "label": "LED 1 - red (D8)",
+      "ref": "D1",
+      "kind": "output"
+    },
+    {
+      "net": "LED2",
+      "type": "led",
+      "label": "LED 2 - green (D9)",
+      "ref": "D2",
+      "kind": "output"
+    }
+  ],
+  "actions": [],
+  "live_sim": true
+}

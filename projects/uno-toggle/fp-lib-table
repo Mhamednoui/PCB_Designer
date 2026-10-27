@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "arduino-library") (type "KiCad") (uri "${KIPRJMOD}/lib/arduino-library.pretty") (options "") (descr "Alarm-Siren Arduino library"))
+)
