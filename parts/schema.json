@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parts registry record (docs/design/P1_PARTS_REGISTRY.md)",
+  "type": "object",
+  "required": ["id", "kind", "verification", "kicad", "pins"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "kind": {"enum": ["part", "generic", "connector", "mechanical"]},
+    "mpn": {"type": "string"},
+    "manufacturer": {"type": "string"},
+    "status": {"enum": ["draft", "verified", "obsolete"]},
+    "verification": {"enum": ["unverified", "crosschecked", "verified"]},
+    "source": {"type": "string"},
+    "lcsc": {"type": "object", "properties": {
+      "id": {"type": "string", "pattern": "^C[0-9]+$"},
+      "class": {"enum": ["basic", "preferred", "extended"]}}},
+    "sourcing": {"type": "object", "properties": {
+      "stock": {"type": "integer", "minimum": 0},
+      "price_1": {"type": "number", "minimum": 0},
+      "snapshot_date": {"type": "string"},
+      "lifecycle": {"type": "string"}}},
+    "package": {"type": "object", "required": ["name", "mount"], "properties": {
+      "name": {"type": "string"},
+      "mount": {"enum": ["tht", "smd"]},
+      "lcsc_package": {"type": "string"},
+      "body_mm": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 3}}},
+    "kicad": {"type": "object", "required": ["symbol", "footprint"], "properties": {
+      "symbol": {"type": "string"},
+      "footprint": {"type": "string"},
+      "model3d": {"type": "string"},
+      "fp_pad_copies": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 2}}}},
+    "tht": {"type": "object", "properties": {
+      "lead_d_mm": {"type": "number", "minimum": 0},
+      "lead_mm": {"type": "array", "items": {"type": "number", "minimum": 0}, "minItems": 2, "maxItems": 2}}},
+    "polarity": {"type": "object", "properties": {
+      "polarised": {"type": "boolean"},
+      "pin1": {"type": "string"},
+      "pin1_footprint_marker": {"type": "string"}}},
+    "ratings": {"type": "object", "properties": {
+      "v_op": {"type": "array", "items": {"type": ["number", "null"]}, "minItems": 2, "maxItems": 2},
+      "i_max": {"type": "number"},
+      "p_max_mw": {"type": "number"},
+      "t_op_c": {"type": "array", "items": {"type": ["number", "null"]}, "minItems": 2, "maxItems": 2}}},
+    "value_range": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+    "orderable_as": {"type": "object", "additionalProperties": {"type": "string"}},
+    "unverified_dims": {"type": "array", "items": {"type": "string"}},
+    "pins": {"type": "object", "patternProperties": {
+      "^[A-Za-z0-9]+$": {"type": "object", "required": ["name"], "properties": {
+        "name": {"type": "string"},
+        "alias": {"type": "string"},
+        "also": {"type": "string"},
+        "class": {"enum": ["power_in", "power_out", "input", "output", "bidirectional",
+                           "open_collector", "passive", "analog", "nc", "unspecified"]},
+        "abs_max": {"type": "object", "properties": {
+          "v_min": {"type": ["number", "null"]},
+          "v_max": {"type": ["number", "string", "null"], "pattern": "^pin:[A-Za-z0-9]+[+-][0-9.]+$"},
+          "i_ma": {"type": ["number", "null"]}}}}}},
+      "additionalProperties": false},
+    "evidence": {"type": "array", "items": {"type": "object", "properties": {
+      "section": {"type": "string"}, "doc_url": {"type": "string"}, "page": {"type": ["string", "integer"]},
+      "rev": {"type": "string"}, "method": {"type": "string"}, "verified_by": {"type": "string"},
+      "date": {"type": "string"}, "notes": {"type": "string"}}}},
+    "signed_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}
