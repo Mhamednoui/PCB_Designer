@@ -80,8 +80,8 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P1-T6 `parts` stage | ✅ |
 | P1-T7 generic/connector/mechanical records | ✅ |
 | P1-T8 crosschecked records for real parts | ✅ (PC817 → owner) |
-| P1-T9a API: pins-by-function, PARTS_RECORDS_DIR, registered-refs API, PR-HOLE severities, `parts new` MPN field | 🔄 |
-| P1-T9b migrate fixtures, strict mode, C_Polarized (+ replace lint's monkeypatch of `parts.registry_part` with an explicit `parts.py` API: lenient load + registered-refs tracking) | ⬜ |
+| P1-T9a API: pins-by-function, PARTS_RECORDS_DIR, registered-refs API, PR-HOLE severities, `parts new` MPN field | ✅ |
+| P1-T9b migrate fixtures to registry (pins by function, `nc=`), `PARTS_STRICT`, C_Polarized | 🔄 |
 
 ### MP Production-ready outputs (both assembly modes) - MP-T1/T2 superseded by P1 above; MP-T3 remains (P5)
 | ID | Task | Files | Effort | Deps | Acceptance | St |
