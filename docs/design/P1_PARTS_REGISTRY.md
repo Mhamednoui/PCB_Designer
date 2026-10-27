@@ -194,3 +194,8 @@ Parallel groups (disjoint files, max 3): T1 first; then T2, T3, T4; then T5, T6,
 4. Stock policy as proposed: INFO for `hand`, ERROR for `pcba`, 20 % margin, release snapshot <= 7 days old.
 5. lcsc SKILL.md correction → P7; the API facts (`is_basic`/`is_preferred`, exact-id lookup only) are recorded in AGENT_NOTES §E now.
 6. Project-vendored libs stay in `projects/*/lib`, records carry `source: "project-lib"`.
+7. **PR-HOLE margin (decided 2026-10-27, from P1-T7):** round lead: drill ≥ lead_d + 0.20 mm; square lead: drill ≥ diagonal + 0.10 mm
+   (IPC practice sizes square leads by diagonal; keeps KiCad's 1.0 mm drill for 0.64 mm header pins legal). Implement in P1-T9.
+8. **Fixture fixes folded into P1-T9:** electrolytics (blinky C1, reflex C2/C6) move from `Device:C` to `Device:C_Polarized` so the
+   schematic shows +; consumers skip `kind=mechanical` records for BOM/symbols. **P1-T8 must datasheet-crosscheck the K7805-2000R3
+   pin order** (1 IN, 2 GND, 3 OUT is only KiCad-RECOM-derived; a swap destroys the module and the Mega) and reconcile its record id.
