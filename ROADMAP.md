@@ -128,7 +128,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P2-T1 rule engine + Finding + waivers v2 + `--explain` (incl. PA-7) | ✅ |
 | P2-T2 record `electrical` block + IR abs_max/EXTERNAL + fixture data | ✅ (IR v2; coverage golden) |
 | P2-T3 electrical model v1 | ✅ (`elec/model.py`, `ctx.model`, tests/elec) |
-| P2-T4 EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP | ⬜ |
+| P2-T4 EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP | ✅ (`electrical` stage; follow-ups: `pull: external` in EXTERNAL → INFO; contention vs EXTERNAL drivers) |
 | P2-T5 EL-FLOAT, EL-LEVEL, EL-NETSPEC | ⬜ |
 | P2-T6 budget, dropout, thermal | ⬜ |
 | P2-T7 EL-CONN-PROT + EXTERNAL | ⬜ |
