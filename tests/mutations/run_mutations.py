@@ -5,6 +5,21 @@ fails at the stage that is supposed to catch it.   (P0 exit gate, MD-T7; metric:
     python tests/mutations/run_mutations.py --list           # show every entry, no side effects
     python tests/mutations/run_mutations.py --only M-pin,M-fp   # run a subset (comma list or repeat flag)
     python tests/mutations/run_mutations.py --keep -v        # keep projects/_mut_<id>/ and print failing output
+    python tests/mutations/run_mutations.py --tier fast      # the quick tier (PLATFORM_PLAN s10: every change)
+    python tests/mutations/run_mutations.py --jobs 8         # worker count (default min(4, cpu_count); 1 = serial)
+
+Parallelism and tiers (PA-5). Entries run on a thread pool (the work is subprocesses plus file copies, so
+threads are enough). Each entry owns projects/_mut_<id>/: its copy, its KiCad outputs, Freerouting's
+route.dsn/.ses (written under the project's out/) and its .pipeline_cache.json all live inside that copy, and
+the env passed to the child is per entry. Nothing is shared except the read-only fixture and the toolchain.
+One stage is NOT assumed safe to overlap: `route`. Freerouting also keeps per-user state (its settings and
+log files under the user profile) that two JVMs would write at once, so any entry whose stages include
+`route` runs under a single global lock (RouteLock) - only those entries serialise, everything else keeps
+running alongside them. Add a stage name to SERIAL_STAGES if another one turns out to need the same.
+Tiers: `tier` per entry is "fast" or "full". If absent it is derived from `stages`: an entry is fast when
+none of its stages is in SLOW_STAGES (route, finish, outputs, review, fabreport, connections, place),
+otherwise full. `--tier fast` runs only fast entries, `--tier full` (default) runs everything. Negative
+controls exist in both tiers (CTRL-uno is fast, CTRL-blinky full).
 
 A mutation that is not caught is a FINDING about a gate, not a flaky test: never loosen an entry to turn
 the suite green. Fix the gate, or record the gap (`"status": "known-gap"`, with `"note"`).
@@ -54,6 +69,7 @@ runnable entries are CAUGHT/CLEAN/GAP. Python hygiene: children run with PYTHOND
 `python -B`, because a stale .pyc within the same second as an edit makes a mutation a silent no-op.
 """
 import argparse
+import concurrent.futures
 import fnmatch
 import json
 import os
@@ -61,6 +77,7 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 import time
 import zipfile
 
@@ -72,6 +89,19 @@ TEXT_EXT = (".kicad_pro", ".kicad_sch", ".kicad_pcb", ".kicad_dru", ".py", ".jso
 IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "docs", ".pio", "*-routed.*", "*-backup*", "run",
                                 "*.lck", "review", ".pipeline_cache.json")
 TIMEOUT_S = 900
+SLOW_STAGES = {"route", "finish", "outputs", "review", "fabreport", "connections", "place"}
+SERIAL_STAGES = {"route"}
+RouteLock = threading.Lock()
+PrintLock = threading.Lock()
+
+
+def tier_of(e):
+    t = e.get("tier")
+    if t:
+        if t not in ("fast", "full"):
+            raise SystemExit("entry %s: tier must be fast or full, got %r" % (e["id"], t))
+        return t
+    return "full" if SLOW_STAGES & set(e["stages"]) else "fast"
 
 
 class SetupError(Exception):
@@ -231,8 +261,15 @@ def run_entry(e, keep):
         # would be a green result nobody earned, and the mutated copy is a fresh project every time.
         cmd = [sys.executable, "-B", "pipeline.py", pid, "--force", "--no-cache", "--only", ",".join(e["stages"])]
         try:
-            r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, timeout=TIMEOUT_S,
-                               text=True, encoding="utf-8", errors="replace")
+            serial = bool(SERIAL_STAGES & set(e["stages"]))
+            if serial:
+                RouteLock.acquire()
+            try:
+                r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, timeout=TIMEOUT_S,
+                                   text=True, encoding="utf-8", errors="replace")
+            finally:
+                if serial:
+                    RouteLock.release()
             out, rc = (r.stdout or "") + (r.stderr or ""), r.returncode
         except subprocess.TimeoutExpired:
             return "-", "ERROR", time.time() - t0, "timed out after %ds" % TIMEOUT_S
@@ -267,6 +304,8 @@ def main():
     ap.add_argument("--only", action="append", default=[], help="comma-separated mutation ids")
     ap.add_argument("--list", action="store_true", help="list entries and exit")
     ap.add_argument("--keep", action="store_true", help="keep projects/_mut_<id>/ after the run")
+    ap.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 1), help="parallel entries (default min(4, cpus))")
+    ap.add_argument("--tier", choices=("fast", "full"), default="full", help="fast = skip entries that need route/finish/outputs")
     ap.add_argument("-v", "--verbose", action="store_true", help="print the output tail of failing entries")
     args = ap.parse_args()
 
@@ -283,11 +322,14 @@ def main():
     if want:
         entries = [e for e in entries if e["id"] in want]
 
+    if args.tier == "fast":
+        entries = [e for e in entries if tier_of(e) == "fast"]
+
     if args.list:
         for e in entries:
             tag = e.get("status", "")
             print("%-16s %-12s %-10s %-9s %s" % (e["id"], e["fixture"] if "fixture" in e else "-",
-                                                 e.get("expect_stage") or "(pass)", tag or "active",
+                                                 e.get("expect_stage") or "(pass)", (tag or "active") + "/" + tier_of(e),
                                                  e["description"]))
         return 0
 
@@ -295,20 +337,38 @@ def main():
         shutil.rmtree(os.path.join(PROJECTS, stale), ignore_errors=True)
 
     t_all = time.time()
-    rows, planned = [], []
+    rows, planned, tiers = [], [], {}
     print("%-24s %-11s %-11s %-12s %7s" % ("id", "expected", "actual", "verdict", "secs"))
+    runnable = []
     for e in entries:
         if e.get("status") == "planned":
             planned.append(e)
             print("%-24s %-11s %-11s %-12s %7s  needs %s" % (e["id"], e.get("expect_stage") or "-", "-", "SKIP",
                                                             "-", e.get("needs", "a later phase")))
-            continue
+        else:
+            runnable.append(e)
+    # longest first (serial-stage and many-stage entries) so the pool does not end waiting on one straggler
+    runnable.sort(key=lambda e: -(len(e["stages"]) + 10 * bool(SERIAL_STAGES & set(e["stages"]))))
+
+    def work(e):
         actual, verdict, secs, out = run_entry(e, args.keep)
-        rows.append((e, verdict))
-        print("%-24s %-11s %-11s %-12s %7.1f" % (e["id"], e["expect_stage"] or "(pass)", actual, verdict, secs))
-        sys.stdout.flush()
-        if verdict not in ("CAUGHT", "CLEAN") and (args.verbose or verdict in ("ERROR",)):
-            print(tail(out))
+        with PrintLock:
+            print("%-24s %-11s %-11s %-12s %7.1f" % (e["id"], e["expect_stage"] or "(pass)", actual, verdict, secs))
+            if verdict not in ("CAUGHT", "CLEAN") and (args.verbose or verdict in ("ERROR",)):
+                print(tail(out))
+            sys.stdout.flush()
+        return e, verdict, secs
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.jobs)) as pool:
+        results = list(pool.map(work, runnable))
+    order = {e["id"]: n for n, e in enumerate(entries)}
+    results.sort(key=lambda r: order[r[0]["id"]])
+    for e, v, secs in results:
+        rows.append((e, v))
+        t = tiers.setdefault(tier_of(e), [0, 0, 0.0])
+        t[0] += 1
+        t[1] += v in ("CAUGHT", "CLEAN", "GAP")
+        t[2] += secs
 
     muts = [(e, v) for e, v in rows if e["expect_stage"] is not None]
     ctrls = [(e, v) for e, v in rows if e["expect_stage"] is None]
@@ -318,6 +378,11 @@ def main():
     bad = [e["id"] for e, v in rows if v not in ("CAUGHT", "CLEAN", "GAP")]
     print("\ncatch rate %d/%d   (negative controls %d/%d clean, %d known gaps, %d planned and skipped)   runtime %.0fs"
           % (caught, len(muts), ctrl_ok, len(ctrls), gaps, len(planned), time.time() - t_all))
+    print("jobs %d, wall time %.1fs; per tier (entries ok/total, summed entry seconds): %s"
+          % (args.jobs, time.time() - t_all, "  ".join("%s %d/%d %.0fs" % (k, v[1], v[0], v[2])
+                                                       for k, v in sorted(tiers.items()))))
+    classes = sorted({e["expect_stage"] for e, _ in rows if e["expect_stage"]})
+    print("gate classes exercised this run: " + ", ".join(classes))
     if bad:
         print("FAILED entries: " + ", ".join(bad))
     return 1 if bad else 0

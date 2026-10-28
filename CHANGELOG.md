@@ -6,6 +6,7 @@ All notable changes to the PCB platform. Format follows Keep a Changelog. The ve
 
 ### Added
 - `tools/ci_checks.py` (compile, schemas, selftests, secrets, ctrlchars, ruff), `.github/workflows/ci.yml`, `.pre-commit-config.yaml`, `docs/CONTRIBUTING.md` (PA-9).
+- `tests/mutations/run_mutations.py`: `--jobs N` (threads; `route` entries serialised by a lock) and `--tier fast|full` (PA-5). Fast tier ~28 s, full ~129 s at 4 jobs (179 s serial).
 
 ### Fixed
 - `tools/boardgen/check_sch.py` line 92: a heredoc-corrupted `BS-b` (raw 0x08) in the ERC-ref regex meant it never matched; found by the new ctrlchars check.
