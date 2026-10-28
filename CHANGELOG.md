@@ -8,7 +8,7 @@ All notable changes to the PCB platform. Format follows Keep a Changelog. The ve
 - `tools/ci_checks.py` (compile, schemas, selftests, secrets, ctrlchars, ruff), `.github/workflows/ci.yml`, `.pre-commit-config.yaml`, `docs/CONTRIBUTING.md` (PA-9).
 
 ### Fixed
-- `tools/boardgen/check_sch.py` line 92: a heredoc-corrupted `` (raw 0x08) in the ERC-ref regex meant it never matched; found by the new ctrlchars check.
+- `tools/boardgen/check_sch.py` line 92: a heredoc-corrupted `BS-b` (raw 0x08) in the ERC-ref regex meant it never matched; found by the new ctrlchars check.
 
 ## [0.2.0] - 2026-10-28
 
