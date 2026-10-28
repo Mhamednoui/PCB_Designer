@@ -117,7 +117,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | PA-5 parallel + tiered mutation runner | ✅ (fast tier 28 s, full 129 s @4 jobs) |
 | PA-6 run report + tool versions + determinism | ✅ (`out/run/<ts>/report.html`; 2 runs → git clean) |
 | PA-7 finding taxonomy, `--explain`, board markers | → folded into P2-T1 |
-| PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
+| PA-8 scaffolds + templates + CONTRIBUTING.md | ✅ (`pipeline.py --scaffold <kind> NAME`; no fab-profile scaffold: fab rules are code in fab_rules.py) |
 | PA-9 pre-commit + CI | ✅ (GitHub Actions green; found+fixed a 0x08-corrupted regex in check_sch.py) |
 | PA-10 ADRs + CHANGELOG + platform version | ✅ (docs/adr 0001-0012, VERSION 0.2.0) |
 | PA-11 KiCad-schematic input adapter (hand-drawn schematic → PCB) | ⬜ |

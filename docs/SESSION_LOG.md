@@ -484,3 +484,6 @@ Moved verbatim from CLAUDE.md on 2026-10-28.
   Mutation runner: LF-normalised copies, `.history` ignored, crash-only single retry, failing tails always printed.
   Full suite 49/49 + 4/4 controls.
 - P2-T10a: `release` stage + RELEASE_GATE.md (pcba blocks on any NOT_JUDGED/NOT_EVALUATED/0 requirements; hand blocks on its own cells), generated docs/RULES.md with a stale-check in ci_checks, M-release + CTRL-release mutations. All 5 fixtures pass release as hand with no new waivers.
+- **2026-10-28 (supervisor, end of day)** - merged P2-T10a (release coverage gate as the `release` stage, generated
+  `docs/RULES.md`) and PA-8 (scaffold commands, CONTRIBUTING). Fixed the scaffold's project template (it showed an
+  invalid ASSEMBLY form) and declared `ASSEMBLY = "hand"` on the 3 through-hole fixtures. Next: P2-T10b -> P2 exit.

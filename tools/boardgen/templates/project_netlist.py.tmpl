@@ -29,8 +29,9 @@ def uid(*parts):
 
 PARTS_STRICT = True        # every part must be declared through the registry (lint rule PR-REF)
 
-# ASSEMBLY: how the board is built (hand | jlcpcb | ...); see docs/NEW_BOARD_PLAYBOOK.md. TODO decide, then declare it.
-# ASSEMBLY = {"mode": "hand", "boards": 1}
+# How the board is built (ADR 0012): "hand" = through-hole, hand-soldered; "pcba" = JLCPCB SMD assembly.
+# `pcba` makes the release gate strict (every required electrical field cited, nothing NOT_JUDGED). TODO confirm.
+ASSEMBLY = "hand"
 
 # Registry part ids (parts/records/<id>.json). TODO: add them, then declare parts below with
 # PARTS.append(_parts.registry_part("R1", R_ID, "10k", {1: "NET_A", 2: "GND"}, "group"))

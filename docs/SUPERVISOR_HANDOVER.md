@@ -2,7 +2,7 @@
 
 Written for: the next Claude session (after a compaction, a usage limit, or a new chat) continuing as
 SUPERVISOR of this repo. Everything needed is in files; nothing lives only in chat. Updated after every merge.
-**Last updated: 2026-10-28 (after P2-T5 merge + runner fixes 2bf1fd3; P2-T10a + PA-8 in flight).**
+**Last updated: 2026-10-28 (end of day: P2-T10a + PA-8 merged, fixtures declare ASSEMBLY = "hand"; NO agents in flight; owner paused - resume from §5).**
 
 ## 1. Where things are
 | What | Where |
@@ -55,19 +55,22 @@ SUPERVISOR of this repo. Everything needed is in files; nothing lives only in ch
   `electrical` stage), P2-T7(+b) (EXTERNAL + EL-CONN-PROT; blinky got a reverse-polarity diode), P2-T8 (EL-STRAP),
   P2-T9 (requirements engine + `requirements` stage), P2-T6 (EL-BUDGET/DROPOUT/THERMAL, `projects/synth-ldo` reproduces
   the ref-esp32 465 mA / 0.74-0.85-0.91 W numbers; netlist-only `projects/synth-*` outputs are git-ignored),
-  P2-T5 (EL-FLOAT/LEVEL/NETSPEC). Mutation suite full 49/49 + 4/4 controls (fast tier 47/47).
+  P2-T5 (EL-FLOAT/LEVEL/NETSPEC), P2-T10a (`release` stage = coverage gate, `out/RELEASE_GATE.md`, generated
+  `docs/RULES.md` checked by ci_checks), PA-8 (`pipeline.py --scaffold rule|stage|mutation|part|block|project`,
+  docs/CONTRIBUTING.md). Fast mutation tier 48/48 + 4/4 controls.
 - All 3 fixtures green on every stage; pipeline order: see `python pipeline.py blinky-555 --list`.
 
 ### Agents in flight (check their worktrees if the session restarted)
 | Task | Branch | Worktree | What to do |
 |---|---|---|---|
-| P2-T10a release gate + `release` stage + RULES.md | `feat/p2-t10a-release` | `C:/Users/nouir/PCB_wt/p2t10a` | same (agent creates the worktree itself; if it has a final `feat(...)` commit → review + merge per §3, else wip-commit + new agent) |
-| PA-8 scaffolds + CONTRIBUTING | `feat/pa8-scaffold` | `C:/Users/nouir/PCB_wt/pa8` | same (agent creates the worktree itself; if it has a final `feat(...)` commit → review + merge per §3, else wip-commit + new agent) |
+| (none) | | | |
 Check with: `git worktree list`, `git -C <worktree> log --oneline -3`, `git -C <worktree> status --short`.
 
 ## 5. Next queue (in order)
-3. Merge P2-T10a + PA-8; then P2-T10b (migrate remaining lint rules to the engine, webview coverage table) → **P2 exit**.
-4. PA-3 (port remaining checks to the IR), PA-8 (scaffolds + CONTRIBUTING), PA-4 (layer-agnostic + blinky-4L), PA-11 (hand-drawn schematic input).
+3. P2-T10b (migrate remaining lint rules to the engine one per commit, run-report `rules`/`coverage` sections, webview
+   coverage table) → **P2 exit**. Small follow-ups: RULES.md one-liners ending in ':' (first doc sentence); the
+   reflex pcba gap list is in `projects/reflex-machine/out/RELEASE_GATE.md`.
+4. PA-3 (port remaining checks to the IR), PA-4 (layer-agnostic + blinky-4L), PA-11 (hand-drawn schematic input).
 5. P3 design blocks → P4 layout engine (auto-placement, MS-T0 antenna keep-out) → P5 PCBA package/sign-off (IV-3 gerber DRC, IV-4 IPC-356) → P6 ref-esp32 board + fuzzing.
 6. Fixture fixes logged for MV-T2: LED LCSC C2895470 is a 3 mm LED on 5 mm footprints; reflex DESIGN_BRIEF promised a P-MOSFET reverse-polarity stage the board lacks.
 

@@ -187,6 +187,9 @@ rp("J17", HDR2x4_ID, "ESP32 SPARE", {
     1: "+3V3_ESP", 2: "GND", 3: "ESP_IO25", 4: "ESP_IO26",
     5: "ESP_IO27", 6: "ESP_IO32", 7: "ESP_IO33", 8: "ESP_IO14"}, G)
 
+# Through-hole board, hand-soldered (ADR 0012): the release gate judges it as `hand`.
+ASSEMBLY = "hand"
+
 GROUPS = [
     ("power", "POWER: 12V INPUT, FUSE, SURGE PROTECTION, 12V -> 5V REGULATOR"),
     ("mcu", "CONTROLLERS: ARDUINO MEGA 2560 (shield) + ESP32 DEVKIT V1"),

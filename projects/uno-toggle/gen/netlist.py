@@ -85,6 +85,9 @@ LED("D1", "RED", "GND", "LED1_A", G, lcsc="C2895470")
 R("R2", "330R", "LED2", "LED2_A", G)
 LED("D2", "GREEN", "GND", "LED2_A", G)
 
+# Through-hole board, hand-soldered (ADR 0012): the release gate judges it as `hand`.
+ASSEMBLY = "hand"
+
 GROUPS = [
     ("mcu", "ARDUINO UNO R3 SHIELD HEADERS"),
     ("buttons", "BUTTONS: BTN1 (D2) / BTN2 (D3), INPUT_PULLUP TO GND + 100nF DEBOUNCE"),

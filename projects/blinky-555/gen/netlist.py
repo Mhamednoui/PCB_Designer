@@ -93,6 +93,9 @@ C("C2", "10nF", "CONT", "GND", G)          # noise filter on the control pin
 G = "led"
 R("R3", "470R", "OUT", "LED_A", G)
 PARTS.append(_parts.registry_part("D1", LED_ID, "RED", {"K": "GND", "A": "LED_A"}, G, lcsc="C2895470"))
+# Through-hole board, hand-soldered (ADR 0012): the release gate judges it as `hand`.
+ASSEMBLY = "hand"
+
 GROUPS = [
     ("power", "POWER IN: 9-12 V DC VIA J1"),
     ("timer", "NE555 ASTABLE: ~1.4 Hz, 50%% DUTY IS NOT EXPECTED (R1+R2 CHARGE, R2 DISCHARGES)"),
