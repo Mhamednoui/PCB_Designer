@@ -215,6 +215,9 @@ driven by a concrete complex target, not by the fixtures alone.
 - A3 Reference board: ESP32-S3 *module* (pre-certified RF), not a bare chip.
 - A4 One human sign-off line remains in every release: "pinouts of parts marked NEW in the registry
   checked against datasheet by a person" - automation reduces, never removes, this step for new parts.
+  Reconciled with registry §9.1 (2026-10-28): a release *package* may be generated while parts are only
+  `crosschecked`; they are listed as OPEN human-check items and the release is **not signed off** until the
+  owner has raised each to `verified`.
 - A5 Fixtures may be rebuilt freely; they are tests, not products.
 
 ## 8. How progress is measured

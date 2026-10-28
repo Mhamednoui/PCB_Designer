@@ -118,7 +118,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | PA-7 finding taxonomy, `--explain`, board markers | ⬜ |
 | PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
 | PA-9 pre-commit + CI | ⬜ |
-| PA-10 ADRs + CHANGELOG + platform version | ⬜ |
+| PA-10 ADRs + CHANGELOG + platform version | ✅ (docs/adr 0001-0012, VERSION 0.2.0) |
 | PA-11 KiCad-schematic input adapter (hand-drawn schematic → PCB) | ⬜ |
 
 ### Independent verification (PLATFORM_PLAN §9) - queued
