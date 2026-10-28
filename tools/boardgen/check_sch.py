@@ -89,7 +89,7 @@ for sheet in erc.get("sheets", []):
         if v["type"] not in PROMOTED or v["severity"] == "error":   # errors already fail above
             continue
         descs = [i.get("description", "") for i in v.get("items", [])]
-        refs = [m for d in descs for m in re.findall(r"of ([^\s]+)\s*$", d)]
+        refs = [m for d in descs for m in re.findall(r"\bof ([^\s]+)\s*$", d)]
         if any(_waivers.matches(w, v["type"], refs, []) for _, w in _wl):
             continue
         fired.setdefault(v["type"], []).append("%s | %s" % (v["description"], "; ".join(descs)))

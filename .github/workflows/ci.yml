@@ -1,0 +1,18 @@
+# Hosted runners have no KiCad, Freerouting or LTspice: this covers only the checks that need none of them.
+# Everything else (pipeline stages, mutation suite, fab output) runs locally - see docs/CONTRIBUTING.md.
+name: ci
+on:
+  push:
+    branches: ["improve/**", "feat/**", "main"]
+  pull_request:
+    branches: ["improve/**", "main"]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install ruff jsonschema -r requirements.txt
+      - run: python tools/ci_checks.py all

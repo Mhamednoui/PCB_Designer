@@ -391,3 +391,5 @@ that text does not exist in the file.
   heredoc became a raw 0x01 byte. Symptom: the output silently lost text ("RST" vanished), and the Edit
   tool could not match the line it displayed. `repr()` showed `\x01` at once. Rule, now twice-learned:
   **anything with a backslash goes through the Edit tool, never a heredoc.**
+
+**Found again by CI (PA-9):** `tools/boardgen/check_sch.py` carried a raw 0x08 in a regex (a `` from a heredoc) for weeks; `python tools/ci_checks.py ctrlchars` now catches this class on every commit.
