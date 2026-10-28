@@ -110,7 +110,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 ### PA Architecture for scale (PLATFORM_PLAN §10) - between P1 and P2
 | ID | Task | St |
 |---|---|---|
-| PA-1 design IR + `ir` stage | ⬜ |
+| PA-1 design IR + `ir` stage | ✅ (`tools/boardgen/ir/`, stage `ir` after `check`; stages still read netlist.py until PA-3) |
 | PA-2 stage registry + incremental runner | ✅ (`tools/boardgen/stages.json`; `--describe`; `--no-cache`) |
 | PA-3 port checks to the IR | ⬜ |
 | PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |

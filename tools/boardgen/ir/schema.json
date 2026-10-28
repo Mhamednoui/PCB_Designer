@@ -1,0 +1,665 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "title": "design.json - the design IR (docs/PLATFORM_PLAN.md section 10)",
+ "description": "Built by tools/boardgen/ir/build.py. ir_version 1. Coordinates in mm, KiCad board frame (y down). 'board' is present only when a .kicad_pcb exists. Net names are as in netlist.py (no leading '/').",
+ "type": "object",
+ "required": [
+  "ir_version",
+  "meta",
+  "parts",
+  "nets",
+  "assembly",
+  "fab_profile",
+  "requirements"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "ir_version": {
+   "enum": [
+    1
+   ]
+  },
+  "meta": {
+   "type": "object",
+   "required": [
+    "project",
+    "source",
+    "git_commit",
+    "input_hashes"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "project": {
+     "type": "string"
+    },
+    "source": {
+     "enum": [
+      "netlist",
+      "schematic"
+     ]
+    },
+    "git_commit": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "input_hashes": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
+    }
+   }
+  },
+  "parts": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "ref",
+     "registry",
+     "kind",
+     "lib_id",
+     "footprint",
+     "value",
+     "lcsc",
+     "group",
+     "pins",
+     "nc"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "ref": {
+      "type": "string",
+      "pattern": "^\\S+$"
+     },
+     "registry": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "kind": {
+      "enum": [
+       "part",
+       "generic",
+       "connector",
+       "mechanical",
+       "unregistered"
+      ]
+     },
+     "lib_id": {
+      "type": "string"
+     },
+     "footprint": {
+      "type": "string"
+     },
+     "value": {
+      "type": "string"
+     },
+     "lcsc": {
+      "type": "string"
+     },
+     "group": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "pins": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "object",
+       "required": [
+        "name",
+        "net",
+        "class"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "net": {
+         "type": "string"
+        },
+        "class": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       }
+      }
+     },
+     "nc": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "nets": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "v",
+     "i_max",
+     "class",
+     "pins"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "v": {
+      "type": [
+       "array",
+       "null"
+      ],
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+       "type": "number"
+      }
+     },
+     "i_max": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "class": {
+      "enum": [
+       "power",
+       "ground",
+       "signal"
+      ]
+     },
+     "pins": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "string",
+       "pattern": "^[^.]+\\..+$"
+      }
+     }
+    }
+   }
+  },
+  "board": {
+   "type": "object",
+   "required": [
+    "layers",
+    "stackup",
+    "outline",
+    "footprints",
+    "pads",
+    "zones",
+    "tracks",
+    "vias",
+    "holes"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "layers": {
+     "type": "object",
+     "required": [
+      "copper",
+      "count"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "copper": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "count": {
+       "type": "integer",
+       "minimum": 1
+      }
+     }
+    },
+    "stackup": {
+     "type": "object",
+     "required": [
+      "thickness_mm",
+      "layers"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "thickness_mm": {
+       "type": [
+        "number",
+        "null"
+       ]
+      },
+      "layers": {
+       "type": [
+        "array",
+        "null"
+       ],
+       "items": {
+        "type": "object",
+        "required": [
+         "name",
+         "type",
+         "thickness_mm",
+         "material"
+        ],
+        "additionalProperties": false,
+        "properties": {
+         "name": {
+          "type": "string"
+         },
+         "type": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "thickness_mm": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "material": {
+          "type": [
+           "string",
+           "null"
+          ]
+         }
+        }
+       }
+      }
+     }
+    },
+    "outline": {
+     "type": "object",
+     "required": [
+      "polygon",
+      "cutouts",
+      "bbox",
+      "size_mm",
+      "area_mm2"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "polygon": {
+       "type": "array",
+       "minItems": 3,
+       "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+         "type": "number"
+        }
+       }
+      },
+      "cutouts": {
+       "type": "array",
+       "items": {
+        "type": "array",
+        "minItems": 3,
+        "items": {
+         "type": "array",
+         "minItems": 2,
+         "maxItems": 2,
+         "items": {
+          "type": "number"
+         }
+        }
+       }
+      },
+      "bbox": {
+       "type": "array",
+       "minItems": 4,
+       "maxItems": 4,
+       "items": {
+        "type": "number"
+       }
+      },
+      "size_mm": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "number"
+       }
+      },
+      "area_mm2": {
+       "type": "number"
+      }
+     }
+    },
+    "footprints": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "object",
+      "required": [
+       "lib_id",
+       "x",
+       "y",
+       "rot",
+       "side",
+       "attr"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "lib_id": {
+        "type": "string"
+       },
+       "x": {
+        "type": "number"
+       },
+       "y": {
+        "type": "number"
+       },
+       "rot": {
+        "type": "number"
+       },
+       "side": {
+        "enum": [
+         "front",
+         "back"
+        ]
+       },
+       "attr": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    "pads": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "object",
+      "required": [
+       "ref",
+       "pad",
+       "type",
+       "shape",
+       "x",
+       "y",
+       "layers",
+       "drill",
+       "net"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "ref": {
+        "type": "string"
+       },
+       "pad": {
+        "type": "string"
+       },
+       "type": {
+        "enum": [
+         "thru_hole",
+         "smd",
+         "np_thru_hole",
+         "connect"
+        ]
+       },
+       "shape": {
+        "type": "string"
+       },
+       "x": {
+        "type": "number"
+       },
+       "y": {
+        "type": "number"
+       },
+       "layers": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "drill": {
+        "type": [
+         "number",
+         "array",
+         "null"
+        ],
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+         "type": "number"
+        }
+       },
+       "net": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     }
+    },
+    "zones": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "net",
+       "name",
+       "layers",
+       "keepout",
+       "filled",
+       "filled_area_mm2",
+       "outline_area_mm2"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "net": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "layers": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "keepout": {
+        "type": "boolean"
+       },
+       "filled": {
+        "type": "boolean"
+       },
+       "filled_area_mm2": {
+        "type": "number"
+       },
+       "outline_area_mm2": {
+        "type": "number"
+       }
+      }
+     }
+    },
+    "tracks": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "object",
+      "required": [
+       "segments",
+       "arcs",
+       "min_width_mm",
+       "total_length_mm",
+       "layers"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "segments": {
+        "type": "integer",
+        "minimum": 0
+       },
+       "arcs": {
+        "type": "integer",
+        "minimum": 0
+       },
+       "min_width_mm": {
+        "type": "number"
+       },
+       "total_length_mm": {
+        "type": "number"
+       },
+       "layers": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    "vias": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "x",
+       "y",
+       "net",
+       "size",
+       "drill",
+       "layers"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "x": {
+        "type": "number"
+       },
+       "y": {
+        "type": "number"
+       },
+       "net": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "size": {
+        "type": "number"
+       },
+       "drill": {
+        "type": "number"
+       },
+       "layers": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    "holes": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "diameter",
+       "plated",
+       "kind",
+       "count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "diameter": {
+        "type": [
+         "number",
+         "array"
+        ],
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+         "type": "number"
+        }
+       },
+       "plated": {
+        "type": "boolean"
+       },
+       "kind": {
+        "enum": [
+         "pad",
+         "via"
+        ]
+       },
+       "count": {
+        "type": "integer",
+        "minimum": 1
+       }
+      }
+     }
+    }
+   }
+  },
+  "assembly": {
+   "type": "object",
+   "required": [
+    "mode",
+    "boards"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "mode": {
+     "enum": [
+      "pcba",
+      "hand",
+      null
+     ]
+    },
+    "boards": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    }
+   }
+  },
+  "fab_profile": {
+   "type": "object",
+   "required": [
+    "name",
+    "declared"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "name": {
+     "type": "string"
+    },
+    "declared": {
+     "type": "boolean"
+    }
+   }
+  },
+  "requirements": {
+   "type": "array",
+   "items": {
+    "type": "object"
+   }
+  }
+ }
+}

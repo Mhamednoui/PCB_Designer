@@ -77,6 +77,20 @@ def check_schemas():
         print("  stages.json valid (pipeline.load_registry)")
     except SystemExit as e:
         bad.append("stages.json: %s" % e)
+    try:
+        ir_sch = json.loads(read_bytes("tools/boardgen/ir/schema.json"))
+        if ir_sch.get("properties", {}).get("ir_version", {}).get("enum") != [1]:
+            bad.append("ir/schema.json: ir_version must be pinned to [1]")
+        try:
+            import jsonschema
+            jsonschema.Draft7Validator.check_schema(ir_sch)
+            print("  design IR schema valid (jsonschema, draft 7)")
+        except ImportError:
+            print("  design IR schema parsed (jsonschema not installed: structure checked by the ir selftest)")
+    except ValueError as e:
+        bad.append("ir/schema.json: invalid JSON: %s" % e)
+    except Exception as e:  # noqa: BLE001
+        bad.append("ir/schema.json: %s" % e)
     muts = json.loads(read_bytes("tests/mutations/mutations.json"))
     if not isinstance(muts, list) or not muts:
         bad.append("mutations.json: need a non-empty array")
@@ -97,7 +111,8 @@ def check_schemas():
 def check_selftests():
     bad = []
     for cmd in ([sys.executable, "tools/boardgen/parts.py", "--selftest"],
-                [sys.executable, "tools/parts.py", "selftest"]):
+                [sys.executable, "tools/parts.py", "selftest"],
+                [sys.executable, "tools/boardgen/ir/build.py", "--selftest"]):
         r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
         tail = (r.stdout.strip().splitlines() or ["(no output)"])[-1]
         print("  %s -> %s" % (" ".join(cmd[1:]), tail))

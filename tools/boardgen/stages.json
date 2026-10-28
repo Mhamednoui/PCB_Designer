@@ -130,6 +130,24 @@
       "outputs": ["projects/{project}/out/drc.json", "projects/{project}/*.kicad_dru"]
     },
     {
+      "name": "ir",
+      "description": "Design IR (out/design.json): parts, nets, board geometry from netlist.py + .kicad_pcb; netlist-vs-board net cross-check; JSON-Schema validated.",
+      "applies": "has_netlist",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/ir/build.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/ir/*.py", "tools/boardgen/ir/schema.json", "tools/boardgen/sexp.py", "tools/boardgen/parts.py",
+        "tools/boardgen/project.py", "tools/boardgen/kicad_paths.py",
+        "projects/{project}/gen/*.py",
+        "projects/{project}/*.kicad_pcb",
+        "parts/schema.json", "parts/records/**"
+      ],
+      "outputs": ["projects/{project}/out/design.json"],
+      "env": ["PARTS_RECORDS_DIR"]
+    },
+    {
       "name": "review",
       "description": "Design review (kicad-happy schematic/PCB/EMC analyzers + waivers.json): decoupling distance, EMC, power tree.",
       "applies": "has_gen_script:make_pcb.py",
