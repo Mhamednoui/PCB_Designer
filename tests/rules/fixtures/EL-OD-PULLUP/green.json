@@ -1,0 +1,353 @@
+{
+ "expected": [],
+ "ir": {
+  "assembly": {
+   "boards": null,
+   "mode": null
+  },
+  "external": {
+   "declared": true,
+   "none": [],
+   "pins": {
+    "J1.1": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      3.0,
+      3.6
+     ],
+     "why": "fixture"
+    },
+    "J1.2": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      0.0,
+      0.0
+     ],
+     "why": "fixture"
+    }
+   }
+  },
+  "fab_profile": {
+   "declared": false,
+   "name": "x"
+  },
+  "ir_version": 2,
+  "meta": {
+   "git_commit": null,
+   "input_hashes": {},
+   "project": "fixture",
+   "source": "netlist"
+  },
+  "nets": {
+   "3V3": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "J1.1",
+     "R1.1",
+     "R2.1"
+    ],
+    "v": null
+   },
+   "GND": {
+    "class": "ground",
+    "i_max": null,
+    "pins": [
+     "J1.2",
+     "U1.3",
+     "U2.3"
+    ],
+    "v": [
+     0.0,
+     0.0
+    ]
+   },
+   "OD1": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "U1.4",
+     "R1.2"
+    ],
+    "v": null
+   },
+   "OD2": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "U2.4",
+     "R2.2"
+    ],
+    "v": null
+   }
+  },
+  "parts": {
+   "J1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "",
+    "group": null,
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector:Conn",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J1",
+    "registry": null,
+    "value": "J1"
+   },
+   "R1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "",
+    "group": null,
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "OD1"
+     }
+    },
+    "ref": "R1",
+    "registry": null,
+    "value": "10k"
+   },
+   "R2": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "",
+    "group": null,
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "OD2"
+     }
+    },
+    "ref": "R2",
+    "registry": null,
+    "value": "1k"
+   },
+   "U1": {
+    "electrical": {
+     "ctr_pct": {
+      "at": {
+       "if_ma": 1,
+       "vce_v": 5
+      },
+      "cond": "CTR rank C (200-400 %) assuming the 'C' in PC817C is the CTR rank letter (not stated in the record); whole-series range 80-600 %",
+      "max": 400,
+      "min": 200,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p4",
+      "unit": "%"
+     },
+     "gaps": [
+      "recommended operating conditions table could not be read unambiguously from the PDF text (columns scrambled): not used",
+      "VCE(sat) value not unambiguous in the extracted text",
+      "junction temperature / theta_JA not stated in the datasheet",
+      "IF vs. CTR rank assumption: confirm the C suffix against the part marking"
+     ],
+     "i_f_max_ma": {
+      "cond": "absolute maximum forward current",
+      "max": 50,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "unit": "mA"
+     },
+     "p_max_mw": {
+      "cond": "collector power dissipation PC; input power dissipation PD 70 mW",
+      "max": 150,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "unit": "mW"
+     },
+     "role": "optocoupler",
+     "vf": [
+      {
+       "at": {
+        "if_ma": 20
+       },
+       "cond": "input LED forward voltage, TA=25 C",
+       "max": 1.4,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p4",
+       "typ": 1.2,
+       "unit": "V"
+      }
+     ]
+    },
+    "electrical_status": "ok",
+    "footprint": "",
+    "group": null,
+    "kind": "part",
+    "lcsc": "",
+    "lib_id": "Isolator:PC817",
+    "nc": [],
+    "pins": {
+     "3": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "emitter; VECO 6 V emitter-collector reverse voltage (limit on pin 3 relative to pin 4)",
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+       "v_max": null,
+       "v_min": -6
+      },
+      "class": "passive",
+      "io": null,
+      "name": "E",
+      "net": "GND"
+     },
+     "4": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 50,
+       "note": "collector; VCEO 80 V, IC 50 mA",
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+       "v_max": 80,
+       "v_min": null
+      },
+      "class": "open_collector",
+      "io": {
+       "i_out_max_ma": 20
+      },
+      "name": "C",
+      "net": "OD1"
+     }
+    },
+    "ref": "U1",
+    "registry": "pc817c-dip4",
+    "value": "PC817"
+   },
+   "U2": {
+    "electrical": {
+     "ctr_pct": {
+      "at": {
+       "if_ma": 1,
+       "vce_v": 5
+      },
+      "cond": "CTR rank C (200-400 %) assuming the 'C' in PC817C is the CTR rank letter (not stated in the record); whole-series range 80-600 %",
+      "max": 400,
+      "min": 200,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p4",
+      "unit": "%"
+     },
+     "gaps": [
+      "recommended operating conditions table could not be read unambiguously from the PDF text (columns scrambled): not used",
+      "VCE(sat) value not unambiguous in the extracted text",
+      "junction temperature / theta_JA not stated in the datasheet",
+      "IF vs. CTR rank assumption: confirm the C suffix against the part marking"
+     ],
+     "i_f_max_ma": {
+      "cond": "absolute maximum forward current",
+      "max": 50,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "unit": "mA"
+     },
+     "p_max_mw": {
+      "cond": "collector power dissipation PC; input power dissipation PD 70 mW",
+      "max": 150,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "unit": "mW"
+     },
+     "role": "optocoupler",
+     "vf": [
+      {
+       "at": {
+        "if_ma": 20
+       },
+       "cond": "input LED forward voltage, TA=25 C",
+       "max": 1.4,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p4",
+       "typ": 1.2,
+       "unit": "V"
+      }
+     ]
+    },
+    "electrical_status": "ok",
+    "footprint": "",
+    "group": null,
+    "kind": "part",
+    "lcsc": "",
+    "lib_id": "Isolator:PC817",
+    "nc": [],
+    "pins": {
+     "3": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "emitter; VECO 6 V emitter-collector reverse voltage (limit on pin 3 relative to pin 4)",
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+       "v_max": null,
+       "v_min": -6
+      },
+      "class": "passive",
+      "io": null,
+      "name": "E",
+      "net": "GND"
+     },
+     "4": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 50,
+       "note": "collector; VCEO 80 V, IC 50 mA",
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+       "v_max": 80,
+       "v_min": null
+      },
+      "class": "open_collector",
+      "io": {
+       "i_out_max_ma": 20
+      },
+      "name": "C",
+      "net": "OD2"
+     }
+    },
+    "ref": "U2",
+    "registry": "pc817c-dip4",
+    "value": "PC817"
+   }
+  },
+  "requirements": []
+ }
+}

@@ -474,3 +474,5 @@ Moved verbatim from CLAUDE.md on 2026-10-28.
   (`tools/ci_checks.py`), ADRs 0001-0012, design IR (`ir` stage, `tools/boardgen/ir/`). P2 electrical analyzer
   in progress: rule engine, Finding taxonomy, waivers v2, `--explain` done; electrical data in records + IR v2
   done; next P2-T3. reflex-machine routes reliably again (MD-T12). Agent types pcb-light / pcb-worker added.
+
+- **P2-T4** - first three electrical rules EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP (`tools/boardgen/rules/el_*.py`, docs in `docs/rules/`, fixtures in `tests/rules/fixtures/`) and the new pipeline stage `electrical` (after `ir`; `tools/boardgen/check_electrical.py`, findings to `PCB_FINDINGS_FILE`). Mutations M-volt / M-pullup / M-contend are active; the harness gained a `delete` op (drop the .kicad_pcb so a netlist-topology mutation reaches the stage after the IR cross-check). Fixture results: blinky 0 errors / 3 NOT_JUDGED, uno-toggle 0 / 0, reflex 0 / 18; reflex I2C_SDA/SCL (spare header J16, no on-board pull-up) is NOT_JUDGED because the net leaves the board.

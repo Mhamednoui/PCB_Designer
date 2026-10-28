@@ -1,0 +1,370 @@
+{
+ "expected": [
+  {
+   "line": "ERROR EL-CONTENTION N1: net N1 driven by U1.3 and U2.3",
+   "rule": "EL-CONTENTION",
+   "severity": "ERROR",
+   "target": "N1",
+   "where": {
+    "net": "N1"
+   }
+  }
+ ],
+ "ir": {
+  "assembly": {
+   "boards": null,
+   "mode": null
+  },
+  "external": {
+   "declared": true,
+   "none": [],
+   "pins": {
+    "J1.1": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      3.0,
+      3.6
+     ],
+     "why": "fixture"
+    },
+    "J1.2": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      0.0,
+      0.0
+     ],
+     "why": "fixture"
+    }
+   }
+  },
+  "fab_profile": {
+   "declared": false,
+   "name": "x"
+  },
+  "ir_version": 2,
+  "meta": {
+   "git_commit": null,
+   "input_hashes": {},
+   "project": "fixture",
+   "source": "netlist"
+  },
+  "nets": {
+   "3V3": {
+    "class": "power",
+    "i_max": null,
+    "pins": [
+     "J1.1",
+     "U1.8",
+     "U2.8"
+    ],
+    "v": null
+   },
+   "GND": {
+    "class": "ground",
+    "i_max": null,
+    "pins": [
+     "J1.2",
+     "U1.1",
+     "U2.1"
+    ],
+    "v": [
+     0.0,
+     0.0
+    ]
+   },
+   "N1": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "U1.3",
+     "U2.3"
+    ],
+    "v": null
+   }
+  },
+  "parts": {
+   "J1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "",
+    "group": null,
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector:Conn",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J1",
+    "registry": null,
+    "value": "J1"
+   },
+   "U1": {
+    "electrical": {
+     "gaps": [
+      "pin 7 DISCH: no absolute-maximum voltage or current stated for the discharge transistor in the TI datasheet",
+      "inputs 2/4/6: no minimum (negative) absolute-maximum voltage stated",
+      "peak load_ma not stated; the supply current also rises with output load and during output transitions"
+     ],
+     "load_ma": {
+      "typ": {
+       "at": {
+        "vcc_v": 5
+       },
+       "cond": "supply current, output low, no load, VCC=5 V (15 V: typ 10 max 15)",
+       "max": 6,
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6",
+       "typ": 3,
+       "unit": "mA"
+      }
+     },
+     "role": "logic",
+     "theta_ja": [
+      {
+       "cond": "P (PDIP-8) package, JEDEC thermal metric (TI Thermal Information table; board per JESD51, not this PCB)",
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p5",
+       "typ": 98.5,
+       "unit": "C/W"
+      }
+     ],
+     "tj_max": {
+      "cond": "operating virtual junction temperature",
+      "max": 150,
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+      "unit": "C"
+     },
+     "vth": {
+      "at": {
+       "vcc_v": 5
+      },
+      "cond": "THRES voltage level, VCC=5 V (ratiometric: typ 2/3 VCC)",
+      "max": 4.2,
+      "min": 2.4,
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p5",
+      "typ": 3.3,
+      "unit": "V"
+     }
+    },
+    "electrical_status": "ok",
+    "footprint": "",
+    "group": null,
+    "kind": "part",
+    "lcsc": "",
+    "lib_id": "Timer:NE555P",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "GND",
+      "net": "GND"
+     },
+     "3": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 225,
+       "note": "IO +-225 mA absolute maximum (recommended +-200 mA, p4)",
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+       "v_max": null,
+       "v_min": null
+      },
+      "class": "output",
+      "io": {
+       "i_out_max_ma": {
+        "cond": "recommended operating output current +-200 mA; absolute max 225",
+        "max": 200,
+        "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+        "unit": "mA"
+       },
+       "supply_pin": "8",
+       "tristate": false,
+       "voh": {
+        "at": {
+         "ioh_ma": -100,
+         "vcc_v": 5
+        },
+        "cond": "VCC=5 V, IOH=-100 mA, TA=25 C, NE555",
+        "min": 2.75,
+        "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6",
+        "typ": 3.3,
+        "unit": "V"
+       },
+       "vol": {
+        "at": {
+         "iol_ma": 8,
+         "vcc_v": 5
+        },
+        "cond": "VCC=5 V, IOL=8 mA, TA=25 C, NE555",
+        "max": 0.4,
+        "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6",
+        "typ": 0.15,
+        "unit": "V"
+       }
+      },
+      "name": "OUT",
+      "net": "N1"
+     },
+     "8": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VCC max; recommended operating 4.5-16 V for NE555 (p4)",
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+       "v_max": 18,
+       "v_min": null
+      },
+      "class": "power_in",
+      "io": null,
+      "name": "VCC",
+      "net": "3V3"
+     }
+    },
+    "ref": "U1",
+    "registry": "ne555p",
+    "value": "NE555P"
+   },
+   "U2": {
+    "electrical": {
+     "gaps": [
+      "pin 7 DISCH: no absolute-maximum voltage or current stated for the discharge transistor in the TI datasheet",
+      "inputs 2/4/6: no minimum (negative) absolute-maximum voltage stated",
+      "peak load_ma not stated; the supply current also rises with output load and during output transitions"
+     ],
+     "load_ma": {
+      "typ": {
+       "at": {
+        "vcc_v": 5
+       },
+       "cond": "supply current, output low, no load, VCC=5 V (15 V: typ 10 max 15)",
+       "max": 6,
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6",
+       "typ": 3,
+       "unit": "mA"
+      }
+     },
+     "role": "logic",
+     "theta_ja": [
+      {
+       "cond": "P (PDIP-8) package, JEDEC thermal metric (TI Thermal Information table; board per JESD51, not this PCB)",
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p5",
+       "typ": 98.5,
+       "unit": "C/W"
+      }
+     ],
+     "tj_max": {
+      "cond": "operating virtual junction temperature",
+      "max": 150,
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+      "unit": "C"
+     },
+     "vth": {
+      "at": {
+       "vcc_v": 5
+      },
+      "cond": "THRES voltage level, VCC=5 V (ratiometric: typ 2/3 VCC)",
+      "max": 4.2,
+      "min": 2.4,
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p5",
+      "typ": 3.3,
+      "unit": "V"
+     }
+    },
+    "electrical_status": "ok",
+    "footprint": "",
+    "group": null,
+    "kind": "part",
+    "lcsc": "",
+    "lib_id": "Timer:NE555P",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "GND",
+      "net": "GND"
+     },
+     "3": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 225,
+       "note": "IO +-225 mA absolute maximum (recommended +-200 mA, p4)",
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+       "v_max": null,
+       "v_min": null
+      },
+      "class": "output",
+      "io": {
+       "i_out_max_ma": {
+        "cond": "recommended operating output current +-200 mA; absolute max 225",
+        "max": 200,
+        "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+        "unit": "mA"
+       },
+       "supply_pin": "8",
+       "tristate": false,
+       "voh": {
+        "at": {
+         "ioh_ma": -100,
+         "vcc_v": 5
+        },
+        "cond": "VCC=5 V, IOH=-100 mA, TA=25 C, NE555",
+        "min": 2.75,
+        "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6",
+        "typ": 3.3,
+        "unit": "V"
+       },
+       "vol": {
+        "at": {
+         "iol_ma": 8,
+         "vcc_v": 5
+        },
+        "cond": "VCC=5 V, IOL=8 mA, TA=25 C, NE555",
+        "max": 0.4,
+        "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6",
+        "typ": 0.15,
+        "unit": "V"
+       }
+      },
+      "name": "OUT",
+      "net": "N1"
+     },
+     "8": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VCC max; recommended operating 4.5-16 V for NE555 (p4)",
+       "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+       "v_max": 18,
+       "v_min": null
+      },
+      "class": "power_in",
+      "io": null,
+      "name": "VCC",
+      "net": "3V3"
+     }
+    },
+    "ref": "U2",
+    "registry": "ne555p",
+    "value": "NE555P"
+   }
+  },
+  "requirements": []
+ }
+}
