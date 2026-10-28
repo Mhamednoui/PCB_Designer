@@ -1,0 +1,4 @@
+[
+  {"check": "electrical", "rule": "EL-CONN-PROT", "refs": ["J1"],
+   "why": "Synthetic strap fixture: J1 stands in for a regulated 3V3 rail from elsewhere on a real board, not a field connector; supply protection is not what this fixture tests."}
+]

@@ -1,0 +1,503 @@
+{
+ "expected": [],
+ "ir": {
+  "assembly": {
+   "boards": null,
+   "mode": null
+  },
+  "external": {
+   "declared": true,
+   "none": [
+    "SW1",
+    "SW2"
+   ],
+   "pins": {
+    "J1.1": {
+     "dir": "supply",
+     "i": 0.5,
+     "v": [
+      3.0,
+      3.6
+     ],
+     "why": "fixture supply"
+    },
+    "J1.2": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      0.0,
+      0.0
+     ],
+     "why": "fixture ground"
+    }
+   }
+  },
+  "fab_profile": {
+   "declared": false,
+   "name": "jlcpcb"
+  },
+  "ir_version": 2,
+  "meta": {
+   "git_commit": "743ad9cbded3e976a5befe7ec64e19db8ef8ebac",
+   "input_hashes": {
+    "parts/records/cap-disc-5mm-p5.00": "5bbb78e822968e5c968109951328d193ea6680e79d7d7bf5ba9e177b0dc79680",
+    "parts/records/esp32-s3-wroom-1-n8": "57eab9b0884f7655328600d845795e5a5b7159e666503fa7f164a6534911e6eb",
+    "parts/records/hdr-2x04-p2.54-v": "7f818699989397cf8c4af2f23798b2b5746ab6a29cf1652a6abd0255d43a8d08",
+    "parts/records/res-axial-0207-p10.16": "3e11b5572175dce6ba6705c25754e49fb6e44d517a7f5c757e396d0e2dc77680",
+    "parts/records/sw-push-6mm-tht": "9d6a834ca727f7288e06ba1ecd190abe2b129b66f9b27b625a89bbfa585a609f",
+    "projects/synth-esp32s3/gen/netlist.py": "280e9180897de36d0390aa4d273f334923a21945dd06f3a5031cab9b2de858f9"
+   },
+   "project": "fixture",
+   "source": "netlist"
+  },
+  "nets": {
+   "3V3": {
+    "class": "power",
+    "i_max": 0.5,
+    "pins": [
+     "J1.1",
+     "R3.1",
+     "R4.1",
+     "U1.2"
+    ],
+    "v": [
+     3.0,
+     3.6
+    ]
+   },
+   "BOOT": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "R4.2",
+     "SW1.1",
+     "U1.27"
+    ],
+    "v": null
+   },
+   "EN": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "C5.1",
+     "R3.2",
+     "SW2.1",
+     "U1.3"
+    ],
+    "v": null
+   },
+   "GND": {
+    "class": "ground",
+    "i_max": 0.5,
+    "pins": [
+     "C5.2",
+     "J1.2",
+     "SW1.2",
+     "SW2.2",
+     "U1.1",
+     "U1.40",
+     "U1.41"
+    ],
+    "v": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "parts": {
+   "C5": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+    "group": "boot",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:C",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "EN"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "GND"
+     }
+    },
+    "ref": "C5",
+    "registry": "cap-disc-5mm-p5.00",
+    "value": "1uF"
+   },
+   "J1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical",
+    "group": "power",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector_Generic:Conn_02x04_Odd_Even",
+    "nc": [
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8"
+    ],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J1",
+    "registry": "hdr-2x04-p2.54-v",
+    "value": "3V3 IN"
+   },
+   "R3": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "boot",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "EN"
+     }
+    },
+    "ref": "R3",
+    "registry": "res-axial-0207-p10.16",
+    "value": "10k"
+   },
+   "R4": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "boot",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "BOOT"
+     }
+    },
+    "ref": "R4",
+    "registry": "res-axial-0207-p10.16",
+    "value": "10k"
+   },
+   "SW1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+    "group": "boot",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Switch:SW_Push",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "1",
+      "net": "BOOT"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "2",
+      "net": "GND"
+     }
+    },
+    "ref": "SW1",
+    "registry": "sw-push-6mm-tht",
+    "value": "BOOT"
+   },
+   "SW2": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+    "group": "boot",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Switch:SW_Push",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "1",
+      "net": "EN"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "2",
+      "net": "GND"
+     }
+    },
+    "ref": "SW2",
+    "registry": "sw-push-6mm-tht",
+    "value": "RESET"
+   },
+   "U1": {
+    "electrical": {
+     "gaps": [
+      "no absolute-maximum voltage/current for GPIO pins in the module datasheet (only VDD33 -0.3..3.6 V); pin ratings are in the ESP32-S3 series datasheet, not read here: EL-ABSMAX on GPIO nets is NOT_JUDGED (recommended VIH max = VDD+0.3 is a recommended-operating figure, not a rating)",
+      "pins 1,40,41 (GND) and the GPIO pins are classed from Table 3-1 type column (P / I/O/T): agent-read",
+      "strapping pins (IO0, IO3, IO45, IO46) electrical states belong to the P3 strap block, not this record",
+      "IO47/IO48 are 1.8 V on R16V variants, not on N8 (p12 note c)"
+     ],
+     "input_type": "cmos",
+     "load_ma": {
+      "peak": {
+       "cond": "Wi-Fi TX 802.11b 1 Mbps @20.5 dBm, 100 % duty (peak column); supply must deliver >= 0.5 A (p27)",
+       "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+       "typ": 355,
+       "unit": "mA"
+      },
+      "typ": {
+       "cond": "Wi-Fi RX 802.11b/g/n HT20 active, 3.3 V, 25 C (peak column)",
+       "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+       "typ": 95,
+       "unit": "mA"
+      }
+     },
+     "role": "mcu"
+    },
+    "electrical_status": "ok",
+    "footprint": "TODO",
+    "group": "mcu",
+    "kind": "part",
+    "lcsc": "C2913198",
+    "lib_id": "TODO",
+    "nc": [
+     "4",
+     "5",
+     "6",
+     "7",
+     "8",
+     "9",
+     "10",
+     "11",
+     "12",
+     "13",
+     "14",
+     "15",
+     "16",
+     "17",
+     "18",
+     "19",
+     "20",
+     "21",
+     "22",
+     "23",
+     "24",
+     "25",
+     "26",
+     "28",
+     "29",
+     "30",
+     "31",
+     "32",
+     "33",
+     "34",
+     "35",
+     "36",
+     "37",
+     "38",
+     "39"
+    ],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "GND",
+      "net": "GND"
+     },
+     "2": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VDD33 -0.3..3.6 V; recommended 3.0-3.6 V, supply must deliver >= 0.5 A (p27)",
+       "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+       "v_max": 3.6,
+       "v_min": -0.3
+      },
+      "class": "power_in",
+      "io": null,
+      "name": "3V3",
+      "net": "3V3"
+     },
+     "27": {
+      "abs_max": null,
+      "class": "bidirectional",
+      "io": {
+       "i_in_leak": {
+        "cond": "IIH/IIL",
+        "max": 50,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "nA"
+       },
+       "i_out_max_ma": {
+        "cond": "IOL 28 mA typ at VOL=0.495 V (PAD_DRIVER=3); IOH 40 mA typ at VOH>=2.64 V - typical, not guaranteed maxima",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "typ": 28,
+        "unit": "mA"
+       },
+       "supply_pin": "2",
+       "tristate": true,
+       "vih": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:1*vdd+0.3",
+        "min": "ratio:0.75*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vil": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:0.25*vdd",
+        "min": -0.3,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "voh": {
+        "cond": "measured with a high-impedance load",
+        "min": "ratio:0.8*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vol": {
+        "cond": "measured with a high-impedance load",
+        "max": "ratio:0.1*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       }
+      },
+      "name": "IO0",
+      "net": "BOOT"
+     },
+     "3": {
+      "abs_max": null,
+      "class": "input",
+      "io": {
+       "note": "EN: do not leave floating (p11)",
+       "supply_pin": "2",
+       "vih": {
+        "cond": "VIH_nRST chip reset release voltage",
+        "max": "ratio:1*vdd+0.3",
+        "min": "ratio:0.75*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+        "unit": "V"
+       },
+       "vil": {
+        "cond": "VIL_nRST chip reset voltage",
+        "max": "ratio:0.25*vdd",
+        "min": -0.3,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+        "unit": "V"
+       }
+      },
+      "name": "EN",
+      "net": "EN"
+     },
+     "40": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "GND",
+      "net": "GND"
+     },
+     "41": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "EPAD",
+      "net": "GND"
+     }
+    },
+    "ref": "U1",
+    "registry": "esp32-s3-wroom-1-n8",
+    "value": "ESP32-S3-WROOM-1-N8"
+   }
+  },
+  "requirements": []
+ }
+}

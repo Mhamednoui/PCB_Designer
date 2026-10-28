@@ -43,6 +43,9 @@ def main(argv):
     print("\n%-14s %8s %7s %11s %7s %7s" % ("rule", "examined", "judged", "NOT_JUDGED", "errors", "waived"))
     for rid in ids:
         s = stats.get(rid, {})
+        if s.get("skipped"):
+            print("%-14s %s" % (rid, "not applicable (nothing on this design for the rule to judge)"))
+            continue
         print("%-14s %8d %7d %11d %7d %7d" % (rid, s.get("examined", 0), s.get("judged", 0), s.get("not_judged", 0),
                                               s.get("errors", 0), s.get("waived", 0)))
     nj = sum(1 for f in findings if f.severity == "NOT_JUDGED")

@@ -1,0 +1,55 @@
+{
+  "id": "esp32s3",
+  "title": "ESP32-S3 strapping pins and EN reset RC",
+  "applies_to": {"registry": ["esp32-s3-wroom-1-n8"]},
+  "reviewed": "2026-10-28 against the sources below (owner sign-off pending, like the part record)",
+  "sources": {
+    "DS": "ESP32-S3-WROOM-1 & WROOM-1U Datasheet v1.8, https://documentation.espressif.com/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf",
+    "HWC": "Espressif ESP32-S3 Hardware Design Guidelines, Schematic Checklist (docs.espressif.com .../esp32s3/schematic-checklist.html, 'latest', copyright 2023-2026, read 2026-10-28)"
+  },
+  "policy": {
+    "ext_pull_max_ohm": 100000,
+    "ext_pull_note": "POLICY, not an Espressif number: an external pull resistor above this is treated as too weak to define the level against the unspecified internal weak pull (the datasheet gives no internal resistance)."
+  },
+  "pins": [
+    {
+      "pin": "IO0", "gpio": 0, "function": "boot mode (with GPIO46)",
+      "internal_pull": "up",
+      "internal_src": "DS Table 4-1 (p.13): GPIO0 weak pull-up, bit value 1",
+      "normal": ["high"],
+      "normal_src": "DS Table 4-3 (p.14): SPI Boot = GPIO0 1; HWC 'Strapping Pins': default is SPI Boot, recommended to place a pull-up resistor at GPIO0",
+      "cap_max_f": 1e-9,
+      "cap_src": "HWC 'Strapping Pins': 'Do not add high-value capacitors at GPIO0, or the chip may enter download mode'. Espressif gives no number: 1 nF is the POLICY limit used here",
+      "download": {"method": "button_to_gnd", "src": "DS Table 4-3: Joint Download Boot = GPIO0 0 and GPIO46 0; entering it needs GPIO0 pulled low externally"}
+    },
+    {
+      "pin": "IO3", "gpio": 3, "function": "JTAG signal source",
+      "internal_pull": "none",
+      "internal_src": "DS Table 4-1: GPIO3 floating",
+      "normal": ["any"],
+      "normal_src": "DS Table 4-5 (p.15): GPIO3 'Ignored' while the JTAG eFuses are at their default 0. If EFUSE_STRAP_JTAG_SEL is burnt the level must be defined externally"
+    },
+    {
+      "pin": "IO45", "gpio": 45, "function": "VDD_SPI voltage",
+      "internal_pull": "down",
+      "internal_src": "DS Table 4-1: GPIO45 weak pull-down, bit value 0",
+      "normal": ["low"],
+      "normal_src": "DS Table 4-4 (p.15): GPIO45 0 (EFUSE_VDD_SPI_FORCE 0) = VDD_SPI 3.3 V; 1 = 1.8 V flash regulator, which under-supplies a 3.3 V flash"
+    },
+    {
+      "pin": "IO46", "gpio": 46, "function": "boot mode (with GPIO0) and ROM message print",
+      "internal_pull": "down",
+      "internal_src": "DS Table 4-1: GPIO46 weak pull-down, bit value 0",
+      "normal": ["any"],
+      "normal_src": "DS Table 4-3: SPI Boot = GPIO46 any value",
+      "download": {"state": "low", "src": "DS Table 4-3: Joint Download Boot needs GPIO46 = 0; an external pull-up makes GPIO0 = 0 / GPIO46 = 1 an undefined mode"}
+    }
+  ],
+  "reset": {
+    "pin": "EN",
+    "pullup_r_ohm": [4700, 47000],
+    "c_f": [1e-7, 1e-5],
+    "recommended": {"r_ohm": 10000, "c_f": 1e-6},
+    "src": "DS section 9 'Peripheral Schematics' note (p.41): RC delay at EN, 'usually R = 10 kOhm and C = 1 uF', to be adjusted to the supply power-up timing; HWC 'Chip Power-up and Reset': CHIP_PU must not float. The ranges (R 4.7k-47k, C 0.1-10 uF = a decade around the recommendation) are POLICY, Espressif gives no range"
+  }
+}
