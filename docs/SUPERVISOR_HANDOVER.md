@@ -2,7 +2,7 @@
 
 Written for: the next Claude session (after a compaction, a usage limit, or a new chat) continuing as
 SUPERVISOR of this repo. Everything needed is in files; nothing lives only in chat. Updated after every merge.
-**Last updated: 2026-10-28 (after P2-T5 merge e24d71c + mutation-runner fixes; no agents in flight).**
+**Last updated: 2026-10-28 (after P2-T5 merge + runner fixes 2bf1fd3; P2-T10a + PA-8 in flight).**
 
 ## 1. Where things are
 | What | Where |
@@ -61,11 +61,12 @@ SUPERVISOR of this repo. Everything needed is in files; nothing lives only in ch
 ### Agents in flight (check their worktrees if the session restarted)
 | Task | Branch | Worktree | What to do |
 |---|---|---|---|
-| (none) | | | |
+| P2-T10a release gate + `release` stage + RULES.md | `feat/p2-t10a-release` | `C:/Users/nouir/PCB_wt/p2t10a` | same (agent creates the worktree itself; if it has a final `feat(...)` commit → review + merge per §3, else wip-commit + new agent) |
+| PA-8 scaffolds + CONTRIBUTING | `feat/pa8-scaffold` | `C:/Users/nouir/PCB_wt/pa8` | same (agent creates the worktree itself; if it has a final `feat(...)` commit → review + merge per §3, else wip-commit + new agent) |
 Check with: `git worktree list`, `git -C <worktree> log --oneline -3`, `git -C <worktree> status --short`.
 
 ## 5. Next queue (in order)
-3. P2-T10 (release coverage gate, `docs/RULES.md` generator, migrate remaining lint rules) → **P2 exit**.
+3. Merge P2-T10a + PA-8; then P2-T10b (migrate remaining lint rules to the engine, webview coverage table) → **P2 exit**.
 4. PA-3 (port remaining checks to the IR), PA-8 (scaffolds + CONTRIBUTING), PA-4 (layer-agnostic + blinky-4L), PA-11 (hand-drawn schematic input).
 5. P3 design blocks → P4 layout engine (auto-placement, MS-T0 antenna keep-out) → P5 PCBA package/sign-off (IV-3 gerber DRC, IV-4 IPC-356) → P6 ref-esp32 board + fuzzing.
 6. Fixture fixes logged for MV-T2: LED LCSC C2895470 is a 3 mm LED on 5 mm footprints; reflex DESIGN_BRIEF promised a P-MOSFET reverse-polarity stage the board lacks.
