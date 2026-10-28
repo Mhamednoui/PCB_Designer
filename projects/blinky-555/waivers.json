@@ -1,0 +1,8 @@
+[
+  {"check": "electrical", "rule": "EL-CONN-PROT", "refs": ["J1"], "match": "fuse/PTC",
+   "why": "The whole board draws about 15-20 mA (NET_SPEC i_max 50 mA) from a battery or current-limited bench supply; there is no motor, relay or long cable, so a fuse would only add a drop.",
+   "by": "P2-T7b", "date": "2026-10-28"},
+  {"check": "electrical", "rule": "EL-CONN-PROT", "refs": ["J1"], "match": "surge/TVS clamp",
+   "why": "Hobby board on a 9-12 V battery or adapter with a short lead, no inductive load and no hot-plug from a long cable; a TVS is not worth its cost. Reverse polarity is covered by D2.",
+   "by": "P2-T7b", "date": "2026-10-28"}
+]

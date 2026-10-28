@@ -51,6 +51,17 @@ def blinky_ir(declared=False):
     ir.update(from_netlist.build("blinky-555"))
     if not declared:
         ir["external"] = {"declared": False, "pins": {}, "none": []}
+        # The hand calculations below are for blinky WITHOUT the P2-T7b reverse-polarity diode D2: remove it, merge VIN into
+        # VCC and restore the original NET_SPEC claims. (The real design with D2 is checked in test_blinky_diode.)
+        ir["parts"].pop("D2", None)
+        for p in ir["parts"].values():
+            for q in p["pins"].values():
+                if q["net"] == "VIN":
+                    q["net"] = "VCC"
+        ir["nets"].pop("VIN", None)
+        ir["nets"]["VCC"]["v"] = [9.0, 12.0]
+        ir["nets"]["OUT"]["v"] = [9.0, 12.0]
+        ir["nets"]["TRIG"]["v"] = [3.0, 8.0]
     return ir
 
 
@@ -182,8 +193,9 @@ def test_blinky():
 
     # the project's own EXTERNAL (netlist.py, P2-T7): J1.1 supply 9..12 V -> VCC derived, no claim conflict
     mr = build_model(blinky_ir(declared=True))
-    check("blinky's real EXTERNAL makes VCC derived 9..12 V", mr.nets["VCC"].status == "derived" and near(mr.nets["VCC"].interval, 9, 12),
-          (mr.nets["VCC"].status, mr.nets["VCC"].interval))
+    check("blinky's real EXTERNAL + D2: VIN derived 9..12 V, VCC behind D2 stays 8..12 V (model cannot derive through a loaded diode)",
+          mr.nets["VIN"].status == "derived" and near(mr.nets["VIN"].interval, 9, 12) and mr.nets["VCC"].status in ("derived", "claimed-only")
+          and mr.nets["VCC"].interval[1] <= 12.0 and mr.nets["VCC"].interval[0] >= 7.9, (mr.nets["VIN"].interval, mr.nets["VCC"].interval))
     # J1 declared in EXTERNAL with v = 9..12 V -> VCC becomes derived; the claim 9..12 contains it
     ir2 = copy.deepcopy(ir)
     ir2["external"] = {"declared": True, "none": [], "pins": {

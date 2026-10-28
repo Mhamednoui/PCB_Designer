@@ -167,8 +167,11 @@ def _signal_class(d, net):
                      if d.etype[ref] in ("IC", "REG", "FET") and d.parts[ref].get("kind") != "connector"})
     isolated = bool(active) and all((d.parts[r].get("electrical") or {}).get("role") == "optocoupler" for r in active)
     clamps = sorted(set(clamps))
-    cls = "protected" if clamps else "isolated" if isolated else "series-R-only" if hops else "bare"
-    return {"cls": cls, "hops": hops, "protection": clamps, "active": active}
+    shunt = sorted({ref for n in seen if seen[n] >= 1 for ref, _p, _pin in d.att.get(n, []) if d.etype[ref] == "C"
+                    and d.two_pin(ref) and any(d.nclass(q["net"]) == "ground" for q in d.two_pin(ref))})
+    cls = ("protected" if clamps else "isolated" if isolated else "filtered" if (hops and shunt)
+           else "series-R-only" if hops else "bare")
+    return {"cls": cls, "hops": hops, "protection": clamps or shunt, "active": active}
 
 
 def classify(ir):
@@ -236,6 +239,10 @@ def classify(ir):
             row.update(kind="signal", missing=[], **_signal_class(d, net))
             if row["cls"] in ("bare", "series-R-only"):
                 row["missing"] = ["clamp"]
+            out_only = row["dirs"] <= {"out"}
+            expansion = row["connector"] in ext.get("classes", {})
+            row["sev"] = "WARN" if (expansion or (out_only and row["cls"] == "series-R-only")) else "ERROR"
+            row["expansion"] = expansion
     return rows, notes
 
 
@@ -264,10 +271,19 @@ def check(ctx):
                 yield ctx.finding("ERROR", "external supply %s, %s" % (row["net"], what),
                                   where={"ref": ref, "pin": pad, "net": row["net"]}, nets=[row["net"]], fix=fix[m])
         elif row["kind"] == "signal" and row["missing"]:
-            by_conn.setdefault(row["connector"], []).append(row)
-    for ref in sorted(by_conn):
-        rs = sorted(by_conn[ref], key=lambda r: r["net"])
+            by_conn.setdefault((row["connector"], row["sev"]), []).append(row)
+        elif row["kind"] == "signal" and row["cls"] == "filtered":
+            by_conn.setdefault((row["connector"], "INFO"), []).append(row)
+    for ref, sev in sorted(by_conn):
+        rs = sorted(by_conn[(ref, sev)], key=lambda r: r["net"])
         listing = ", ".join("%s (%s)" % (r["net"], r["cls"]) for r in rs)
         n = len(rs)
-        yield ctx.finding("ERROR", "%d external signal net%s with no clamp: %s" % (n, "" if n == 1 else "s", listing),
-                          where={"ref": ref}, nets=[r["net"] for r in rs], refs=[ref], fix=fix["clamp"] + " Unprotected nets are listed with their class; a waiver needs a `why`.")
+        if sev == "INFO":
+            yield ctx.finding("INFO", "%d external signal net%s protected by an RC filter (series R + shunt C to GND): %s"
+                              % (n, "" if n == 1 else "s", listing), where={"ref": ref}, nets=[r["net"] for r in rs], refs=[ref])
+            continue
+        lead = "expansion header: protection is the user's responsibility; " if rs[0]["expansion"] else ""
+        what = "driven only through a series resistor" if sev == "WARN" and not rs[0]["expansion"] else "with no clamp"
+        yield ctx.finding(sev, "%s%d external signal net%s %s: %s" % (lead, n, "" if n == 1 else "s", what, listing),
+                          where={"ref": ref}, nets=[r["net"] for r in rs], refs=[ref],
+                          fix=fix["clamp"] + " Unprotected nets are listed with their class; a waiver needs a `why`.")

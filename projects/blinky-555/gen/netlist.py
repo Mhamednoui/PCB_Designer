@@ -52,6 +52,7 @@ PARTS_STRICT = True        # every part must be declared through the registry (l
 # construction. Generic 2-pin passives and connectors have unnamed pins ("~", "Pin_1"): pad numbers.
 R_ID, C_ID, CP_ID = "res-axial-0207-p10.16", "cap-disc-5mm-p5.00", "cap-elec-d6.3-p2.50"
 LED_ID, DIP8_ID, TERM2_ID = "led-5mm", "ne555p-dip8", "tb-maixu-mx126-5.0-2p"
+DO41_ID = "diode-do41-p7.62-h"
 
 PARTS = []
 
@@ -67,7 +68,11 @@ def C(ref, value, a, b, group, part_id=C_ID):
 # ── 1. Power in ──
 # Polarity is on the silkscreen (see make_pcb.py TEXTS) - a 2-pin terminal block gives no clue itself.
 G = "power"
-PARTS.append(_parts.registry_part("J1", TERM2_ID, "9-12V IN", {1: "VCC", 2: "GND"}, G))
+PARTS.append(_parts.registry_part("J1", TERM2_ID, "9-12V IN", {1: "VIN", 2: "GND"}, G))
+# Reverse-polarity protection: a series 1N4007 (DO-41). Drop ~0.7 V at the ~15-20 mA this board draws (1.0 V max at 1 A, datasheet),
+# so VCC = 9 V - 0.7 V ~ 8.3 V at the worst case: far inside the NE555's 4.5-16 V range. A Schottky would drop less but there is
+# no Schottky record, and the 555 does not care.
+PARTS.append(_parts.registry_part("D2", DO41_ID, "1N4007", {"K": "VCC", "A": "VIN"}, G))
 C("C3", "100nF", "VCC", "GND", G)          # decoupling, sits right at U1's pin 8
 
 # ── 2. The 555 astable ──
@@ -93,15 +98,16 @@ GROUPS = [
     ("timer", "NE555 ASTABLE: ~1.4 Hz, 50%% DUTY IS NOT EXPECTED (R1+R2 CHARGE, R2 DISCHARGES)"),
     ("led", "OUTPUT: LED VIA 470R (~15 mA AT 9 V)"),
 ]
-POWER_FLAG_NETS = ["VCC", "GND"]
+POWER_FLAG_NETS = ["VIN", "VCC", "GND"]
 
 # Electrical intent, read by tools/boardgen/lint_netlist.py (v in volts: number or (min, max); i_max in A).
 # OUT/TRIG are not rails: OUT swings 0..VCC (the LED is lit when it is high); TRIG ramps 1/3..2/3 VCC.
 NET_SPEC = {
-    "VCC": {"v": (9.0, 12.0), "i_max": 0.05},
+    "VIN": {"v": (9.0, 12.0), "i_max": 0.05},       # the adapter, before the reverse-polarity diode D2
+    "VCC": {"v": (8.0, 12.0), "i_max": 0.05},       # after D2 (0.7-1.0 V drop)
     "GND": {"v": 0.0, "i_max": 0.05},
-    "OUT": {"v": (9.0, 12.0), "i_max": 0.025},      # high level ~ VCC
-    "TRIG": {"v": (3.0, 8.0)},                      # 1/3 VCC .. 2/3 VCC
+    "OUT": {"v": (8.0, 12.0), "i_max": 0.025},      # high level ~ VCC
+    "TRIG": {"v": (2.6, 8.0)},                      # 1/3 VCC .. 2/3 VCC
 }
 
 # What the outside world does to the board's connectors (P2 electrical analyzer, EL-CONN-PROT). J1 is the only connector:
@@ -113,7 +119,7 @@ EXTERNAL = X.pins("J1", [1], dir="supply", v=(9.0, 12.0), i=0.05,
 # MCU for Wokwi to run. The expectations are the design intent from the docstring above:
 #   high = 0.693*(R1+R2)*C1 = 395 ms, low = 0.693*R2*C1 = 326 ms -> 1.39 Hz, 55% duty.
 SPICE = {
-    "supplies": {"VCC": 9.0},
+    "supplies": {"VIN": 9.0},
     "tstop": 4.0,
     "probes": ["OUT", "TRIG", "VCC"],
     "expect": {"OUT": {"freq_hz": 1.39, "duty_pct": 55, "tol_pct": 10}},

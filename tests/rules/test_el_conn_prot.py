@@ -116,6 +116,32 @@ f = run(ir)
 check("P-FET in series gives reverse protection (the surge clamp is still reported missing)",
       len(f) == 1 and "clamp" in f[0].why, lines(f))
 
+# RC filter / direction / expansion (P2-T7b)
+base = copy.deepcopy(GREEN)
+del base["parts"]["D2"]
+base["parts"]["R1"] = {"kind": "generic", "lib_id": "Device:R", "value": "1k", "pins": {"1": pin("SIG_X", "~"), "2": pin("SIG_Y", "~")}}
+base["parts"]["U1"]["pins"]["1"]["net"] = "SIG_Y"
+base["nets"]["SIG_Y"] = {"class": "signal"}
+f = run(base)
+check("external input, series R only: ERROR", len(f) == 1 and f[0].severity == "ERROR", lines(f))
+ir = copy.deepcopy(base)
+ir["external"]["pins"]["J2.1"]["dir"] = "out"
+f = run(ir)
+check("external OUTPUT with series R only: WARN", len(f) == 1 and f[0].severity == "WARN", lines(f))
+ir = copy.deepcopy(base)
+ir["parts"]["C9"] = {"kind": "generic", "lib_id": "Device:C", "value": "100nF", "pins": {"1": pin("SIG_Y", "~"), "2": pin("GND", "~")}}
+f = run(ir)
+check("series R + shunt C to GND = filtered: INFO only", len(f) == 1 and f[0].severity == "INFO" and "filtered" in f[0].why, lines(f))
+ir = copy.deepcopy(base)
+del ir["parts"]["R1"]
+ir["parts"]["U1"]["pins"]["1"]["net"] = "SIG_X"
+f = run(ir)
+check("bare external input: ERROR", len(f) == 1 and f[0].severity == "ERROR" and "bare" in f[0].why, lines(f))
+ir["external"]["classes"] = {"J2": {"class": "expansion", "why": "user add-ons"}}
+f = run(ir)
+check("expansion connector, bare: WARN with the responsibility text",
+      len(f) == 1 and f[0].severity == "WARN" and "user's responsibility" in f[0].why, lines(f))
+
 rows, _n = classify(GREEN)
 check("classify: supply protected / signal protected", [(r["kind"], r["cls"]) for r in rows] == [("supply", "protected"), ("signal", "protected")],
       [(r["kind"], r["cls"]) for r in rows])
@@ -124,9 +150,11 @@ path = os.path.join(ROOT, "projects", "reflex-machine", "out", "design.json")
 if os.path.isfile(path):
     with open(path, encoding="utf-8") as fh:
         real = json.load(fh)
-    base = [x.where.get("ref") for x in run(real) if x.severity == "ERROR"]
-    check("reflex-machine as built: the 12 V input is fine, the cable and header connectors are not",
-          "J1" not in base and {"J13", "J14", "J15", "J16", "J17"} <= set(base), base)
+    bysev = {}
+    for x in run(real):
+        bysev.setdefault(x.severity, set()).add(x.where.get("ref"))
+    check("reflex-machine as built: no ERROR; J13 filtered (INFO), J14/J15 series-R outputs and expansion J16/J17 are WARN",
+          "ERROR" not in bysev and bysev.get("INFO") == {"J13"} and bysev.get("WARN") == {"J14", "J15", "J16", "J17"}, bysev)
     m = copy.deepcopy(real)
     del m["parts"]["D1"]                                         # M-prot on the real IR: the P6KE15A TVS removed
     f = [x for x in run(m) if x.where.get("ref") == "J1"]

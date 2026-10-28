@@ -246,6 +246,8 @@ EXTERNAL = X.merge(
     X.pins("J17", [1], dir="out", why="ESP32 spare header: DevKit 3V3 rail offered to a user add-on"),
     X.pins("J17", range(3, 9), dir="bidir", v=(0.0, 3.465),
            why="ESP32 spare header: spare ESP32 GPIO, 3.3 V logic, free for a user add-on (nothing is specified)"),
+    {"J16": {"class": "expansion", "why": "spare Mega I/O for user add-ons; nothing on the board uses it"},
+     "J17": {"class": "expansion", "why": "spare ESP32 GPIO for user add-ons; nothing on the board uses it"}},
     X.none("F1"),                  # blade fuse holder: a series element on +12V_IN, nothing is wired to it from outside
     # The Mega shield socket A1: the Mega is the outside world (5 V logic, USB may also be plugged for programming).
     X.pins("A1", [_MEGA_PADS[n] for n in _MEGA_OUT], dir="in", v=(0.0, 5.25), why="Mega 5 V push-pull output drives this board"),
