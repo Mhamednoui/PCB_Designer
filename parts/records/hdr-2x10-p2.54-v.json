@@ -1,6 +1,7 @@
 {
   "id": "hdr-2x10-p2.54-v",
   "kind": "connector",
+  "footprint_aliases": ["PinHeader_2x10"],
   "package": {
     "name": "Pin header 2x10 2.54 mm vertical",
     "mount": "tht"

@@ -1,6 +1,7 @@
 {
   "id": "tb-phoenix-pt-1.5-3-3.5-h",
   "kind": "connector",
+  "footprint_aliases": ["PT-1,5-3-3.5"],
   "package": {
     "name": "Screw terminal 3P 3.5 mm (Phoenix PT 1,5/3-3.5-H)",
     "mount": "tht"

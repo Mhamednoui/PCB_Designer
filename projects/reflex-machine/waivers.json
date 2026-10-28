@@ -1,4 +1,79 @@
 [
-  {"check": "review", "rule": "DC-001", "refs": ["U1", "C7"],
-   "why": "U1 is the R-785.0 5V DC-DC module (not a logic IC) with its own internal input/output capacitors; C7 is the extra 100nF on its +5V output, 13.4 mm centre-to-centre (9.2 mm pad-to-pad), acceptable for a bulk-rail cap. Marginal, not a defect."}
+  {
+    "check": "review",
+    "rule": "DC-001",
+    "refs": [
+      "U1",
+      "C7"
+    ],
+    "why": "U1 is the R-785.0 5V DC-DC module (not a logic IC) with its own internal input/output capacitors; C7 is the extra 100nF on its +5V output, 13.4 mm centre-to-centre (9.2 mm pad-to-pad), acceptable for a bulk-rail cap. Marginal, not a defect."
+  },
+  {
+    "check": "lint",
+    "rule": "PR-SYM",
+    "refs": [
+      "U2"
+    ],
+    "why": "KiCad's Isolator:PC817 has EMPTY pin names on all four pins, so the registry names (A, K, E, C) cannot be matched by name. Pin numbers and geometry agree with the datasheet (1 anode, 2 cathode, 3 emitter, 4 collector); the record stays unverified until the owner signs it (see its notes). U2 is connected BY FUNCTION in netlist.py, so a wrong pinout cannot hide behind this waiver."
+  },
+  {
+    "check": "parts",
+    "rule": "GEO",
+    "refs": [
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4",
+      "Q5",
+      "Q6",
+      "Q7",
+      "Q8",
+      "Q9",
+      "Q10"
+    ],
+    "why": "P1-T9b: first time the parts stage sees the reflex fixture. KiCad TO-220-3_Vertical drills 1.10 mm, the LCSC/EasyEDA footprint 1.30 mm. The 1.10 mm drill fits the datasheet maximum lead diagonal (1.08 mm) with 0.02 mm to spare (lint PR-HOLE WARN, accepted in spec decision 9.10); the board is hand-soldered. A human should decide whether to enlarge the hole to 1.2 mm before ordering."
+  },
+  {
+    "check": "parts",
+    "rule": "GEO",
+    "refs": [
+      "U1"
+    ],
+    "why": "P1-T9b: KiCad drills 1.20 mm = the YLPTEC datasheet's recommended-layout hole (p5), LCSC's EasyEDA footprint uses 1.00 mm. KiCad matches the datasheet; not a board defect."
+  },
+  {
+    "check": "parts",
+    "rule": "GEO",
+    "refs": [
+      "U2",
+      "U3"
+    ],
+    "why": "P1-T9b: DIP-4 / DIP-16 drills are 0.80 mm in KiCad vs 1.00 mm in the LCSC footprint. DIP leads are ~0.25-0.5 mm thick, 0.80 mm is the KiCad standard and fits with margin; the LCSC hole is just looser. Libraries legitimately differ."
+  },
+  {
+    "check": "parts",
+    "rule": "GEO",
+    "refs": [
+      "D1",
+      "D2"
+    ],
+    "why": "P1-T9b: the BOM has always carried these LCSC ids (P6KE15A C294003, 1N4007 C2985028); they are the right diodes, but LCSC's EasyEDA footprints are horizontally formed (D1 11.60 mm, D2 8.70 mm lead pitch) while the board uses KiCad's 10.16 / 7.62 mm spans. Hand-soldered through-hole parts with bendable leads; the pitch difference is a forming choice, not a wrong part."
+  },
+  {
+    "check": "parts",
+    "rule": "GEO",
+    "refs": [
+      "D11",
+      "D12",
+      "D13",
+      "D14",
+      "D15",
+      "D16",
+      "D17",
+      "D18",
+      "D19",
+      "D20"
+    ],
+    "why": "P1-T9b: 1N5822 (C2476) is a DO-201AD axial diode that LCSC draws lying down (15.24 mm pitch); this board stands it up (5.08 mm pitch, record diode-do201ad-p5.08-v). Same part, different forming; leads are bent for vertical mounting. Hand-soldered, not a wrong part."
+  }
 ]

@@ -1,6 +1,7 @@
 {
   "id": "sw-push-6mm-tht",
   "kind": "connector",
+  "footprint_aliases": ["SW_PUSH_6mm"],
   "package": {
     "name": "Tactile switch 6 mm, 4-leg THT",
     "mount": "tht"

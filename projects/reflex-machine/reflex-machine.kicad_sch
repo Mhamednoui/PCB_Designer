@@ -4,7 +4,7 @@
 	(generator_version "10.0")
 	(uuid "9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3")
 	(paper "User" 1160 840.74)
-	(title_block (title "reflex-machine") (date "2026-10-27") (rev "1.0") (comment 1 "") (comment 2 "Generated from gen/netlist.py - firmware pin map unchanged"))
+	(title_block (title "reflex-machine") (date "2026-10-28") (rev "1.0") (comment 1 "") (comment 2 "Generated from gen/netlist.py - firmware pin map unchanged"))
 	(lib_symbols
 		(symbol "74xx:74HC595"
 			(exclude_from_sim no)
@@ -9234,9 +9234,9 @@
 		(pin "1" (uuid "6d861280-bae6-53f0-a300-aa33a1bff835"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "#PWR009") (unit 1))))
 	)
-	(symbol (lib_id "Device:C") (at 203.2 58.42 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "b326871f-0352-5968-935c-fa5bf91d3d49")
+	(symbol (lib_id "Device:C_Polarized") (at 203.2 58.42 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "b326871f-0352-5968-935c-fa5bf91d3d49")
 		(property "Reference" "C2"
-			(at 206.502 57.15 0)
+			(at 206.756 57.15 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9247,7 +9247,7 @@
 			)
 		)
 		(property "Value" "220uF 25V"
-			(at 206.502 59.69 0)
+			(at 206.756 59.69 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9279,7 +9279,7 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Polarized capacitor"
 			(at 203.2 58.42 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9531,9 +9531,9 @@
 		(pin "1" (uuid "8f437d69-a8d9-5fd4-8fc8-4257bc17fea8"))
 		(instances (project "reflex-machine" (path "/9f5ac41c-f350-5dd7-a3a4-5e7ebd8c55a3" (reference "#PWR011") (unit 1))))
 	)
-	(symbol (lib_id "Device:C") (at 233.68 55.88 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "8d84a527-b618-568b-946b-5dca7168c248")
+	(symbol (lib_id "Device:C_Polarized") (at 233.68 55.88 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "8d84a527-b618-568b-946b-5dca7168c248")
 		(property "Reference" "C6"
-			(at 236.982 54.61 0)
+			(at 237.236 54.61 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9544,7 +9544,7 @@
 			)
 		)
 		(property "Value" "220uF 25V"
-			(at 236.982 57.15 0)
+			(at 237.236 57.15 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9576,7 +9576,7 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Polarized capacitor"
 			(at 233.68 55.88 0)
 			(show_name no)
 			(do_not_autoplace no)

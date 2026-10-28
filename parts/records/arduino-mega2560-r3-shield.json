@@ -1,6 +1,7 @@
 {
   "id": "arduino-mega2560-r3-shield",
   "kind": "connector",
+  "footprint_aliases": ["Arduino_Mega2560_R3_Shield"],
   "package": {
     "name": "Arduino Mega 2560 R3 shield footprint (91 pads)",
     "mount": "tht"

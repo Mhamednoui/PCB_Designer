@@ -1,6 +1,7 @@
 {
   "id": "k7805-2000r3-module",
   "kind": "part",
+  "footprint_aliases": ["Converter_DCDC_RECOM_R-78B"],
   "mpn": "K7805-2000R3",
   "manufacturer": "YLPTEC",
   "status": "draft",

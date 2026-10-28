@@ -283,6 +283,7 @@ def generic(part_id, value=None):
 # know which refs those were. begin_netlist_load() resets the tracker, so call it right before importing a netlist.
 _refs = {}                 # ref -> registry record id
 _nc = {}                   # ref -> [pad numbers explicitly declared NC]
+_bynum = {}                # ref -> [pad numbers the netlist typed as NUMBERS (not pin names)], PR-BYNAME
 _build_problems = {}       # ref -> [messages], only filled in lenient build mode
 _lenient_build = [False]
 
@@ -293,6 +294,7 @@ def begin_netlist_load(lenient=False):
     report every problem at once; the default raises RegistryError at the first bad call (fail closed)."""
     _refs.clear()
     _nc.clear()
+    _bynum.clear()
     _build_problems.clear()
     _lenient_build[0] = bool(lenient)
 
@@ -305,6 +307,11 @@ def registered_refs():
 def registered_nc():
     """{ref: [pad numbers]} explicitly declared not-connected (nc=[...]) since begin_netlist_load()."""
     return {r: list(v) for r, v in _nc.items()}
+
+
+def registered_bynumber():
+    """{ref: [pad numbers]} of the pins registry_part() was given as pad NUMBERS rather than pin names/aliases."""
+    return {r: list(v) for r, v in _bynum.items() if v}
 
 
 def build_problems():
@@ -357,7 +364,7 @@ def resolve_pin(rec, key):
     return cands[0]
 
 
-def registry_part(ref, part_id, value, pins, group, nc=()):
+def registry_part(ref, part_id, value, pins, group, nc=(), lcsc=None):
     """Return a dict in the exact shape of netlist.py's PARTS entries (ref, lib_id, value, footprint, pins, group,
     lcsc), derived from the registry record.
 
@@ -366,10 +373,12 @@ def registry_part(ref, part_id, value, pins, group, nc=()):
           correctly. Generics/connectors (names "~" / "Pin_1") use numbers. A net of None/"" declares the pin NC.
     nc    pins explicitly not connected: a key or list of keys (same forms), or "rest" = every pad not otherwise
           mentioned (only for connector/mechanical records, e.g. a shield with 90 spare pins).
+    lcsc  per-instance LCSC id (generic records carry none: a 10k and a 1M resistor are the same record). A ref-level
+          id WINS over the record's; "" says "no LCSC id for this ref"; None (default) takes the record's.
     Fail closed: an unknown or ambiguous key, a pad given twice, or a pad of the record that is neither connected
     nor declared NC raises RegistryError (lint mode records it instead, see begin_netlist_load)."""
     rec = get(part_id)
-    errs, out, listed_nc = [], {}, []
+    errs, out, listed_nc, typed_numbers = [], {}, [], []
 
     def bad(msg):
         errs.append("%s: %s" % (ref, msg))
@@ -382,6 +391,8 @@ def registry_part(ref, part_id, value, pins, group, nc=()):
             if net:
                 out.setdefault(str(k), net)                 # best effort so lint can keep going
             continue
+        if str(k).strip() in rec["pins"]:
+            typed_numbers.append(pad)
         if pad in out or pad in listed_nc:
             bad("pad %s of record \"%s\" is given twice (key %s)" % (pad, part_id, k))
         elif net:
@@ -418,8 +429,72 @@ def registry_part(ref, part_id, value, pins, group, nc=()):
         listed_nc += [p for p in sorted(rec["pins"], key=_padkey) if p not in out and p not in listed_nc]
     _refs[ref] = part_id
     _nc[ref] = sorted(listed_nc, key=_padkey)
+    _bynum[ref] = sorted(typed_numbers, key=_padkey)
     return dict(ref=ref, lib_id=rec["kicad"]["symbol"], value=value, footprint=rec["kicad"]["footprint"],
-                pins=out, group=group, lcsc=(rec.get("lcsc") or {}).get("id", ""))
+                pins=out, group=group, lcsc=(rec.get("lcsc") or {}).get("id", "") if lcsc is None else str(lcsc).strip())
+
+
+# --------------------------------------------------------------------------- package family matching
+_FAMILY_RX = (r"DIP-?(\d+)", r"SOIC-?(\d+)", r"SOT-?(223|23(?:-\d)?)", r"(?<![A-Z])TO-?(\d{2,3})(?!\d)", r"SIP-?(\d+)")
+
+
+def _squash(t):
+    return re.sub(r"[-_ .]", "", str(t)).lower()
+
+
+def pkg_family(text):
+    """Normalised package family of a record package name or a KiCad footprint name: 'DIP8', 'SOIC8', 'SOT223',
+    'TO220' (TO-220AB and TO-220-3_Vertical agree), 'TO92' ... or None when the text names no known family."""
+    t = str(text).upper()
+    for rx in _FAMILY_RX:
+        m = re.search(rx, t)
+        if m:
+            return re.sub(r"[^A-Z0-9]", "", t[m.start():m.end()])
+    return None
+
+
+def judge_package(rec, fp_name):
+    """Does the record's package match the footprint (library prefix already removed)? -> (verdict, text) with verdict
+    'ok' | 'mismatch' | 'unjudged'. Order: package.name is a token of the footprint name; any footprint_aliases entry
+    (unsigned record field) is; if aliases are declared and none is, MISMATCH; both sides name a known family
+    (DIP/SOIC/SOT/TO/SIP): equal = ok, different = mismatch; otherwise UNJUDGED (never a silent pass)."""
+    name, fp = (rec.get("package") or {}).get("name", ""), _squash(fp_name)
+    if name and _squash(name) in fp:
+        return "ok", name
+    aliases = rec.get("footprint_aliases") or []
+    for a in aliases:
+        if _squash(a) in fp:
+            return "ok", a
+    if aliases:
+        return "mismatch", 'footprint name %s has none of the record\'s footprint_aliases %s' % (fp_name, ", ".join(aliases))
+    fr, ff = pkg_family(name), pkg_family(fp_name)
+    if fr and ff:
+        return ("ok", fr) if fr == ff else ("mismatch", 'footprint name %s is family %s, record package "%s" is %s' % (fp_name, ff, name, fr))
+    return "unjudged", ('cannot relate record package "%s" to footprint %s: add footprint_aliases to the record' % (name, fp_name))
+
+
+def judge_lcsc_package(rec, lcsc_package):
+    """LCSC's package string vs the record: package.lcsc_package (exact, normalised) or lcsc_package_aliases (substrings).
+    -> 'ok' | 'mismatch' | 'unjudged'. Used for generic records, whose LCSC id is per instance."""
+    have = re.sub(r"[^A-Z0-9]", "", str(lcsc_package or "").upper())
+    want = (rec.get("package") or {}).get("lcsc_package")
+    cands = ([want] if want else []) + list(rec.get("lcsc_package_aliases") or [])
+    if not cands:
+        return "unjudged"
+    for c in cands:
+        c = re.sub(r"[^A-Z0-9]", "", c.upper())
+        if c and (c == have or c in have):
+            return "ok"
+    return "mismatch"
+
+
+def by_name_required(rec):
+    """PR-BYNAME: a kind=part record whose pins carry >= 3 distinct meaningful (non-empty, non-'~', non-numeric) names
+    must be wired by pin NAME, because a pad number typed against a library pinout is the R1 trap."""
+    if rec.get("kind") != "part":
+        return False
+    names = {_norm_name(p["name"]) for p in rec["pins"].values()}
+    return len({n for n in names if n and not n.isdigit()}) >= 3
 
 
 # --------------------------------------------------------------------------- self-test
@@ -487,6 +562,10 @@ def selftest():
     ok(e["lib_id"] == "Timer:NE555P" and e["lcsc"] == "C46749" and e["pins"] == want
        and sorted(e) == sorted(["ref", "lib_id", "value", "footprint", "pins", "group", "lcsc"]),
        "registry_part by function derives pad numbers and keeps the legacy PARTS dict shape")
+    ok(registry_part("U1", "ne555p-dip8", "NE555P", by_name, "G", lcsc="C1")["lcsc"] == "C1"
+       and registry_part("U1", "ne555p-dip8", "NE555P", by_name, "G", lcsc="")["lcsc"] == ""
+       and registry_part("U1", "ne555p-dip8", "NE555P", by_name, "G")["lcsc"] == "C46749",
+       "ref-level lcsc wins over the record's; '' blanks it; None takes the record's")
     ok(registry_part("U1", "ne555p-dip8", "NE555P", {int(k): v for k, v in want.items()}, "G")["pins"] == want
        and registry_part("U1", "ne555p-dip8", "NE555P", {"gnd": "GND", "TRIG": "T", "OUT": "O", "RST": "VCC", "CONT": "CV",
                                                        "THRES": "T", "DISCH": "D", "vcc": "VCC"}, "G")["pins"] == want,
@@ -544,6 +623,27 @@ def selftest():
        and registered_nc()["J1"] == ["2", "3", "4", "5", "6", "7", "8"], 'nc="rest" allowed for a connector record')
 
     ok(set(registered_refs()) == {"U1", "Q1", "U2", "J1"} and registered_refs()["J1"] == "conn8", "registered_refs() tracks every call")
+    # ---- PR-BYNAME / package family helpers
+    begin_netlist_load()
+    registry_part("U9", "ne555p-dip8", "x", dict(by_name, GND="GND"), "G")
+    registry_part("U8", "ne555p-dip8", "x", {int(k): v for k, v in want.items()}, "G")
+    ok(registered_bynumber() == {"U8": ["1", "2", "3", "4", "5", "6", "7", "8"]}, "registered_bynumber() lists only pins typed as numbers")
+    ok(by_name_required(r) and not by_name_required(conn) and not by_name_required({"kind": "part", "pins": {"1": {"name": "~"}, "2": {"name": "~"}, "3": {"name": "~"}}}),
+       "by_name_required: kind=part with >= 3 meaningful names only (not connectors, not '~' pins)")
+    ok(pkg_family("TO-220AB") == pkg_family("TO-220-3_Vertical") == "TO220" and pkg_family("DIP-8_W7.62mm") == "DIP8"
+       and pkg_family("SOIC-8_3.9x4.9mm_P1.27mm") == "SOIC8" and pkg_family("R_Axial_DIN0207") is None, "pkg_family normalises")
+    ok(judge_package(r, "DIP-8_W7.62mm")[0] == "ok" and judge_package(r, "SOIC-8_3.9x4.9mm_P1.27mm")[0] == "mismatch",
+       "judge_package: DIP-8 record on a DIP-8 footprint ok, on SOIC-8 mismatch")
+    gen = {"package": {"name": "Axial DIN0207 1/4 W, 10.16 mm pitch"}}
+    ok(judge_package(gen, "R_Axial_DIN0207_L6.3mm")[0] == "unjudged" and judge_package(gen, "Diode_x")[0] == "unjudged",
+       "judge_package: unknown mapping is UNJUDGED, never ok")
+    gen["footprint_aliases"] = ["R_Axial_DIN0207"]
+    ok(judge_package(gen, "R_Axial_DIN0207_L6.3mm")[0] == "ok" and judge_package(gen, "C_Disc_D5.0mm")[0] == "mismatch",
+       "judge_package: footprint_aliases match, and a declared alias that does not match is a mismatch")
+    ok(judge_lcsc_package({"package": {}}, "x") == "unjudged"
+       and judge_lcsc_package({"package": {}, "lcsc_package_aliases": ["D=5mm"]}, "插件,D=5mm") == "ok"
+       and judge_lcsc_package({"package": {}, "lcsc_package_aliases": ["D=5mm"]}, "插件,D=3mm") == "mismatch",
+       "judge_lcsc_package: aliases match substrings of LCSC's string, none declared = unjudged")
     begin_netlist_load()
     ok(registered_refs() == {} and registered_nc() == {} and build_problems() == {}, "begin_netlist_load() resets the tracker")
     begin_netlist_load(lenient=True)

@@ -1,6 +1,7 @@
 {
   "id": "res-axial-0207-p10.16",
   "kind": "generic",
+  "footprint_aliases": ["R_Axial_DIN0207"],
   "package": {
     "name": "Axial DIN0207 1/4 W, 10.16 mm pitch",
     "mount": "tht"

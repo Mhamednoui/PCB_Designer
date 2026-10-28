@@ -1,6 +1,7 @@
 {
   "id": "arduino-uno-r3-shield",
   "kind": "connector",
+  "footprint_aliases": ["Arduino_Uno_R3_Shield"],
   "package": {
     "name": "Arduino Uno R3 shield footprint (37 pads)",
     "mount": "tht"

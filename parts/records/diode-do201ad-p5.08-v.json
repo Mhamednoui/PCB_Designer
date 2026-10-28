@@ -1,6 +1,8 @@
 {
   "id": "diode-do201ad-p5.08-v",
   "kind": "generic",
+  "footprint_aliases": ["D_DO-201AD"],
+  "lcsc_package_aliases": ["DO-201AD"],
   "package": {
     "name": "DO-201AD axial vertical P5.08 cathode up",
     "mount": "tht"

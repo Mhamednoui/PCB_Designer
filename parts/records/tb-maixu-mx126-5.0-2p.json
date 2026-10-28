@@ -1,6 +1,7 @@
 {
   "id": "tb-maixu-mx126-5.0-2p",
   "kind": "connector",
+  "footprint_aliases": ["TerminalBlock_MaiXu_MX126-5.0"],
   "package": {
     "name": "Screw terminal 2P 5.00 mm (MaiXu MX126)",
     "mount": "tht"

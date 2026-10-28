@@ -1,6 +1,8 @@
 {
   "id": "led-3mm",
   "kind": "generic",
+  "footprint_aliases": ["LED_D3.0mm"],
+  "lcsc_package_aliases": ["D=3mm"],
   "package": {
     "name": "LED D3.0 THT",
     "mount": "tht"

@@ -257,7 +257,8 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
     jl_cache, ee_cache, sr_cache = {}, {}, {}
     for (rid, lcsc, fp), refs in groups.items():
         rec, who = _parts.registry()[rid], "%s (%s)" % (",".join(refs), rid)
-        entry = {"record": rid, "lcsc": lcsc, "refs": refs, "mpn": rec["mpn"], "footprint": fp, "rules": {}}
+        generic = rec["kind"] == "generic"                   # no MPN: the LCSC id is a per-instance choice (value, tolerance)
+        entry = {"record": rid, "lcsc": lcsc, "refs": refs, "mpn": rec.get("mpn"), "footprint": fp, "rules": {}}
         report_parts.append(entry)
         if lcsc not in jl_cache:
             jl_cache[lcsc] = Fetch(_cache.jlcsearch, lcsc, offline_flag)
@@ -281,7 +282,7 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
         if rec_lcsc and rec_lcsc != lcsc:
             add("WARN", "MPN", "BOM uses %s but record %s says %s" % (lcsc, rid, rec_lcsc))
 
-        # ---- MPN
+        # ---- MPN (generic record: the id must RESOLVE; there is no record MPN to compare it with)
         jd, ed = jl.data, ee.data
         sources = []
         if sr.data is not None and sr.data.get("mpn"):                       # authoritative: JLCPCB / LCSC detail
@@ -291,6 +292,22 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
                 sources.append(("EasyEDA Manufacturer Part", _cache.easyeda_mpn(ed)))
         if not sources:
             nj("MPN", sr if sr.not_judged() else ee)
+        elif generic:
+            what = "; ".join("%s \"%s\"" % (lb, v) for lb, v in sources)
+            if sr.offline or ee.offline:
+                nj("MPN", sr if sr.offline else ee)
+            else:
+                entry["rules"].setdefault("MPN", []).append({"severity": "OK", "message":
+                                                             "%s resolves on LCSC (%s); generic record, no MPN to compare" % (lcsc, what)})
+            # value: WARN only (a full value parse is P2) - the value's number must appear in LCSC's mfr/description text
+            txt = ((jd or {}).get("mfr") or "") + " " + ((jd or {}).get("description") or "")
+            for r in refs:
+                val = parts_by_ref[r]["value"]
+                digits = re.match(r"\s*([0-9]+(?:\.[0-9]+)?)", val)
+                token = digits.group(1) if digits else val.split()[0]
+                if jd is not None and token.upper() not in txt.upper():
+                    add("WARN", "VALUE", "%s: value \"%s\" not found in LCSC's text for %s (\"%s\"); check the id by hand "
+                        "(full value check is P2)" % (r, val, lcsc, txt.strip()[:60]), judged=False)
         else:
             bad = False
             for label, val in sources:
@@ -308,7 +325,24 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
 
         # ---- PKG
         want = (rec["package"] or {}).get("lcsc_package")
-        if not want:
+        if generic:
+            if jd is None:
+                nj("PKG", jl)
+            else:
+                have = jd.get("package") or ""
+                v = _parts.judge_lcsc_package(rec, have)
+                if v == "unjudged":
+                    add("WARN", "PKG", 'LCSC lists package "%s"; record %s declares no lcsc_package_aliases (not judged)' % (have, rid),
+                        judged=False)
+                elif v == "mismatch":
+                    add("ERROR" if assembly == "pcba" else "WARN", "PKG",
+                        'LCSC %s lists package "%s", which is not the package family of record %s (accepts %s)' % (
+                            lcsc, have, rid, ", ".join(([want] if want else []) + list(rec.get("lcsc_package_aliases") or []))))
+                elif jl.offline:
+                    nj("PKG", jl)
+                else:
+                    entry["rules"].setdefault("PKG", []).append({"severity": "OK", "message": have})
+        elif not want:
             add("WARN", "PKG", "record %s has no package.lcsc_package (not judged)" % rid, judged=False)
         elif jd is None:
             nj("PKG", jl)

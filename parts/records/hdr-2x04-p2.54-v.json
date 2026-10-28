@@ -1,6 +1,7 @@
 {
   "id": "hdr-2x04-p2.54-v",
   "kind": "connector",
+  "footprint_aliases": ["PinHeader_2x04"],
   "package": {
     "name": "Pin header 2x4 2.54 mm vertical",
     "mount": "tht"

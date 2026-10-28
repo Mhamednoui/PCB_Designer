@@ -44,6 +44,8 @@
     "value_range": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
     "orderable_as": {"type": "object", "additionalProperties": {"type": "string"}},
     "unverified_dims": {"type": "array", "items": {"type": "string"}},
+    "footprint_aliases": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "lcsc_package_aliases": {"type": "array", "minItems": 1, "items": {"type": "string"}},
     "pins": {"type": "object", "patternProperties": {
       "^[A-Za-z0-9]+$": {"type": "object", "required": ["name"], "properties": {
         "name": {"type": "string"},

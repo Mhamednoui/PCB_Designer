@@ -1,6 +1,7 @@
 {
   "id": "tb-phoenix-mkds-3-2-5.08",
   "kind": "connector",
+  "footprint_aliases": ["MKDS-3-2-5.08"],
   "package": {
     "name": "Screw terminal 2P 5.08 mm (Phoenix MKDS 3/2)",
     "mount": "tht"

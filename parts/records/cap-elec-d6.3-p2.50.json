@@ -1,48 +1,21 @@
 {
   "id": "cap-elec-d6.3-p2.50",
   "kind": "generic",
-  "package": {
-    "name": "Radial electrolytic D6.3 P2.50",
-    "mount": "tht"
-  },
-  "kicad": {
-    "symbol": "Device:C",
-    "footprint": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
-  },
-  "tht": {
-    "lead_d_mm": 0.5
-  },
+  "footprint_aliases": ["CP_Radial_D6.3mm"],
+  "lcsc_package_aliases": ["D6.3"],
+  "package": {"name": "Radial electrolytic D6.3 P2.50", "mount": "tht"},
+  "kicad": {"symbol": "Device:C_Polarized", "footprint": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"},
+  "tht": {"lead_d_mm": 0.5},
   "pins": {
-    "1": {
-      "name": "~",
-      "class": "passive",
-      "also": "+ (positive): KiCad CP footprint pad 1 (roundrect)"
-    },
-    "2": {
-      "name": "~",
-      "class": "passive",
-      "also": "- (negative)"
-    }
+    "1": {"name": "~", "class": "passive", "also": "+ (positive): KiCad CP footprint pad 1 (roundrect)"},
+    "2": {"name": "~", "class": "passive", "also": "- (negative)"}
   },
   "evidence": [
-    {
-      "section": "pins",
-      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
-      "verified_by": "agent-P1-T7",
-      "date": "2026-10-27",
-      "notes": "Scope: pin numbers and pad multiset only. lead_d_mm 0.5 = typical radial electrolytic lead (0.5 for D<=8 mm); KiCad drill 0.8. Polarity: KiCad CP footprint pad 1 = '+' (roundrect pad, KiCad CP convention; the footprint has no '+' text, convention verified from the library file: pad 1 roundrect, pad 2 circle)."
-    }
+    {"section": "pins", "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read", "verified_by": "agent-P1-T7", "date": "2026-10-27", "notes": "Scope: pin numbers and pad multiset only. lead_d_mm 0.5 = typical radial electrolytic lead (0.5 for D<=8 mm); KiCad drill 0.8. Polarity: KiCad CP footprint pad 1 = '+' (roundrect pad, KiCad CP convention; the footprint has no '+' text, convention verified from the library file: pad 1 roundrect, pad 2 circle)."}
   ],
-  "value_range": [
-    1e-07,
-    0.01
-  ],
-  "polarity": {
-    "polarised": true,
-    "pin1": "+ (positive, longer lead); body stripe marks the negative lead",
-    "pin1_footprint_marker": "roundrect pad 1 (pad 2 circle)"
-  },
-  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED electrolytic, but the fixtures bind it to the UNPOLARISED symbol Device:C (blinky C1 10uF, reflex C2/C6 220uF): the schematic shows no polarity, so the reader cannot see which pin is +. Kept as Device:C to match the fixtures byte-for-byte; the right fix at migration is Device:C_Polarized (pin 1 = +, same pad numbers). Pin 1 = +, pin 2 = - in the netlists.",
+  "value_range": [1e-07, 0.01],
+  "polarity": {"polarised": true, "pin1": "+ (positive, longer lead); body stripe marks the negative lead", "pin1_footprint_marker": "roundrect pad 1 (pad 2 circle)"},
+  "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED electrolytic (blinky C1 10uF, reflex C2/C6 220uF). Bound to Device:C_Polarized since P1-T9b (pin 1 = +, same pad numbers as Device:C), so the schematic shows which pin is +. Pin 1 = +, pin 2 = - in the netlists.",
   "status": "draft",
   "verification": "unverified",
   "signed_hash": null

@@ -15,6 +15,7 @@ PRJ_NAME = "reflex-machine"
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(PRJ_DIR)), "tools"))
 from boardgen.kicad_paths import SHARE as KICAD_SHARE, SYMBOLS as KICAD_SYMBOLS, \
     FOOTPRINTS as KICAD_FOOTPRINTS  # noqa: E402
+from boardgen import parts as _parts  # noqa: E402
 PROJECT_LIBS = ("arduino-library", "reflex")
 
 _NS = uuid.UUID("6f1b5f5e-3c1a-4a55-9a53-8a1f2c7d0b11")
@@ -24,78 +25,64 @@ def uid(*parts):
     return str(uuid.uuid5(_NS, "/".join(parts)))
 
 
-# ── Footprints ──────────────────────────────────────────────
-FP_R = "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-FP_C = "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm"
-FP_CE = "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
-FP_LED3 = "LED_THT:LED_D3.0mm"
-FP_LED5 = "LED_THT:LED_D5.0mm"
-FP_DO41 = "Diode_THT:D_DO-41_SOD81_P7.62mm_Horizontal"
-FP_DO201V = "Diode_THT:D_DO-201AD_P5.08mm_Vertical_CathodeUp"
-FP_DO15 = "Diode_THT:D_DO-15_P10.16mm_Horizontal"
-FP_TO220 = "Package_TO_SOT_THT:TO-220-3_Vertical"
-FP_DIP4 = "Package_DIP:DIP-4_W7.62mm"
-FP_DIP16 = "Package_DIP:DIP-16_W7.62mm"
-FP_MODULE = "Converter_DCDC:Converter_DCDC_RECOM_R-78B-2.0_THT"
-FP_CP10 = "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm"
-FP_FUSE = "Fuse:Fuseholder_Blade_Mini_Keystone_3568"
-FP_J_PWR = "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal"
-FP_J_MAG = "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
-FP_J3 = "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-3-3.5-H_1x03_P3.50mm_Horizontal"
-FP_J8 = "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal"
-FP_HDR2x10 = "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical"
-FP_HDR2x4 = "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical"
-FP_MEGA = "arduino-library:Arduino_Mega2560_R3_Shield"
-FP_ESP32 = "reflex:ESP32_DevKit_V1_30pin_Socket"
+PARTS_STRICT = True        # every part must be declared through the registry (lint rule PR-REF)
 
-# ── LCSC part numbers (JLCPCB assembly) ─────────────────────
-LCSC = {
-    "10k": "C2649453", "1k": "", "100R": "", "330R": "", "470R": "",
-    "2.2k": "", "2k": "", "4.7k": "", "100nF": "", "1nF": "C49002957",
-    "220uF 25V": "C47344177", "1000uF 25V": "C48935382", "LED_RED": "C2895470", "LED_GREEN": "",
-    "1N5822": "C2476", "1N4007": "C2985028", "P6KE15A": "C294003",
-    "74HC595N": "C507175", "PC817": "C20612594", "IRLZ44N": "C38774",
-    "K7805": "C18212380",
-}
+# ── Registry ids ────────────────────────────────────────────
+# Symbol, footprint and LCSC id of each part come from its record, parts/records/<id>.json. ICs, the
+# transistors, the module, the polarised parts and the ESP32 socket connect their pins BY FUNCTION (the
+# record's pin name): the pad numbers are derived from the record. Generic 2-pin passives, screw terminals
+# and pin headers have unnamed pins ("~", "Pin_1"): pad numbers. The Mega shield footprint keeps its own
+# pad names ("D2", "5V1", "GND1" ...), which already are its function.
+R_ID, C_ID, CE_ID, CP10_ID = "res-axial-0207-p10.16", "cap-disc-5mm-p5.00", "cap-elec-d6.3-p2.50", "cap-elec-d10-p5.00"
+LED3_ID, LED5_ID = "led-3mm", "led-5mm"
+DO41_ID, DO201V_ID, DO15_ID = "diode-do41-p7.62-h", "diode-do201ad-p5.08-v", "tvs-do15-p10.16-h"
+Q_ID, MODULE_ID, OPTO_ID, SR_ID = "irlz44npbf-to220ab", "k7805-2000r3-module", "pc817c-dip4", "74hc595n-dip16"
+FUSE_ID, J_PWR_ID, J_MAG_ID = "fuseholder-blade-mini-keystone-3568", "tb-phoenix-mkds-3-2-5.08", "tb-phoenix-mkds-1.5-2-5.08"
+J3_ID, J8_ID = "tb-phoenix-pt-1.5-3-3.5-h", "tb-phoenix-pt-1.5-8-3.5-h"
+HDR2x10_ID, HDR2x4_ID = "hdr-2x10-p2.54-v", "hdr-2x04-p2.54-v"
+MEGA_ID, ESP32_ID = "arduino-mega2560-r3-shield", "esp32-devkit-v1-30pin-socket"
 
 PARTS = []
 
 
-def part(ref, lib_id, value, footprint, pins, group, lcsc=""):
-    PARTS.append(dict(ref=ref, lib_id=lib_id, value=value, footprint=footprint,
-                      pins={str(k): v for k, v in pins.items() if v},
-                      group=group, lcsc=lcsc))
+# Per-instance LCSC ids of the generic parts, keyed by value (the ids the BOM carried before the registry).
+# A generic record has no id of its own: a 10k and a 1M resistor are the same record.
+LCSC_BY_VALUE = {"10k": "C2649453", "1nF": "C49002957", "220uF 25V": "C47344177", "1000uF 25V": "C48935382",
+                 "RED": "C2895470", "1N5822": "C2476", "1N4007": "C2985028", "P6KE15A": "C294003"}
+
+
+def rp(ref, part_id, value, pins, group, nc=()):
+    PARTS.append(_parts.registry_part(ref, part_id, value, pins, group, nc, lcsc=LCSC_BY_VALUE.get(value)))
 
 
 def R(ref, value, a, b, group):
-    part(ref, "Device:R", value, FP_R, {1: a, 2: b}, group, LCSC.get(value, ""))
+    rp(ref, R_ID, value, {1: a, 2: b}, group)
 
 
-def C(ref, value, a, b, group, fp=FP_C):
-    part(ref, "Device:C", value, fp, {1: a, 2: b}, group, LCSC.get(value, ""))
+def C(ref, value, a, b, group, part_id=C_ID):
+    rp(ref, part_id, value, {1: a, 2: b}, group)
 
 
-def LED(ref, color, cathode, anode, group, fp=FP_LED3):
-    part(ref, "Device:LED", color, fp, {1: cathode, 2: anode}, group, LCSC["LED_" + color])
+def LED(ref, color, cathode, anode, group, part_id=LED3_ID):
+    rp(ref, part_id, color, {"K": cathode, "A": anode}, group)
 
 
 # ── 1. Power: 12V in -> fuse -> TVS/bulk -> magnets ; diode -> buck -> 5V ──
 G = "power"
-part("J1", "Connector:Screw_Terminal_01x02", "12V_IN", FP_J_PWR, {1: "+12V_IN", 2: "GND"}, G)
-part("F1", "Device:Fuse", "10A mini blade", FP_FUSE, {1: "+12V_IN", 2: "+12V"}, G)
-part("D1", "Device:D_Zener", "P6KE15A", FP_DO15, {1: "+12V", 2: "GND"}, G, LCSC["P6KE15A"])
-part("C1", "Device:C_Polarized", "1000uF 25V", FP_CP10, {1: "+12V", 2: "GND"}, G, LCSC["1000uF 25V"])
-part("D2", "Device:D", "1N4007", FP_DO41, {1: "+12V_REG", 2: "+12V"}, G, LCSC["1N4007"])
-part("U1", "Converter_DCDC:R-785.0-1.0", "5V 2A module (K7805-2000R3)", FP_MODULE,
-     {1: "+12V_REG", 2: "GND", 3: "+5V"}, G, LCSC["K7805"])
-C("C2", "220uF 25V", "+12V_REG", "GND", G, FP_CE)
+rp("J1", J_PWR_ID, "12V_IN", {1: "+12V_IN", 2: "GND"}, G)
+rp("F1", FUSE_ID, "10A mini blade", {1: "+12V_IN", 2: "+12V"}, G)
+rp("D1", DO15_ID, "P6KE15A", {"K": "+12V", "A": "GND"}, G)
+rp("C1", CP10_ID, "1000uF 25V", {1: "+12V", 2: "GND"}, G)           # Device:C_Polarized, pad 1 = +
+rp("D2", DO41_ID, "1N4007", {"K": "+12V_REG", "A": "+12V"}, G)
+rp("U1", MODULE_ID, "5V 2A module (K7805-2000R3)", {"IN": "+12V_REG", "GND": "GND", "OUT": "+5V"}, G)
+C("C2", "220uF 25V", "+12V_REG", "GND", G, CE_ID)                  # Device:C_Polarized, pad 1 = +
 C("C3", "100nF", "+12V_REG", "GND", G)
-C("C6", "220uF 25V", "+5V", "GND", G, FP_CE)
+C("C6", "220uF 25V", "+5V", "GND", G, CE_ID)                       # Device:C_Polarized, pad 1 = +
 C("C7", "100nF", "+5V", "GND", G)
 R("R1", "4.7k", "+12V", "PWR12_LED", G)
-LED("D3", "GREEN", "GND", "PWR12_LED", G, FP_LED5)
+LED("D3", "GREEN", "GND", "PWR12_LED", G, LED5_ID)
 R("R2", "1k", "+5V", "PWR5_LED", G)
-LED("D4", "GREEN", "GND", "PWR5_LED", G, FP_LED5)
+LED("D4", "GREEN", "GND", "PWR5_LED", G, LED5_ID)
 
 # ── 2. Controllers ──────────────────────────────────────────
 G = "mcu"
@@ -115,11 +102,13 @@ mega = {
 }
 for i, p in enumerate(MAG_PINS):
     mega[p] = "MAG%d_PWM" % (i + 1)
-part("A1", "arduino-library:Arduino_Mega2560_R3_Shield", "Arduino Mega 2560 R3", FP_MEGA, mega, G)
-part("A2", "reflex:ESP32_DevKit_V1_30pin", "ESP32 DevKit V1 (30 pin)", FP_ESP32,
-     {15: "+5V", 14: "GND", 29: "GND", 25: "ESP_RX2", 24: "ESP_TX2",
-      30: "+3V3_ESP", 8: "ESP_IO25", 9: "ESP_IO26", 10: "ESP_IO27",
-      6: "ESP_IO32", 7: "ESP_IO33", 11: "ESP_IO14"}, G)
+# The Mega shield footprint has ~90 pads and most are spare: every pad not listed here is unconnected
+# by design (nc="rest" is only allowed for connector records). Same for the ESP32 socket's unused pins.
+rp("A1", MEGA_ID, "Arduino Mega 2560 R3", mega, G, nc="rest")
+rp("A2", ESP32_ID, "ESP32 DevKit V1 (30 pin)",
+   {"VIN(5V)": "+5V", "GND#1": "GND", "GND#2": "GND", "RX2/IO16": "ESP_RX2", "TX2/IO17": "ESP_TX2",
+    "3V3": "+3V3_ESP", "IO25": "ESP_IO25", "IO26": "ESP_IO26", "IO27": "ESP_IO27",
+    "IO32": "ESP_IO32", "IO33": "ESP_IO33", "IO14": "ESP_IO14"}, G, nc="rest")
 
 # ── 3. Serial link Mega TX1 (5V) -> divider -> ESP32 RX2 (3.3V) ──
 G = "serial"
@@ -129,22 +118,19 @@ R("R63", "2k", "ESP_RX2", "GND", G)
 # ── 4. 10 electromagnet drivers ─────────────────────────────
 G = "magnets"
 for i in range(1, 11):
-    part("J%d" % (1 + i), "Connector:Screw_Terminal_01x02", "MAG%d" % i, FP_J_MAG,
-         {1: "+12V", 2: "MAG%d_OUT" % i}, G)
-    part("Q%d" % i, "Transistor_FET:IRLZ44N", "IRLZ44N", FP_TO220,
-         {1: "MAG%d_G" % i, 2: "MAG%d_OUT" % i, 3: "GND"}, G, LCSC["IRLZ44N"])
+    rp("J%d" % (1 + i), J_MAG_ID, "MAG%d" % i, {1: "+12V", 2: "MAG%d_OUT" % i}, G)
+    rp("Q%d" % i, Q_ID, "IRLZ44N", {"G": "MAG%d_G" % i, "D": "MAG%d_OUT" % i, "S": "GND"}, G)
     R("R%d" % (10 + i), "100R", "MAG%d_PWM" % i, "MAG%d_G" % i, G)
     R("R%d" % (20 + i), "10k", "MAG%d_G" % i, "GND", G)
-    part("D%d" % (10 + i), "Device:D_Schottky", "1N5822", FP_DO201V, {1: "+12V", 2: "MAG%d_OUT" % i}, G, LCSC["1N5822"])
+    rp("D%d" % (10 + i), DO201V_ID, "1N5822", {"K": "+12V", "A": "MAG%d_OUT" % i}, G)
     LED("D%d" % (20 + i), "RED", "MAG%d_LED" % i, "+12V", G)
     R("R%d" % (30 + i), "2.2k", "MAG%d_LED" % i, "MAG%d_OUT" % i, G)
 
 # ── 5. Coin acceptor (optocoupler input) ────────────────────
 G = "coin"
-part("J12", "Connector:Screw_Terminal_01x03", "COIN", FP_J3, {1: "+12V", 2: "GND", 3: "COIN_SIG"}, G)
+rp("J12", J3_ID, "COIN", {1: "+12V", 2: "GND", 3: "COIN_SIG"}, G)
 R("R41", "2.2k", "+12V", "COIN_OPTO_A", G)
-part("U2", "Isolator:PC817", "PC817", FP_DIP4,
-     {1: "COIN_OPTO_A", 2: "COIN_SIG", 3: "GND", 4: "COIN_IN"}, G, LCSC["PC817"])
+rp("U2", OPTO_ID, "PC817", {"A": "COIN_OPTO_A", "K": "COIN_SIG", "E": "GND", "C": "COIN_IN"}, G)
 R("R42", "10k", "+5V", "COIN_IN", G)
 C("C8", "1nF", "COIN_IN", "GND", G)
 
@@ -158,7 +144,7 @@ for k, b in enumerate(BTN):
     R("R%d" % (43 + k), "1k", "BTN_%s_EXT" % b, "BTN_%s" % b, G)
     R("R%d" % (47 + k), "10k", "+5V", "BTN_%s" % b, G)
     C("C%d" % (9 + k), "100nF", "BTN_%s" % b, "GND", G)
-part("J13", "Connector:Screw_Terminal_01x08", "BUTTONS", FP_J8, jb, G)
+rp("J13", J8_ID, "BUTTONS", jb, G)
 
 # ── 7. Status LEDs ──────────────────────────────────────────
 G = "leds"
@@ -167,31 +153,36 @@ for k in range(4):
     jl[2 * k + 1] = "LED%d_OUT" % (k + 1)
     jl[2 * k + 2] = "GND"
     R("R%d" % (51 + k), "330R", "LED%d" % (k + 1), "LED%d_OUT" % (k + 1), G)
-part("J14", "Connector:Screw_Terminal_01x08", "STATUS_LEDS", FP_J8, jl, G)
+rp("J14", J8_ID, "STATUS_LEDS", jl, G)
 
 # ── 8. 7-segment via 74HC595 (bit map from firmware) ────────
 G = "sevenseg"
-part("U3", "74xx:74HC595", "74HC595N", FP_DIP16, {
-    14: "SEG_DATA", 12: "SEG_LATCH", 11: "SEG_CLOCK", 10: "+5V", 13: "GND", 16: "+5V", 8: "GND",
-    1: "SEG_QB", 2: "SEG_QC", 3: "SEG_QD", 4: "SEG_QE", 5: "SEG_QF", 6: "SEG_QG", 7: "SEG_QH",
-}, G, LCSC["74HC595N"])
+# Two outputs are unconnected BY DESIGN, not forgotten:
+#   QA  (pin 15) - the firmware's segment byte leaves bit 7 unused (CODES/arduino_main_code.cpp:
+#                  "QA (bit 7) -> NOT CONNECTED"); the 7 segments A..G are on QB..QH (bits 6..0).
+#   QH' (pin 9)  - the serial-out for daisy-chaining a second register; there is no second register.
+rp("U3", SR_ID, "74HC595N", {
+    "SER": "SEG_DATA", "RCLK": "SEG_LATCH", "SRCLK": "SEG_CLOCK", "SRCLR": "+5V", "OE": "GND",
+    "VCC": "+5V", "GND": "GND",
+    "QB": "SEG_QB", "QC": "SEG_QC", "QD": "SEG_QD", "QE": "SEG_QE", "QF": "SEG_QF", "QG": "SEG_QG", "QH": "SEG_QH",
+}, G, nc=["QA", "QH'"])
 C("C13", "100nF", "+5V", "GND", G)
 SEG_FROM = [("A", "QD"), ("B", "QG"), ("C", "QF"), ("D", "QH"), ("E", "QE"), ("F", "QC"), ("G", "QB")]
 js = {8: "GND"}
 for k, (seg, q) in enumerate(SEG_FROM):
     R("R%d" % (55 + k), "470R", "SEG_" + q, "SEG_" + seg, G)
     js[k + 1] = "SEG_" + seg
-part("J15", "Connector:Screw_Terminal_01x08", "7SEG", FP_J8, js, G)
+rp("J15", J8_ID, "7SEG", js, G)
 
 # ── 9. Expansion header ─────────────────────────────────────
 G = "expansion"
-part("J16", "Connector_Generic:Conn_02x10_Odd_Even", "MEGA SPARE", FP_HDR2x10, {
+rp("J16", HDR2x10_ID, "MEGA SPARE", {
     1: "+5V", 2: "GND", 3: "+3V3", 4: "GND",
     5: "I2C_SDA", 6: "I2C_SCL", 7: "SPARE_TX3", 8: "SPARE_RX3",
     9: "SPARE_D4", 10: "SPARE_D13", 11: "SPARE_D30", 12: "SPARE_D31",
     13: "SPARE_D32", 14: "SPARE_D33", 15: "SPARE_A7", 16: "SPARE_A8",
     17: "SPARE_SCK", 18: "SPARE_MISO", 19: "SPARE_MOSI", 20: "SPARE_CS"}, G)
-part("J17", "Connector_Generic:Conn_02x04_Odd_Even", "ESP32 SPARE", FP_HDR2x4, {
+rp("J17", HDR2x4_ID, "ESP32 SPARE", {
     1: "+3V3_ESP", 2: "GND", 3: "ESP_IO25", 4: "ESP_IO26",
     5: "ESP_IO27", 6: "ESP_IO32", 7: "ESP_IO33", 8: "ESP_IO14"}, G)
 

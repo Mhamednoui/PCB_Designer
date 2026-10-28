@@ -1,6 +1,8 @@
 {
   "id": "diode-do41-p7.62-h",
   "kind": "generic",
+  "footprint_aliases": ["D_DO-41"],
+  "lcsc_package_aliases": ["DO-41"],
   "package": {
     "name": "DO-41 axial horizontal P7.62",
     "mount": "tht"
