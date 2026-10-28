@@ -1,7 +1,9 @@
 {
   "id": "cap-elec-d6.3-p2.50",
   "kind": "generic",
-  "package": {"name": "CP_Radial_D6.3mm_P2.50mm", "mount": "tht"},
+  "footprint_aliases": ["CP_Radial_D6.3mm"],
+  "lcsc_package_aliases": ["D6.3"],
+  "package": {"name": "Radial electrolytic D6.3 P2.50", "mount": "tht"},
   "kicad": {"symbol": "Device:C_Polarized", "footprint": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"},
   "tht": {"lead_d_mm": 0.5},
   "pins": {

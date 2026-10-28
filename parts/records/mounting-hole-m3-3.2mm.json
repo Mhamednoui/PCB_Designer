@@ -1,8 +1,9 @@
 {
   "id": "mounting-hole-m3-3.2mm",
   "kind": "mechanical",
+  "footprint_aliases": ["MountingHole_3.2mm"],
   "package": {
-    "name": "MountingHole_3.2mm_M3",
+    "name": "M3 mounting hole 3.2 mm",
     "mount": "tht"
   },
   "kicad": {

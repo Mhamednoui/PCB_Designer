@@ -1,8 +1,10 @@
 {
   "id": "cap-elec-d10-p5.00",
   "kind": "generic",
+  "footprint_aliases": ["CP_Radial_D10.0mm"],
+  "lcsc_package_aliases": ["D10"],
   "package": {
-    "name": "CP_Radial_D10.0mm_P5.00mm",
+    "name": "Radial electrolytic D10 P5.00",
     "mount": "tht"
   },
   "kicad": {

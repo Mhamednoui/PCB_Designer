@@ -1,8 +1,9 @@
 {
   "id": "tb-phoenix-pt-1.5-8-3.5-h",
   "kind": "connector",
+  "footprint_aliases": ["PT-1,5-8-3.5"],
   "package": {
-    "name": "TerminalBlock_Phoenix_PT-1,5-8-3.5-H_1x08_P3.50mm_Horizontal",
+    "name": "Screw terminal 8P 3.5 mm (Phoenix PT 1,5/8-3.5-H)",
     "mount": "tht"
   },
   "kicad": {

@@ -1,6 +1,7 @@
 {
   "id": "irlz44npbf-to220ab",
   "kind": "part",
+  "footprint_aliases": ["TO-220-3"],
   "mpn": "IRLZ44NPBF",
   "manufacturer": "Infineon",
   "status": "draft",

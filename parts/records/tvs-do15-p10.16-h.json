@@ -1,8 +1,10 @@
 {
   "id": "tvs-do15-p10.16-h",
   "kind": "generic",
+  "footprint_aliases": ["D_DO-15"],
+  "lcsc_package_aliases": ["DO-15"],
   "package": {
-    "name": "D_DO-15_P10.16mm_Horizontal",
+    "name": "DO-15 axial horizontal P10.16 (TVS)",
     "mount": "tht"
   },
   "kicad": {

@@ -2,8 +2,10 @@
 Reads PARTS + optional NET_SPEC from netlist.py, pin types from the symbol lib, pads from the footprint.
 Rules: decoupling, polarity, led, short, pads, single-pin; for parts declared through the parts registry
 (`registry_part`, docs/design/P1_PARTS_REGISTRY.md): PR-REF (also unknown/ambiguous pin names, undeclared NC pins),
-PR-HASH, PR-TIER, PR-SYM, PR-PAD, PR-HOLE (ERROR: lead does not fit; WARN: below the recommended margin), PR-PKG-NAME.
-`PARTS_STRICT = True` in netlist.py makes any part NOT declared through the registry a PR-REF error;
+PR-HASH, PR-TIER, PR-SYM, PR-PAD, PR-HOLE (ERROR: lead does not fit; WARN: below the recommended margin), PR-PKG-NAME (package family match via the
+record's package.name / footprint_aliases / known families; unknown mapping = WARN "not judged").
+`PARTS_STRICT = True` in netlist.py makes any part NOT declared through the registry a PR-REF error, and a kind=part
+record with named pins declared by pad NUMBERS a PR-BYNAME error;
 otherwise those parts keep the FAMILY-map fallback. Output: `ERROR|WARN rule ref/net: message`;
 unjudgeable things are WARN. Exit 1 on any unwaived ERROR. Waivers: projects/<id>/waivers.json =
 [{"check":"lint","rule":..,"refs":[..] | "nets":[..],"why":".."}]; unused waivers are reported as WARN."""
@@ -381,10 +383,6 @@ def _norm_name(n):
     return re.sub(r"[~{} ]", "", str(n)).upper()
 
 
-def _squash(t):
-    return re.sub(r"[-_ .]", "", t).lower()
-
-
 def _plist(pins):
     return ",".join(sorted(pins, key=lambda s: (len(s), s)))
 
@@ -477,17 +475,32 @@ def rule_registry(M, reg_refs, rec_problems):
                 elif drills and min(drills) < lm[0] + lm[1] - 1e-9:
                     M.add("WARN", "PR-HOLE", ref, "drill %.2f < lead %.2f + %.2f: fits, below the recommended margin"
                           % (min(drills), lm[0], lm[1]), refs=[ref])
-        # PR-PKG-NAME
-        pkg = rec["package"].get("name", "")
-        if pkg and _squash(pkg) not in _squash(fp.split(":", 1)[-1]):
-            M.add("ERROR", "PR-PKG-NAME", ref, 'footprint name %s has no "%s" (record %s)'
-                  % (fp.split(":", 1)[-1], pkg, pid), refs=[ref])
+        # PR-PKG-NAME: package family match (parts.judge_package); an unknown mapping is WARN, never a pass
+        verdict, why = _parts.judge_package(rec, fp.split(":", 1)[-1])
+        if verdict == "mismatch":
+            M.add("ERROR", "PR-PKG-NAME", ref, "%s (record %s)" % (why, pid), refs=[ref])
+        elif verdict == "unjudged":
+            M.add("WARN", "PR-PKG-NAME", ref, "not judged: %s (record %s)" % (why, pid), refs=[ref])
 
 
 def rule_strict(M, reg_refs):
     for ref in sorted(set(M.parts) - set(reg_refs)):
         M.add("ERROR", "PR-REF", ref, "part %s (%s) is not declared through the registry (PARTS_STRICT)"
               % (ref, M.parts[ref]["lib_id"]), refs=[ref])
+
+
+def rule_byname(M, reg_refs):
+    """PR-BYNAME (PARTS_STRICT): a kind=part registry record whose pins all have meaningful names must be wired by
+    pin NAME. A pad number typed against a library pinout is exactly the wrong-pinout trap (R1): swap the part for
+    one with another pinout and every number is silently wrong, while names renumber by construction."""
+    typed = _parts.registered_bynumber()
+    for ref in sorted(typed):
+        rec = _parts.registry().get(reg_refs.get(ref))
+        if rec is not None and _parts.by_name_required(rec):
+            pins = ", ".join("%s (%s)" % (n, rec["pins"][n]["name"]) for n in typed[ref])
+            M.add("ERROR", "PR-BYNAME", ref, "pin(s) %s of record %s given as pad numbers; declare the pins by NAME "
+                  "(e.g. {\"%s\": net}) so the pad numbers follow the record" % (pins, reg_refs[ref], rec["pins"][typed[ref][0]]["name"]),
+                  refs=[ref])
 
 
 def judged_by_family(M, ref):
@@ -535,6 +548,7 @@ def main(argv):
     rule_registry(M, M.reg_refs, rec_problems)
     if getattr(NL, "PARTS_STRICT", False):
         rule_strict(M, M.reg_refs)
+        rule_byname(M, M.reg_refs)
     M.findings += apply_waivers(pid, M.findings)
     for f in M.findings:
         print(f.line())

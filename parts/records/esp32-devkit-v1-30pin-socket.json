@@ -1,8 +1,9 @@
 {
   "id": "esp32-devkit-v1-30pin-socket",
   "kind": "connector",
+  "footprint_aliases": ["ESP32_DevKit_V1_30pin"],
   "package": {
-    "name": "ESP32_DevKit_V1_30pin_Socket",
+    "name": "ESP32 DevKit V1 30-pin socket footprint",
     "mount": "tht"
   },
   "kicad": {

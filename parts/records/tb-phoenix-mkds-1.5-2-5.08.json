@@ -1,8 +1,9 @@
 {
   "id": "tb-phoenix-mkds-1.5-2-5.08",
   "kind": "connector",
+  "footprint_aliases": ["MKDS-1,5-2-5.08"],
   "package": {
-    "name": "TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+    "name": "Screw terminal 2P 5.08 mm (Phoenix MKDS 1,5/2)",
     "mount": "tht"
   },
   "kicad": {
