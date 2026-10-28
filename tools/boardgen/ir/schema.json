@@ -1,7 +1,7 @@
 {
  "$schema": "http://json-schema.org/draft-07/schema#",
  "title": "design.json - the design IR (docs/PLATFORM_PLAN.md section 10)",
- "description": "Built by tools/boardgen/ir/build.py. ir_version 1. Coordinates in mm, KiCad board frame (y down). 'board' is present only when a .kicad_pcb exists. Net names are as in netlist.py (no leading '/').",
+ "description": "Built by tools/boardgen/ir/build.py. ir_version 2 (v2 adds per-part `electrical`, per-pin `abs_max`/`io`, top-level `external`; P2-T2). Coordinates in mm, KiCad board frame (y down). 'board' is present only when a .kicad_pcb exists. Net names are as in netlist.py (no leading '/').",
  "type": "object",
  "required": [
   "ir_version",
@@ -9,6 +9,7 @@
   "parts",
   "nets",
   "assembly",
+  "external",
   "fab_profile",
   "requirements"
  ],
@@ -16,7 +17,7 @@
  "properties": {
   "ir_version": {
    "enum": [
-    1
+    2
    ]
   },
   "meta": {
@@ -67,7 +68,9 @@
      "lcsc",
      "group",
      "pins",
-     "nc"
+     "nc",
+     "electrical",
+     "electrical_status"
     ],
     "additionalProperties": false,
     "properties": {
@@ -115,7 +118,9 @@
        "required": [
         "name",
         "net",
-        "class"
+        "class",
+        "abs_max",
+        "io"
        ],
        "additionalProperties": false,
        "properties": {
@@ -133,6 +138,87 @@
           "string",
           "null"
          ]
+        },
+        "abs_max": {
+         "type": [
+          "object",
+          "null"
+         ],
+         "additionalProperties": false,
+         "description": "cited absolute maximums for this pin; null when the record gives none. cited=false means the numbers come from the legacy signed pins.*.abs_max (agent-read / illustrative, not individually cited)",
+         "required": [
+          "v_min",
+          "v_max",
+          "i_ma",
+          "cited"
+         ],
+         "properties": {
+          "v_min": {
+           "type": [
+            "number",
+            "null"
+           ]
+          },
+          "v_max": {
+           "type": [
+            "number",
+            "string",
+            "null"
+           ]
+          },
+          "i_ma": {
+           "type": [
+            "number",
+            "null"
+           ]
+          },
+          "cited": {
+           "type": "boolean"
+          },
+          "src": {
+           "type": "string"
+          },
+          "note": {
+           "type": "string"
+          }
+         }
+        },
+        "io": {
+         "type": [
+          "object",
+          "null"
+         ],
+         "additionalProperties": false,
+         "description": "logic-level and drive data for the pin (record electrical.pins / pin_defaults)",
+         "properties": {
+          "supply_pin": {
+           "type": "string"
+          },
+          "tristate": {
+           "type": "boolean"
+          },
+          "vih": {
+           "$ref": "#/$defs/datum"
+          },
+          "vil": {
+           "$ref": "#/$defs/datum"
+          },
+          "voh": {
+           "$ref": "#/$defs/datum"
+          },
+          "vol": {
+           "$ref": "#/$defs/datum"
+          },
+          "i_out_max_ma": {
+           "$ref": "#/$defs/datum"
+          },
+          "i_in_leak": {
+           "$ref": "#/$defs/datum"
+          },
+          "note": {
+           "type": "string"
+          }
+         }
         }
        }
       }
@@ -141,6 +227,144 @@
       "type": "array",
       "items": {
        "type": "string"
+      }
+     },
+     "electrical_status": {
+      "enum": [
+       "none",
+       "ok",
+       "value_not_covered"
+      ],
+      "description": "none = no registry record or the record has no electrical block; ok = block present and applies to this value; value_not_covered = family record whose block is limited (value_match) to other values"
+     },
+     "electrical": {
+      "type": [
+       "object",
+       "null"
+      ],
+      "additionalProperties": false,
+      "description": "part-level electrical data (record electrical minus pins/pin_defaults/value_match); null when electrical_status is none; for value_not_covered only {role, gaps}",
+      "properties": {
+       "role": {
+        "type": "string"
+       },
+       "input_type": {
+        "type": "string"
+       },
+       "tristate": {
+        "type": "boolean"
+       },
+       "regulator": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+         "topology": {
+          "type": "string"
+         },
+         "vin": {
+          "$ref": "#/$defs/datum"
+         },
+         "vout": {
+          "$ref": "#/$defs/datum"
+         },
+         "dropout": {
+          "type": "array",
+          "items": {
+           "$ref": "#/$defs/datum"
+          }
+         },
+         "i_max_ma": {
+          "$ref": "#/$defs/datum"
+         },
+         "i_limit_ma": {
+          "$ref": "#/$defs/datum"
+         },
+         "iq_ma": {
+          "$ref": "#/$defs/datum"
+         },
+         "min_load_ma": {
+          "$ref": "#/$defs/datum"
+         },
+         "efficiency_pct": {
+          "$ref": "#/$defs/datum"
+         },
+         "note": {
+          "type": "string"
+         }
+        }
+       },
+       "vf": {
+        "type": "array",
+        "items": {
+         "$ref": "#/$defs/datum"
+        }
+       },
+       "vth": {
+        "$ref": "#/$defs/datum"
+       },
+       "rds_on": {
+        "type": "array",
+        "items": {
+         "$ref": "#/$defs/datum"
+        }
+       },
+       "ctr_pct": {
+        "$ref": "#/$defs/datum"
+       },
+       "i_f_max_ma": {
+        "$ref": "#/$defs/datum"
+       },
+       "theta_ja": {
+        "type": "array",
+        "items": {
+         "$ref": "#/$defs/datum"
+        }
+       },
+       "tj_max": {
+        "$ref": "#/$defs/datum"
+       },
+       "p_max_mw": {
+        "$ref": "#/$defs/datum"
+       },
+       "load_ma": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+         "typ": {
+          "$ref": "#/$defs/datum"
+         },
+         "peak": {
+          "$ref": "#/$defs/datum"
+         }
+        }
+       },
+       "clamp": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+         "v_standoff": {
+          "$ref": "#/$defs/datum"
+         },
+         "v_breakdown": {
+          "$ref": "#/$defs/datum"
+         },
+         "v_clamp": {
+          "type": "array",
+          "items": {
+           "$ref": "#/$defs/datum"
+          }
+         }
+        }
+       },
+       "gaps": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "note": {
+        "type": "string"
+       }
       }
      }
     }
@@ -659,6 +883,126 @@
    "type": "array",
    "items": {
     "type": "object"
+   }
+  },
+  "external": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "declared",
+    "pins",
+    "none"
+   ],
+   "description": "EXTERNAL from netlist.py: what the outside world does to connector pins. declared=false when netlist.py has no EXTERNAL at all (P2 reports every connector NOT_JUDGED); EXTERNAL = {} is declared with nothing external. pins: 'ref.pad' -> {v:[min,max]|null, i, dir, why}; none: connector refs declared to have no external nets ('J1': 'none').",
+   "properties": {
+    "declared": {
+     "type": "boolean"
+    },
+    "pins": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "v",
+       "i",
+       "dir",
+       "why"
+      ],
+      "properties": {
+       "v": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        },
+        "minItems": 2,
+        "maxItems": 2
+       },
+       "i": {
+        "type": [
+         "number",
+         "null"
+        ],
+        "description": "amperes (source capability for a supply, expected load for an input)"
+       },
+       "dir": {
+        "enum": [
+         "in",
+         "out",
+         "bidir",
+         "supply",
+         null
+        ]
+       },
+       "why": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "none": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ },
+ "$defs": {
+  "datum": {
+   "type": "object",
+   "additionalProperties": false,
+   "description": "A cited electrical number copied from the part record (parts/schema.json datum).",
+   "properties": {
+    "min": {
+     "type": [
+      "number",
+      "string",
+      "null"
+     ]
+    },
+    "typ": {
+     "type": [
+      "number",
+      "string",
+      "null"
+     ]
+    },
+    "max": {
+     "type": [
+      "number",
+      "string",
+      "null"
+     ]
+    },
+    "unit": {
+     "type": "string"
+    },
+    "at": {
+     "type": "object",
+     "additionalProperties": {
+      "type": [
+       "number",
+       "string"
+      ]
+     }
+    },
+    "cond": {
+     "type": "string"
+    },
+    "src": {
+     "type": "string"
+    },
+    "illustrative": {
+     "type": "boolean"
+    },
+    "note": {
+     "type": "string"
+    }
    }
   }
  }

@@ -1,0 +1,115 @@
+{
+  "id": "ldl1117s33r-sot2234",
+  "kind": "part",
+  "mpn": "LDL1117S33R",
+  "manufacturer": "STMicroelectronics",
+  "status": "draft",
+  "verification": "unverified",
+  "lcsc": {"id": "C435835", "class": "extended"},
+  "sourcing": {"stock": 71009, "price_1": 0.213, "snapshot_date": "2026-10-28"},
+  "package": {"name": "SOT-223-4", "mount": "smd", "lcsc_package": "SOT-223-4", "body_mm": [6.5, 3.5, 1.6]},
+  "kicad": {"symbol": "TODO", "footprint": "TODO"},
+  "ratings": {"t_op_c": [-40, 125]},
+  "pins": {
+    "1": {"name": "GND"},
+    "2": {"name": "VOUT", "also": "EasyEDA pad 4 has the same name (tab/duplicate pad)"},
+    "3": {"name": "VIN"}
+  },
+  "evidence": [],
+  "electrical": {
+   "role": "regulator",
+   "pins": {
+    "3": {
+     "class": "power_in",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": 20,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8",
+      "note": "VIN -0.3..20 V"
+     }
+    },
+    "2": {
+     "class": "power_out",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": "pin:3+0.3",
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8",
+      "note": "VOUT -0.3..VIN+0.3 V; the SOT-223 tab is connected to VOUT (p6)"
+     }
+    },
+    "1": {
+     "class": "power_in"
+    }
+   },
+   "regulator": {
+    "topology": "ldo",
+    "vin": {
+     "min": 2.6,
+     "max": 18,
+     "unit": "V",
+     "cond": "operating input voltage",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9"
+    },
+    "vout": {
+     "min": 3.201,
+     "typ": 3.3,
+     "max": 3.399,
+     "unit": "V",
+     "cond": "LDL1117S33R = 3.3 V fixed (ordering table p18); accuracy +-3 % over -40<TJ<125 C at IOUT=10 mA (+-2 % at 25 C)",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9"
+    },
+    "dropout": [
+     {
+      "typ": 0.35,
+      "max": 0.6,
+      "unit": "V",
+      "at": {
+       "i_ma": 1200
+      },
+      "cond": "IOUT=1.2 A, VOUT>2.5 V, -40<TJ<125 C; no other current point is tabulated (figure 12 is a graph)",
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9"
+     }
+    ],
+    "i_limit_ma": {
+     "min": 1500,
+     "typ": 2000,
+     "unit": "mA",
+     "cond": "output current limit ISC",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9"
+    },
+    "iq_ma": {
+     "typ": 0.25,
+     "max": 0.5,
+     "unit": "mA",
+     "cond": "IOUT=0 to 1.2 A, -40<TJ<125 C",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9"
+    },
+    "i_max_ma": {
+     "max": 1200,
+     "unit": "mA",
+     "cond": "'1.2 A' in the datasheet title and electrical table",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p1"
+    }
+   },
+   "theta_ja": [
+    {
+     "typ": 120,
+     "unit": "C/W",
+     "cond": "junction-to-ambient; the datasheet does not describe the test board",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8"
+    }
+   ],
+   "tj_max": {
+    "max": 125,
+    "unit": "C",
+    "cond": "operating junction temperature TJ-OP -40..125 C; absolute maximum TJ-MAX 150 C",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8"
+   },
+   "gaps": [
+    "theta_JA board description (copper area) not given: Tj estimates are the datasheet value only",
+    "no explicit input-voltage drop vs. current curve extracted (figure 12 graph)"
+   ]
+  },
+  "signed_hash": null,
+  "notes": "DRAFT from machine data (jlcsearch + EasyEDA, 2026-10-28). kicad symbol/footprint are tool suggestions. TODO: kicad.footprint (no suggestion for package 'SOT-223-4'); kicad.symbol (no exact-name symbol in installed libs); pins.*.class and abs_max (datasheet only); tht.lead_mm / lead_d_mm (datasheet only); polarity (human); lifecycle (human/distributor); datasheet evidence and owner sign-off. Nobody has checked this record against a datasheet (tier unverified)."
+}

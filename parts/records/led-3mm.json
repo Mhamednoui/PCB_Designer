@@ -46,5 +46,11 @@
   "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED. Pin 1 = cathode (K), pin 2 = anode (A); square pad = cathode. Colour/forward voltage are per part (value field: RED, GREEN).",
   "status": "draft",
   "verification": "unverified",
+  "electrical": {
+   "role": "led",
+   "gaps": [
+    "no 3 mm LED datasheet read: Vf, max current and dissipation NOT_JUDGED (the 5 mm L-53SRC-C figures were not transferred to a different package)"
+   ]
+  },
   "signed_hash": null
 }

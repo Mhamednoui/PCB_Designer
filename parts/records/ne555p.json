@@ -25,6 +25,149 @@
   "evidence": [
     {"section": "pins", "doc_url": "https://www.ti.com/lit/ds/symlink/ne555.pdf", "page": 3, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T18:21:55Z (C46749). page 3 of ne555.pdf names all 8 pins. A person has not read the datasheet.", "rev": "K (SLFS022K, March 2026)"}
   ],
+  "electrical": {
+   "role": "logic",
+   "pins": {
+    "8": {
+     "class": "power_in",
+     "abs_max": {
+      "v_max": 18,
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+      "note": "VCC max; recommended operating 4.5-16 V for NE555 (p4)"
+     }
+    },
+    "1": {
+     "class": "power_in"
+    },
+    "2": {
+     "class": "input",
+     "abs_max": {
+      "v_max": "pin:8+0",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+      "note": "VI max = VCC for CONT, RESET, THRES, TRIG; no minimum is given"
+     },
+     "supply_pin": "8"
+    },
+    "4": {
+     "class": "input",
+     "abs_max": {
+      "v_max": "pin:8+0",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4"
+     },
+     "supply_pin": "8"
+    },
+    "5": {
+     "class": "analog",
+     "abs_max": {
+      "v_max": "pin:8+0",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4"
+     }
+    },
+    "6": {
+     "class": "input",
+     "abs_max": {
+      "v_max": "pin:8+0",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4"
+     },
+     "supply_pin": "8"
+    },
+    "3": {
+     "class": "output",
+     "supply_pin": "8",
+     "tristate": false,
+     "abs_max": {
+      "i_ma": 225,
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4",
+      "note": "IO +-225 mA absolute maximum (recommended +-200 mA, p4)"
+     },
+     "voh": {
+      "min": 2.75,
+      "typ": 3.3,
+      "unit": "V",
+      "at": {
+       "vcc_v": 5,
+       "ioh_ma": -100
+      },
+      "cond": "VCC=5 V, IOH=-100 mA, TA=25 C, NE555",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6"
+     },
+     "vol": {
+      "typ": 0.15,
+      "max": 0.4,
+      "unit": "V",
+      "at": {
+       "vcc_v": 5,
+       "iol_ma": 8
+      },
+      "cond": "VCC=5 V, IOL=8 mA, TA=25 C, NE555",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6"
+     },
+     "i_out_max_ma": {
+      "max": 200,
+      "unit": "mA",
+      "cond": "recommended operating output current +-200 mA; absolute max 225",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4"
+     }
+    },
+    "7": {
+     "class": "open_collector",
+     "supply_pin": "8",
+     "vol": {
+      "typ": 0.15,
+      "max": 0.4,
+      "unit": "V",
+      "at": {
+       "vcc_v": 5,
+       "io_ma": 8
+      },
+      "cond": "DISCH switch on-state voltage, VCC=5 V, IO=8 mA, TA=25 C",
+      "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p5"
+     }
+    }
+   },
+   "vth": {
+    "min": 2.4,
+    "typ": 3.3,
+    "max": 4.2,
+    "unit": "V",
+    "at": {
+     "vcc_v": 5
+    },
+    "cond": "THRES voltage level, VCC=5 V (ratiometric: typ 2/3 VCC)",
+    "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p5"
+   },
+   "theta_ja": [
+    {
+     "typ": 98.5,
+     "unit": "C/W",
+     "cond": "P (PDIP-8) package, JEDEC thermal metric (TI Thermal Information table; board per JESD51, not this PCB)",
+     "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p5"
+    }
+   ],
+   "tj_max": {
+    "max": 150,
+    "unit": "C",
+    "cond": "operating virtual junction temperature",
+    "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p4"
+   },
+   "load_ma": {
+    "typ": {
+     "typ": 3,
+     "max": 6,
+     "unit": "mA",
+     "at": {
+      "vcc_v": 5
+     },
+     "cond": "supply current, output low, no load, VCC=5 V (15 V: typ 10 max 15)",
+     "src": "https://www.ti.com/lit/ds/symlink/ne555.pdf (TI SLFS022K rev K, Mar 2026) PDF p6"
+    }
+   },
+   "gaps": [
+    "pin 7 DISCH: no absolute-maximum voltage or current stated for the discharge transistor in the TI datasheet",
+    "inputs 2/4/6: no minimum (negative) absolute-maximum voltage stated",
+    "peak load_ma not stated; the supply current also rises with output load and during output transitions"
+   ]
+  },
   "signed_hash": "ae65d73db6e452f885eaf6176009b45f7f45e40bc4052e3dfd704b99f632ecb0",
   "notes": "ILLUSTRATIVE: abs_max values, lead_mm and ratings were NOT read from a datasheet. Tier crosschecked covers pin numbers/names/pads only (see evidence); class, abs_max, lead_mm and ratings are still unchecked by anyone: owner sign-off needed."
 }

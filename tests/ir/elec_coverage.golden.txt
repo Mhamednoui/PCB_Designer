@@ -1,0 +1,53 @@
+# electrical data coverage (P2-T2): required fields present vs NOT_JUDGED, per project
+# tier hand = needed for a hand-assembled release, pcba = needed for a pcba release (superset). See tools/boardgen/ir/coverage.py
+
+project blinky-555 (9 parts)
+  hand  required    1   present    0   NOT_JUDGED    1
+  pcba  required   31   present   21   NOT_JUDGED   10
+  NOT_JUDGED (part, field, tier first needed, refs, pins):
+    ne555p-dip8 | load_ma.peak | pcba | U1
+    ne555p-dip8 | pin.abs_max | pcba | U1 pins 3,7
+    ne555p-dip8 | pin.vih | pcba | U1 pins 2,4,6
+    ne555p-dip8 | pin.vil | pcba | U1 pins 2,4,6
+    tb-maixu-mx126-5.0-2p | EXTERNAL declaration | hand | J1
+
+project reflex-machine (123 parts)
+  hand  required   23   present    1   NOT_JUDGED   22
+  pcba  required  247   present  198   NOT_JUDGED   49
+  NOT_JUDGED (part, field, tier first needed, refs, pins):
+    74hc595n-dip16 | load_ma.peak | pcba | U3
+    74hc595n-dip16 | pin.abs_max | pcba | U3 pins 1,2,3,4,5,6,7,10,11,12,14
+    arduino-mega2560-r3-shield | EXTERNAL declaration | hand | A1
+    esp32-devkit-v1-30pin-socket | EXTERNAL declaration | hand | A2
+    fuseholder-blade-mini-keystone-3568 | EXTERNAL declaration | hand | F1
+    hdr-2x04-p2.54-v | EXTERNAL declaration | hand | J17
+    hdr-2x10-p2.54-v | EXTERNAL declaration | hand | J16
+    k7805-2000r3-module | pin.abs_max | pcba | U1 pins 1,3
+    k7805-2000r3-module | theta_ja | hand | U1
+    k7805-2000r3-module | tj_max | hand | U1
+    led-3mm | vf | pcba | D21,D22,D23,D24,D25,D26,D27,D28,D29,D30
+    led-5mm (value GREEN not covered) | vf | pcba | D3,D4
+    pc817c-dip4 | pin.abs_max | pcba | U2 pins 2
+    tb-phoenix-mkds-1.5-2-5.08 | EXTERNAL declaration | hand | J2,J3,J4,J5,J6,J7,J8,J9,J10,J11
+    tb-phoenix-mkds-3-2-5.08 | EXTERNAL declaration | hand | J1
+    tb-phoenix-pt-1.5-3-3.5-h | EXTERNAL declaration | hand | J12
+    tb-phoenix-pt-1.5-8-3.5-h | EXTERNAL declaration | hand | J13,J14,J15
+
+project uno-toggle (9 parts)
+  hand  required    3   present    0   NOT_JUDGED    3
+  pcba  required    7   present    3   NOT_JUDGED    4
+  NOT_JUDGED (part, field, tier first needed, refs, pins):
+    arduino-uno-r3-shield | EXTERNAL declaration | hand | A1
+    led-5mm (value GREEN not covered) | vf | pcba | D2
+    sw-push-6mm-tht | EXTERNAL declaration | hand | SW1,SW2
+
+registry records not yet used by a project (ref-esp32 parts; one pseudo-part each, nets unknown)
+  hand  required    8   present    8   NOT_JUDGED    0
+  pcba  required  206   present  162   NOT_JUDGED   44
+  NOT_JUDGED (part, field, tier first needed, refs, pins):
+    ams1117-3.3 | pin.abs_max | pcba | ams1117-3.3 pins 2
+    esp32-s3-wroom-1-n8 | pin.abs_max | pcba | esp32-s3-wroom-1-n8 pins 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39
+    sht30-dis-b2.5ks-dfn8ep2.5x2.5 | pin.vih | pcba | sht30-dis-b2.5ks-dfn8ep2.5x2.5 pins 2,6
+    sht30-dis-b2.5ks-dfn8ep2.5x2.5 | pin.vil | pcba | sht30-dis-b2.5ks-dfn8ep2.5x2.5 pins 2,6
+    sht30-dis-b2.5ks-dfn8ep2.5x2.5 | pin.voh | pcba | sht30-dis-b2.5ks-dfn8ep2.5x2.5 pins 3
+    sht30-dis-b2.5ks-dfn8ep2.5x2.5 | pin.vol | pcba | sht30-dis-b2.5ks-dfn8ep2.5x2.5 pins 3

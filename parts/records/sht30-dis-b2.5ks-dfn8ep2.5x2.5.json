@@ -1,0 +1,171 @@
+{
+  "id": "sht30-dis-b2.5ks-dfn8ep2.5x2.5",
+  "kind": "part",
+  "mpn": "SHT30-DIS-B2.5KS",
+  "manufacturer": "Sensirion",
+  "status": "draft",
+  "verification": "unverified",
+  "lcsc": {"id": "C77361", "class": "extended"},
+  "sourcing": {"stock": 19915, "price_1": 2.9967, "snapshot_date": "2026-10-28"},
+  "package": {"name": "DFN-8-EP(2.5x2.5)", "mount": "smd", "lcsc_package": "DFN-8-EP(2.5x2.5)", "body_mm": [2.5, 2.5, 1.0]},
+  "kicad": {"symbol": "TODO", "footprint": "TODO"},
+  "ratings": {"v_op": [2.15, 5.5], "t_op_c": [-40, 125]},
+  "pins": {
+    "1": {"name": "SDA"},
+    "2": {"name": "ADDR"},
+    "3": {"name": "ALERT"},
+    "4": {"name": "SCL"},
+    "5": {"name": "VDD"},
+    "6": {"name": "nRESET"},
+    "7": {"name": "R"},
+    "8": {"name": "VSS"},
+    "9": {"name": "EPAD"}
+  },
+  "evidence": [],
+  "electrical": {
+   "role": "sensor",
+   "input_type": "cmos",
+   "pins": {
+    "5": {
+     "class": "power_in",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": 6,
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7",
+      "note": "VDD -0.3..6 V"
+     }
+    },
+    "8": {
+     "class": "power_in"
+    },
+    "9": {
+     "class": "power_in",
+     "note": "die pad: connect to VSS (figure 11, p8)"
+    },
+    "1": {
+     "class": "open_collector",
+     "supply_pin": "5",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": "pin:5+0.3",
+      "i_ma": 100,
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7",
+      "note": "input current any pin +-100 mA"
+     },
+     "note": "SDA: open-drain I/O, external pull-up required (p8); bidirectional, drives low only",
+     "vih": {
+      "min": "ratio:0.7*vdd",
+      "max": "ratio:1*vdd",
+      "unit": "V",
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14"
+     },
+     "vil": {
+      "min": 0,
+      "max": "ratio:0.3*vdd",
+      "unit": "V",
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14"
+     },
+     "vol": {
+      "max": 0.4,
+      "unit": "V",
+      "at": {
+       "sink_ma": 3
+      },
+      "cond": "I2C low-level output",
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14"
+     }
+    },
+    "4": {
+     "class": "open_collector",
+     "supply_pin": "5",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": "pin:5+0.3",
+      "i_ma": 100,
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7"
+     },
+     "note": "SCL: open-drain I/O (p8)",
+     "vih": {
+      "min": "ratio:0.7*vdd",
+      "max": "ratio:1*vdd",
+      "unit": "V",
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14"
+     },
+     "vil": {
+      "min": 0,
+      "max": "ratio:0.3*vdd",
+      "unit": "V",
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14"
+     },
+     "vol": {
+      "max": 0.4,
+      "unit": "V",
+      "at": {
+       "sink_ma": 3
+      },
+      "cond": "I2C low-level output",
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14"
+     }
+    },
+    "2": {
+     "class": "input",
+     "supply_pin": "5",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": "pin:5+0.3",
+      "i_ma": 100,
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7"
+     },
+     "note": "ADDR: connect to logic high or low, do not leave floating (p8)"
+    },
+    "3": {
+     "class": "output",
+     "supply_pin": "5",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": "pin:5+0.3",
+      "i_ma": 100,
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7"
+     },
+     "note": "ALERT: must be left floating if unused (p8)"
+    },
+    "6": {
+     "class": "input",
+     "supply_pin": "5",
+     "abs_max": {
+      "v_min": -0.3,
+      "v_max": "pin:5+0.3",
+      "i_ma": 100,
+      "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7"
+     },
+     "note": "nRESET: active low; may be left floating if unused (p8)"
+    },
+    "7": {
+     "class": "passive",
+     "note": "R: no electrical function; to be connected to VSS (p8)"
+    }
+   },
+   "load_ma": {
+    "typ": {
+     "typ": 0.0017,
+     "unit": "mA",
+     "cond": "average, one measurement per second at lowest repeatability, single-shot (1.7 uA)",
+     "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p6"
+    },
+    "peak": {
+     "typ": 0.6,
+     "max": 1.5,
+     "unit": "mA",
+     "cond": "measuring state supply current IDD (600 uA typ, 1500 uA max)",
+     "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p6"
+    }
+   },
+   "gaps": [
+    "VOH/ALERT output levels not stated except 'IOH 1.5 x VDD mA' text which is unreadable",
+    "theta_JA and junction temperature limit not stated (only -40..125 C operating temperature, p7)",
+    "VIH/VIL are for the I2C interface (p14), VDD = VDDmin..VDDmax"
+   ]
+  },
+  "signed_hash": null,
+  "notes": "DRAFT from machine data (jlcsearch + EasyEDA, 2026-10-28). kicad symbol/footprint are tool suggestions. TODO: kicad.footprint (no suggestion for package 'DFN-8-EP(2.5x2.5)'); kicad.symbol (no exact-name symbol in installed libs); pins.*.class and abs_max (datasheet only); tht.lead_mm / lead_d_mm (datasheet only); polarity (human); lifecycle (human/distributor); datasheet evidence and owner sign-off. Nobody has checked this record against a datasheet (tier unverified)."
+}

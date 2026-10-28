@@ -23,5 +23,53 @@
     {"section": "pins", "doc_url": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380", "page": 4, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T22:06:54Z (C18212380). page 4 of 06ea2024fc53108821a9233280dee56e.pdf_productCode_C18212380 names all 3 pins. A person has not read the datasheet.", "rev": "YLPTEC K78xx-2000R3 (LCSC C18212380); Mornsun 2023.06.25-A/8 agrees"}
   ],
   "notes": "Reflex U1 (5V 2A buck module, 12 V in). THT drop-in for a 7805. Datasheet pin order 1=Vin 2=GND 3=+Vo MATCHES the KiCad symbol and footprint (see evidence). The EasyEDA symbol (VIN, GND, +Vo) is the second machine source. Record id kept as k7805-2000r3-module (fixture reflex U1 will reference this id); the registry id carries no manufacturer because Mornsun, YLPTEC and DEXU all sell the same-named part. class is from the datasheet pin names. LCSC C18212380 verified by exact-id lookup: jlcsearch mfr 'K7805-2000R3', package 'SIP,11.5x9mm', stock 1644. NB: `parts new` refuses this id because EasyEDA's component TITLE is 'K7805-2000R3_C18212380' (EasyEDA appends the LCSC id) although its 'Manufacturer Part' field is K7805-2000R3.",
+  "electrical": {
+   "role": "regulator",
+   "regulator": {
+    "topology": "switcher_module",
+    "vin": {
+     "min": 8,
+     "typ": 24,
+     "max": 36,
+     "unit": "V",
+     "cond": "K7805-2000R3 positive output: nominal 24 V, range 8-36 V; above 30 V an external 22 uF/50 V input capacitor is required (table note)",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380 (MORNSUN K78xx-2000R3, 2023.06.25-A/8) PDF p1"
+    },
+    "vout": {
+     "min": 4.85,
+     "typ": 5.0,
+     "max": 5.15,
+     "unit": "V",
+     "cond": "5 V +-3 % max (typ +-2 %), full load, over the input range (output voltage accuracy row, 'other' outputs)",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380 (MORNSUN K78xx-2000R3, 2023.06.25-A/8) PDF p2"
+    },
+    "i_max_ma": {
+     "max": 2000,
+     "unit": "mA",
+     "cond": "maximum output current, 5 V output",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380 (MORNSUN K78xx-2000R3, 2023.06.25-A/8) PDF p1"
+    },
+    "iq_ma": {
+     "typ": 0.1,
+     "max": 1,
+     "unit": "mA",
+     "cond": "no-load input current, nominal input voltage (other outputs row)",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380 (MORNSUN K78xx-2000R3, 2023.06.25-A/8) PDF p1"
+    },
+    "efficiency_pct": {
+     "min": 89,
+     "typ": 92,
+     "unit": "%",
+     "cond": "full load: typ 92 % at min Vin, 89 % at max Vin (the 'min' here is the max-Vin figure)",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/06ea2024fc53108821a9233280dee56e.pdf?productCode=C18212380 (MORNSUN K78xx-2000R3, 2023.06.25-A/8) PDF p1"
+    },
+    "note": "reverse input voltage is NOT protected ('prohibited', p2); output short-circuit protection is continuous, self-recovering (p2). Not a linear regulator: input current is about Pout/eff, not Iout"
+   },
+   "gaps": [
+    "no absolute-maximum input voltage stated (only the 8-36 V range and the 30 V capacitor note)",
+    "theta_JA / junction temperature not stated: the module has only a power-vs-ambient derating curve (p3, graph only, not extracted)",
+    "no pin absolute-maximum ratings"
+   ]
+  },
   "signed_hash": "6d93b676f0b57022899dc2369b34b1e4718f177ae30d47ca10f6114434f9a238"
 }

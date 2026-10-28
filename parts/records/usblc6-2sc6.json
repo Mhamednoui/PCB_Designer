@@ -1,0 +1,136 @@
+{
+ "id": "usblc6-2sc6",
+ "kind": "part",
+ "mpn": "USBLC6-2SC6",
+ "manufacturer": "STMicroelectronics",
+ "status": "draft",
+ "verification": "unverified",
+ "lcsc": {
+  "id": "C7519",
+  "class": "extended"
+ },
+ "package": {
+  "name": "SOT-23-6L",
+  "mount": "smd",
+  "lcsc_package": "SOT-23-6L"
+ },
+ "kicad": {
+  "symbol": "TODO",
+  "footprint": "TODO"
+ },
+ "ratings": {
+  "t_op_c": [
+   -40,
+   125
+  ]
+ },
+ "pins": {
+  "1": {
+   "name": "I/O1"
+  },
+  "2": {
+   "name": "GND"
+  },
+  "3": {
+   "name": "I/O2"
+  },
+  "4": {
+   "name": "I/O2"
+  },
+  "5": {
+   "name": "VBUS"
+  },
+  "6": {
+   "name": "I/O1"
+  }
+ },
+ "evidence": [],
+ "electrical": {
+  "role": "clamp",
+  "pins": {
+   "1": {
+    "class": "passive"
+   },
+   "3": {
+    "class": "passive"
+   },
+   "4": {
+    "class": "passive"
+   },
+   "6": {
+    "class": "passive"
+   },
+   "5": {
+    "class": "passive"
+   },
+   "2": {
+    "class": "power_in"
+   }
+  },
+  "clamp": {
+   "v_standoff": {
+    "max": 5.25,
+    "unit": "V",
+    "at": {
+     "irm_na": 150
+    },
+    "cond": "VRM, leakage IRM max 150 nA at VRM=5.25 V",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/0d3a2ab954b34651a0695e7ccf534db0.pdf?productCode=C7519 (ST USBLC6-2 Doc ID 11265 Rev 5) PDF p2"
+   },
+   "v_breakdown": {
+    "min": 6,
+    "unit": "V",
+    "at": {
+     "ir_ma": 1
+    },
+    "cond": "breakdown between VBUS and GND, IR=1 mA",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/0d3a2ab954b34651a0695e7ccf534db0.pdf?productCode=C7519 (ST USBLC6-2 Doc ID 11265 Rev 5) PDF p2"
+   },
+   "v_clamp": [
+    {
+     "max": 12,
+     "unit": "V",
+     "at": {
+      "ipp_a": 1,
+      "pulse": "8/20us"
+     },
+     "cond": "any I/O pin to GND",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/0d3a2ab954b34651a0695e7ccf534db0.pdf?productCode=C7519 (ST USBLC6-2 Doc ID 11265 Rev 5) PDF p2"
+    },
+    {
+     "max": 17,
+     "unit": "V",
+     "at": {
+      "ipp_a": 5,
+      "pulse": "8/20us"
+     },
+     "cond": "any I/O pin to GND",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/0d3a2ab954b34651a0695e7ccf534db0.pdf?productCode=C7519 (ST USBLC6-2 Doc ID 11265 Rev 5) PDF p2"
+    }
+   ]
+  },
+  "vf": [
+   {
+    "max": 1.1,
+    "unit": "V",
+    "at": {
+     "if_ma": 10
+    },
+    "cond": "forward voltage of the steering diodes",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/0d3a2ab954b34651a0695e7ccf534db0.pdf?productCode=C7519 (ST USBLC6-2 Doc ID 11265 Rev 5) PDF p2"
+   }
+  ],
+  "tj_max": {
+   "max": 125,
+   "unit": "C",
+   "cond": "operating junction temperature range -40..+125 C",
+   "src": "https://datasheet.lcsc.com/datasheet/pdf/0d3a2ab954b34651a0695e7ccf534db0.pdf?productCode=C7519 (ST USBLC6-2 Doc ID 11265 Rev 5) PDF p2"
+  },
+  "gaps": [
+   "no DC absolute-maximum voltage/current per pin stated (only IEC 61000-4-2 +-15 kV and VRM 5.25 V)",
+   "theta_JA not stated"
+  ]
+ },
+ "signed_hash": null,
+ "notes": "DRAFT written by hand: `python tools/parts.py new C7519` failed ('no exact match ... in 0 results and no cache entry', 2026-10-28, twice), so there is NO EasyEDA/jlcsearch data behind it. Pin names/numbers read from the datasheet (https://datasheet.lcsc.com/datasheet/pdf/0d3a2ab954b34651a0695e7ccf534db0.pdf?productCode=C7519, ST Doc ID 11265 Rev 5, pin layout PDF p1). kicad symbol/footprint are TODO. Tier unverified: nobody has crosschecked the pins; classes are agent-read from the datasheet type column; owner sign-off needed. Electrical data is in the `electrical` block (unsigned, cited)."
+}

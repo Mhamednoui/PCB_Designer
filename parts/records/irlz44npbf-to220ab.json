@@ -22,6 +22,107 @@
     {"section": "pins,ratings,tht", "doc_url": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726", "page": 8, "rev": "PD-94831 (11/11/03), PDF mod 2021-04-29", "method": "agent read the datasheet text: p8 TO-220AB outline 'LEAD ASSIGNMENTS HEXFET: 1 - GATE, 2 - DRAIN, 3 - SOURCE, 4 - DRAIN' and lead width 0.69-0.93 mm / thickness 0.46-0.55 mm (3X); p1 absolute maximum ratings (VGS +-16 V, ID 47 A @25C, PD 110 W, TJ -55..+175 C) and V(BR)DSS 55 V (p2)", "verified_by": "agent-P1-T8", "date": "2026-10-27", "notes": "Agent read, a person has not. lead_mm is the datasheet MAXIMUM (0.93 x 0.55 mm, diagonal 1.08 mm); KiCad TO-220-3_Vertical drills 1.10 mm, i.e. only 0.02 mm of clearance over the maximum diagonal (decision 9.7 asks 0.10 for square leads), fine for typical leads (0.69-0.93 wide) but a PR-HOLE finding on the maximum. i_ma 47000 is the datasheet ID at TC=25C (33 A at 100C); it is silicon-limited, the package/leads allow less in practice. The 4th 'lead' in the drawing is the tab (= drain), electrically the same net as pin 2."},
     {"section": "pins", "doc_url": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726", "page": 8, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T22:03:47Z (C38774). page 8 of irlz44npbf.pdf_fileId_5546d462533600a40153567217c32726 names all 3 pins. A person has not read the datasheet.", "rev": "PD-94831 11/11/03"}
   ],
+  "electrical": {
+   "role": "mosfet",
+   "pins": {
+    "1": {
+     "abs_max": {
+      "v_min": -16,
+      "v_max": 16,
+      "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1",
+      "note": "VGS +-16 V"
+     }
+    },
+    "2": {
+     "abs_max": {
+      "v_max": 55,
+      "i_ma": 47000,
+      "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2",
+      "note": "v_max = V(BR)DSS min 55 V (p2); ID 47 A at TC=25 C, VGS=10 V (p1; 33 A at TC=100 C)"
+     }
+    },
+    "3": {
+     "abs_max": {
+      "i_ma": 47000,
+      "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1",
+      "note": "ID 47 A at TC=25 C"
+     }
+    }
+   },
+   "rds_on": [
+    {
+     "max": 0.022,
+     "unit": "ohm",
+     "at": {
+      "vgs_v": 10,
+      "id_a": 25,
+      "tj_c": 25
+     },
+     "cond": "static RDS(on), value in the Max column",
+     "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2"
+    },
+    {
+     "max": 0.025,
+     "unit": "ohm",
+     "at": {
+      "vgs_v": 5,
+      "id_a": 25,
+      "tj_c": 25
+     },
+     "cond": "static RDS(on), value in the Max column",
+     "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2"
+    },
+    {
+     "max": 0.035,
+     "unit": "ohm",
+     "at": {
+      "vgs_v": 4,
+      "id_a": 21,
+      "tj_c": 25
+     },
+     "cond": "static RDS(on), value in the Max column",
+     "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2"
+    }
+   ],
+   "vth": {
+    "min": 1.0,
+    "max": 2.0,
+    "unit": "V",
+    "at": {
+     "vds_eq_vgs": 1,
+     "id_ua": 250
+    },
+    "cond": "VGS(th), TJ=25 C",
+    "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2"
+   },
+   "theta_ja": [
+    {
+     "max": 62,
+     "unit": "C/W",
+     "cond": "junction-to-ambient, TO-220 free air, datasheet value (not this PCB)",
+     "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1"
+    }
+   ],
+   "tj_max": {
+    "max": 175,
+    "unit": "C",
+    "cond": "operating junction temperature range -55..+175 C",
+    "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1"
+   },
+   "p_max_mw": {
+    "max": 110000,
+    "unit": "mW",
+    "at": {
+     "tc_c": 25
+    },
+    "cond": "PD at TC=25 C (derating 0.71 W/C)",
+    "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1"
+   },
+   "gaps": [
+    "RDS(on) at 3.3 V gate drive not given (lowest condition is VGS=4.0 V): a 3.3 V logic gate is NOT_JUDGED",
+    "RDS(on) rises with temperature: the datasheet curve is not extracted, only the 25 C maxima"
+   ]
+  },
   "signed_hash": "6d4267f014931ce544e98d11a1bafd06378224960b5d8889156218196de40a16",
   "notes": "Machine data: jlcsearch + EasyEDA 2026-10-27 (LCSC C38774 = IRLZ44NPBF, TO-220AB). Fixture ref: reflex Q1..Q10, pins G=MAGn_G, D=MAGn_OUT, S=GND. class/abs_max/lead_mm/ratings were read by the agent from the Infineon datasheet pages cited in evidence; no person has confirmed them (owner sign-off needed). KiCad symbol Transistor_FET:IRLZ44N pin order 1=G 2=D 3=S agrees with the datasheet drawing and with EasyEDA and with the KiCad TO-220-3_Vertical pad order."
 }

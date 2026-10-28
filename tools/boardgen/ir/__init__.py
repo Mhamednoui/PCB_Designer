@@ -1,6 +1,6 @@
 """Design IR (PA-1): one validated, deterministic description of a board, built once by the `ir` stage.
 
-    tools/boardgen/ir/schema.json        JSON Schema of out/design.json (ir_version 1)
+    tools/boardgen/ir/schema.json        JSON Schema of out/design.json (ir_version 2)
     tools/boardgen/ir/from_netlist.py    netlist.py + parts registry  ->  meta, parts, nets, assembly, fab_profile
     tools/boardgen/ir/from_kicad_pcb.py  .kicad_pcb                   ->  board (stdlib parser; the ONLY place that
                                                                           knows the .kicad_pcb file format = R16 firewall)
@@ -13,7 +13,7 @@ import hashlib
 import json
 import re
 
-IR_VERSION = 1
+IR_VERSION = 2
 
 
 class IRError(Exception):

@@ -21,6 +21,7 @@ import re
 import sys
 
 from . import IRError, natkey, sha256_text_file
+from . import elec as _elec
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOOLS = os.path.dirname(os.path.dirname(HERE))
@@ -100,6 +101,7 @@ def build(project_id):
         if rec is not None:
             reg[ref] = rec
         pins = {}
+        status, el_block = _elec.part_electrical(rec, p["value"])
         for pad in sorted(p["pins"], key=natkey):
             net = p["pins"][pad]
             if not isinstance(net, str) or not net:
@@ -107,12 +109,14 @@ def build(project_id):
             rp = rec["pins"].get(str(pad)) if rec else None
             if rec is not None and rp is None:
                 raise IRError("%s pad %s is not a pad of registry record %r" % (ref, pad, rid))
-            pins[str(pad)] = {"name": rp["name"] if rp else None, "net": net, "class": rp.get("class") if rp else None}
+            cls, abs_max, io = _elec.resolve_pin(rec, str(pad), status) if rec else (None, None, None)
+            pins[str(pad)] = {"name": rp["name"] if rp else None, "net": net, "class": cls, "abs_max": abs_max, "io": io}
         out_parts[ref] = {
             "ref": ref, "registry": rid, "kind": rec["kind"] if rec else "unregistered",
             "lib_id": p["lib_id"], "footprint": p["footprint"], "value": str(p["value"]),
             "lcsc": str(p.get("lcsc") or ""), "group": p.get("group"),
             "pins": pins, "nc": sorted((str(x) for x in reg_nc.get(ref, [])), key=natkey),
+            "electrical": el_block, "electrical_status": status,
         }
     out_parts = {r: out_parts[r] for r in sorted(out_parts, key=natkey)}
 
@@ -163,7 +167,7 @@ def build(project_id):
             json.dumps(_parts.get(rid), sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
     return {
         "meta": {"project": project_id, "source": source, "git_commit": _git_commit(), "input_hashes": hashes},
-        "parts": out_parts, "nets": out_nets,
+        "parts": out_parts, "nets": out_nets, "external": _elec.parse_external(nl, out_parts),
         "assembly": {"mode": mode, "boards": boards},
         "fab_profile": {"name": str(fab) if fab else "jlcpcb", "declared": bool(fab)},
     }

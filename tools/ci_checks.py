@@ -79,8 +79,8 @@ def check_schemas():
         bad.append("stages.json: %s" % e)
     try:
         ir_sch = json.loads(read_bytes("tools/boardgen/ir/schema.json"))
-        if ir_sch.get("properties", {}).get("ir_version", {}).get("enum") != [1]:
-            bad.append("ir/schema.json: ir_version must be pinned to [1]")
+        if ir_sch.get("properties", {}).get("ir_version", {}).get("enum") != [2]:
+            bad.append("ir/schema.json: ir_version must be pinned to [2]")
         try:
             import jsonschema
             jsonschema.Draft7Validator.check_schema(ir_sch)

@@ -18,6 +18,107 @@
   "evidence": [
     {"section": "pins", "doc_url": "http://www.advanced-monolithic.com/pdf/ds1117.pdf", "page": 1, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T18:21:56Z (C6186). page 1 of ds1117.pdf names all 3 pins. A person has not read the datasheet."}
   ],
+  "electrical": {
+   "role": "regulator",
+   "pins": {
+    "3": {
+     "class": "power_in",
+     "abs_max": {
+      "v_max": 15,
+      "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p2",
+      "note": "input voltage 15 V absolute maximum"
+     }
+    },
+    "2": {
+     "class": "power_out"
+    },
+    "1": {
+     "class": "power_in"
+    }
+   },
+   "regulator": {
+    "topology": "ldo",
+    "vout": {
+     "min": 3.201,
+     "typ": 3.3,
+     "max": 3.399,
+     "unit": "V",
+     "cond": "AMS1117-3.3 output voltage, wider (bold) row = limits over the full operating range per datasheet convention (the page does not label it; 25 C row: 3.251-3.349 V at VIN=4.8 V, IOUT=0)",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p2"
+    },
+    "dropout": [
+     {
+      "typ": 1.1,
+      "max": 1.3,
+      "unit": "V",
+      "at": {
+       "i_ma": 800
+      },
+      "cond": "VIN-VOUT for 1 % output drop, IOUT=0.8 A; note 4: specified up to 0.8 A, higher above",
+      "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p3"
+     }
+    ],
+    "i_limit_ma": {
+     "min": 900,
+     "typ": 1100,
+     "max": 1500,
+     "unit": "mA",
+     "cond": "current limit at VIN-VOUT=1.5 V",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p3"
+    },
+    "iq_ma": {
+     "typ": 5,
+     "max": 11,
+     "unit": "mA",
+     "cond": "quiescent current, VIN-VOUT=1.5 V",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p3"
+    },
+    "min_load_ma": {
+     "typ": 5,
+     "max": 10,
+     "unit": "mA",
+     "cond": "minimum load current; stated for the adjustable AMS1117 row",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p3"
+    },
+    "i_max_ma": {
+     "max": 1000,
+     "unit": "mA",
+     "cond": "'1A' in the datasheet title; dropout and load regulation specified only to 0.8 A (p3)",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p1"
+    }
+   },
+   "theta_ja": [
+    {
+     "typ": 90,
+     "unit": "C/W",
+     "cond": "SOT-223 soldered to copper over a backside ground plane; 46 to >90 depending on copper area",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p2"
+    },
+    {
+     "typ": 55,
+     "unit": "C/W",
+     "cond": "SOT-223, 2500 sq mm top + 2500 sq mm back copper, 2500 sq mm board (table 1)",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p5"
+    },
+    {
+     "typ": 80,
+     "unit": "C/W",
+     "cond": "SOT-223, 100 sq mm top + 2500 sq mm back copper (table 1)",
+     "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p5"
+    }
+   ],
+   "tj_max": {
+    "max": 125,
+    "unit": "C",
+    "cond": "'Maximum junction temperature must not exceed 125 C'; operating range -40..125 C on p2",
+    "src": "http://www.advanced-monolithic.com/pdf/ds1117.pdf (AMS1117) PDF p5"
+   },
+   "gaps": [
+    "dropout current dependence below 0.8 A not given (only the 0.8 A point), so a headroom check at the real load current is conservative",
+    "operating input voltage range (min) not stated: min Vin = VOUT + dropout",
+    "output pin absolute maximum voltage not stated"
+   ]
+  },
   "signed_hash": "9893b11aaf5aaefe8140d9d6d9b1d5f062d53c1e81410f78a5d7c6511c125ece",
   "notes": "DRAFT from machine data (jlcsearch + EasyEDA, 2026-10-27). kicad symbol/footprint are tool suggestions. TODO: pins.*.class and abs_max (datasheet only); tht.lead_mm / lead_d_mm (datasheet only); polarity (human); lifecycle (human/distributor); datasheet evidence and owner sign-off. Tier crosschecked covers pin numbers/names/pads only (see evidence); class, abs_max, ratings, polarity are unchecked: owner sign-off needed."
 }

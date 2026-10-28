@@ -1,0 +1,311 @@
+{
+ "id": "esp32-s3-wroom-1-n8",
+ "kind": "part",
+ "mpn": "ESP32-S3-WROOM-1-N8",
+ "manufacturer": "Espressif Systems",
+ "status": "draft",
+ "verification": "unverified",
+ "lcsc": {
+  "id": "C2913198",
+  "class": "extended"
+ },
+ "package": {
+  "name": "SMD module 41 pads (castellated + EPAD)",
+  "mount": "smd",
+  "body_mm": [
+   25.5,
+   18.0
+  ]
+ },
+ "kicad": {
+  "symbol": "TODO",
+  "footprint": "TODO"
+ },
+ "ratings": {
+  "v_op": [
+   3.0,
+   3.6
+  ],
+  "t_op_c": [
+   -40,
+   85
+  ]
+ },
+ "pins": {
+  "1": {
+   "name": "GND",
+   "class": "power_in"
+  },
+  "2": {
+   "name": "3V3",
+   "class": "power_in"
+  },
+  "3": {
+   "name": "EN",
+   "class": "input"
+  },
+  "4": {
+   "name": "IO4",
+   "class": "bidirectional"
+  },
+  "5": {
+   "name": "IO5",
+   "class": "bidirectional"
+  },
+  "6": {
+   "name": "IO6",
+   "class": "bidirectional"
+  },
+  "7": {
+   "name": "IO7",
+   "class": "bidirectional"
+  },
+  "8": {
+   "name": "IO15",
+   "class": "bidirectional"
+  },
+  "9": {
+   "name": "IO16",
+   "class": "bidirectional"
+  },
+  "10": {
+   "name": "IO17",
+   "class": "bidirectional"
+  },
+  "11": {
+   "name": "IO18",
+   "class": "bidirectional"
+  },
+  "12": {
+   "name": "IO8",
+   "class": "bidirectional"
+  },
+  "13": {
+   "name": "IO19",
+   "class": "bidirectional"
+  },
+  "14": {
+   "name": "IO20",
+   "class": "bidirectional"
+  },
+  "15": {
+   "name": "IO3",
+   "class": "bidirectional"
+  },
+  "16": {
+   "name": "IO46",
+   "class": "bidirectional"
+  },
+  "17": {
+   "name": "IO9",
+   "class": "bidirectional"
+  },
+  "18": {
+   "name": "IO10",
+   "class": "bidirectional"
+  },
+  "19": {
+   "name": "IO11",
+   "class": "bidirectional"
+  },
+  "20": {
+   "name": "IO12",
+   "class": "bidirectional"
+  },
+  "21": {
+   "name": "IO13",
+   "class": "bidirectional"
+  },
+  "22": {
+   "name": "IO14",
+   "class": "bidirectional"
+  },
+  "23": {
+   "name": "IO21",
+   "class": "bidirectional"
+  },
+  "24": {
+   "name": "IO47",
+   "class": "bidirectional"
+  },
+  "25": {
+   "name": "IO48",
+   "class": "bidirectional"
+  },
+  "26": {
+   "name": "IO45",
+   "class": "bidirectional"
+  },
+  "27": {
+   "name": "IO0",
+   "class": "bidirectional"
+  },
+  "28": {
+   "name": "IO35",
+   "class": "bidirectional"
+  },
+  "29": {
+   "name": "IO36",
+   "class": "bidirectional"
+  },
+  "30": {
+   "name": "IO37",
+   "class": "bidirectional"
+  },
+  "31": {
+   "name": "IO38",
+   "class": "bidirectional"
+  },
+  "32": {
+   "name": "IO39",
+   "class": "bidirectional"
+  },
+  "33": {
+   "name": "IO40",
+   "class": "bidirectional"
+  },
+  "34": {
+   "name": "IO41",
+   "class": "bidirectional"
+  },
+  "35": {
+   "name": "IO42",
+   "class": "bidirectional"
+  },
+  "36": {
+   "name": "RXD0",
+   "class": "bidirectional"
+  },
+  "37": {
+   "name": "TXD0",
+   "class": "bidirectional"
+  },
+  "38": {
+   "name": "IO2",
+   "class": "bidirectional"
+  },
+  "39": {
+   "name": "IO1",
+   "class": "bidirectional"
+  },
+  "40": {
+   "name": "GND",
+   "class": "power_in"
+  },
+  "41": {
+   "name": "EPAD",
+   "class": "power_in",
+   "also": "EPAD is ground (Table 3-1, type P, function GND)"
+  }
+ },
+ "evidence": [],
+ "electrical": {
+  "role": "mcu",
+  "input_type": "cmos",
+  "pins": {
+   "2": {
+    "class": "power_in",
+    "abs_max": {
+     "v_min": -0.3,
+     "v_max": 3.6,
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+     "note": "VDD33 -0.3..3.6 V; recommended 3.0-3.6 V, supply must deliver >= 0.5 A (p27)"
+    }
+   },
+   "3": {
+    "class": "input",
+    "supply_pin": "2",
+    "vih": {
+     "min": "ratio:0.75*vdd",
+     "max": "ratio:1*vdd+0.3",
+     "unit": "V",
+     "cond": "VIH_nRST chip reset release voltage",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28"
+    },
+    "vil": {
+     "min": -0.3,
+     "max": "ratio:0.25*vdd",
+     "unit": "V",
+     "cond": "VIL_nRST chip reset voltage",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28"
+    },
+    "note": "EN: do not leave floating (p11)"
+   },
+   "1": {
+    "class": "power_in"
+   },
+   "40": {
+    "class": "power_in"
+   },
+   "41": {
+    "class": "power_in"
+   }
+  },
+  "pin_defaults": {
+   "bidirectional": {
+    "tristate": true,
+    "supply_pin": "2",
+    "vih": {
+     "min": "ratio:0.75*vdd",
+     "max": "ratio:1*vdd+0.3",
+     "unit": "V",
+     "cond": "DC characteristics 3.3 V, 25 C",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27"
+    },
+    "vil": {
+     "min": -0.3,
+     "max": "ratio:0.25*vdd",
+     "unit": "V",
+     "cond": "DC characteristics 3.3 V, 25 C",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27"
+    },
+    "voh": {
+     "min": "ratio:0.8*vdd",
+     "unit": "V",
+     "cond": "measured with a high-impedance load",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27"
+    },
+    "vol": {
+     "max": "ratio:0.1*vdd",
+     "unit": "V",
+     "cond": "measured with a high-impedance load",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27"
+    },
+    "i_out_max_ma": {
+     "typ": 28,
+     "unit": "mA",
+     "cond": "IOL 28 mA typ at VOL=0.495 V (PAD_DRIVER=3); IOH 40 mA typ at VOH>=2.64 V - typical, not guaranteed maxima",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27"
+    },
+    "i_in_leak": {
+     "max": 50,
+     "unit": "nA",
+     "cond": "IIH/IIL",
+     "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27"
+    }
+   }
+  },
+  "load_ma": {
+   "typ": {
+    "typ": 95,
+    "unit": "mA",
+    "cond": "Wi-Fi RX 802.11b/g/n HT20 active, 3.3 V, 25 C (peak column)",
+    "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28"
+   },
+   "peak": {
+    "typ": 355,
+    "unit": "mA",
+    "cond": "Wi-Fi TX 802.11b 1 Mbps @20.5 dBm, 100 % duty (peak column); supply must deliver >= 0.5 A (p27)",
+    "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28"
+   }
+  },
+  "gaps": [
+   "no absolute-maximum voltage/current for GPIO pins in the module datasheet (only VDD33 -0.3..3.6 V); pin ratings are in the ESP32-S3 series datasheet, not read here: EL-ABSMAX on GPIO nets is NOT_JUDGED (recommended VIH max = VDD+0.3 is a recommended-operating figure, not a rating)",
+   "pins 1,40,41 (GND) and the GPIO pins are classed from Table 3-1 type column (P / I/O/T): agent-read",
+   "strapping pins (IO0, IO3, IO45, IO46) electrical states belong to the P3 strap block, not this record",
+   "IO47/IO48 are 1.8 V on R16V variants, not on N8 (p12 note c)"
+  ]
+ },
+ "signed_hash": null,
+ "notes": "DRAFT written by hand: `python tools/parts.py new C2913198` failed ('no exact match ... in 0 results and no cache entry', 2026-10-28, twice), so there is NO EasyEDA/jlcsearch data behind it. Pin names/numbers read from the datasheet (https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf v1.8, Table 3-1 PDF p11-12, dimensions p3, N8 ordering p3, ratings p27). kicad symbol/footprint are TODO. Tier unverified: nobody has crosschecked the pins; classes are agent-read from the datasheet type column; owner sign-off needed. Electrical data is in the `electrical` block (unsigned, cited)."
+}
