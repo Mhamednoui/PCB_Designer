@@ -46,7 +46,8 @@ _COUNT_RULES = [
      lambda m: {"erc_errors": int(m[1])}),
 ]
 _FAILED_LINE = re.compile(r"^(?:\s*)(FAILED:.*|route FAILED:.*|CMD FAILED.*)$", re.M)
-_SUMMARY_HINTS = re.compile(r"^(DRC gate:|decap distance:|catch rate|FAILED:|PASS|OK\b|netlist compare|ERC)", re.M)
+_ERROR_LINE = re.compile(r"^\s*(?:ERROR|error:|Traceback)")
+_SUMMARY_HINTS = re.compile(r"^(ERROR|DRC gate:|decap distance:|catch rate|FAILED:|PASS|OK\b|netlist compare|ERC)", re.M)
 
 
 def parse_output(text):
@@ -62,6 +63,9 @@ def parse_output(text):
     for line in text.splitlines():
         if _SUMMARY_HINTS.match(line.strip()) and line.strip() not in summary:
             summary.append(line.strip())
+    first_error = next((l.strip() for l in text.splitlines() if _ERROR_LINE.match(l)), None)
+    if failed and first_error and first_error not in failed:
+        failed = "%s [first error: %s]" % (failed, first_error)
     return counts, failed, summary[:12]
 
 
@@ -179,7 +183,7 @@ def finish_report(report, started_monotonic, now_monotonic, result):
     pa = " ".join(report["pipeline_argv"])
     report["reproduce"] = (
         ("git checkout %s%s && " % (g["commit"], " (+ the uncommitted changes listed in git.dirty_files)" if g.get("dirty") else ""))
-        if g.get("commit") else "") + "python %s" % pa
+        if g.get("commit") else "") + "python pipeline.py %s" % pa
     return report
 
 
