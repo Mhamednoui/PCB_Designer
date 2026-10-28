@@ -131,7 +131,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P2-T4 EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP | ✅ (`electrical` stage; follow-ups: `pull: external` in EXTERNAL → INFO; contention vs EXTERNAL drivers) |
 | P2-T5 EL-FLOAT, EL-LEVEL, EL-NETSPEC | ⬜ |
 | P2-T6 budget, dropout, thermal | ⬜ |
-| P2-T7 EL-CONN-PROT + EXTERNAL | ⬜ |
+| P2-T7 EL-CONN-PROT + EXTERNAL (+T7b: RC-filter, direction severity, expansion class; blinky D2 reverse-polarity fix) | ✅ |
 | P2-T8 strap evaluator (ESP32-S3) | ⬜ |
 | P2-T9 requirements engine (IV-2) | ⬜ |
 | P2-T10 release coverage gate, RULES.md, lint migration | ⬜ |
