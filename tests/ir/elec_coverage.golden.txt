@@ -23,6 +23,12 @@ project reflex-machine (123 parts)
     led-5mm (value GREEN not covered) | vf | pcba | D3,D4
     pc817c-dip4 | pin.abs_max | pcba | U2 pins 2
 
+project synth-esp32s3 (7 parts)
+  hand  required    3   present    3   NOT_JUDGED    0
+  pcba  required   20   present   18   NOT_JUDGED    2
+  NOT_JUDGED (part, field, tier first needed, refs, pins):
+    esp32-s3-wroom-1-n8 | pin.abs_max | pcba | U1 pins 3,27
+
 project uno-toggle (9 parts)
   hand  required    3   present    3   NOT_JUDGED    0
   pcba  required    7   present    6   NOT_JUDGED    1
