@@ -6,7 +6,7 @@
   "status": "draft",
   "verification": "crosschecked",
   "lcsc": {"id": "C18212380", "class": "extended"},
-  "sourcing": {"stock": 1644, "price_1": 3.1045, "snapshot_date": "2026-10-27"},
+  "sourcing": {"stock": 1436, "price_1": 3.1002, "snapshot_date": "2026-10-27"},
   "package": {"name": "SIP-3 DC-DC module (R-78 style)", "mount": "tht", "lcsc_package": "SIP,11.5x9mm", "body_mm": [11.5, 9.0, 17.5]},
   "kicad": {"symbol": "Converter_DCDC:R-785.0-1.0", "footprint": "Converter_DCDC:Converter_DCDC_RECOM_R-78B-2.0_THT"},
   "tht": {"lead_mm": [0.8, 0.4]},

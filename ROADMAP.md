@@ -64,7 +64,8 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | MD-T8 | Fix the 2 real decoupling-placement defects `review` found: blinky C3 (15.2 mm from U1 pin 8), reflex C13 (36.5 mm from U3); full rebuild of both | `projects/{blinky-555,reflex-machine}/gen/make_pcb.py` + regenerated outputs | medium | MD-T5 | `review` green on both; full pipeline 0/0/0 | 🔄 |
 | MD-T9 | Native pad-to-pin decap check in `check` (≤5 mm THT / ≤3 mm SMD; modules reported as SKIP); route retries Freerouting ≤3× until 0 unconnected; `finish` re-run once on native crash | `tools/boardgen/{pcb,decap_check}.py` | medium | MD-T8 | M-decap-far caught by `check`; fixtures green | ✅ |
 | MD-T10 | reflex fixture: +12V_IN (J1→F1→pour) sized for 10 A per IPC-2221 | `projects/reflex-machine/gen/{make_pcb,netlist}.py` + outputs | medium | MD-T2b | reflex `check` green | ✅ |
-| MD-T11 | Derive every via/stitch/fan-out spacing in `pcb.py` from `fab_rules.py` (hole_to_hole, annular, clearance) instead of local constants (`_stitch_and_fill` used d/2+0.55, rule needs ~d/2+0.65 → flaky hole_to_hole) | `tools/boardgen/{pcb,fab_rules}.py` | medium | MD-T10 | 5 consecutive reflex place→check runs: 0 hole_to_hole errors | 🔄 |
+| MD-T11 | Derive every via/stitch/fan-out spacing in `pcb.py` from `fab_rules.py` (hole_to_hole, annular, clearance) instead of local constants (`_stitch_and_fill` used d/2+0.55, rule needs ~d/2+0.65 → flaky hole_to_hole) | `tools/boardgen/{pcb,fab_rules}.py` | medium | MD-T10 | 5 consecutive reflex place→check runs: 0 hole_to_hole errors | ✅ (0 hole_to_hole in 14 runs) |
+| MD-T12 | reflex routability regression: after MD-T10 the 7.5 mm +12V_IN pre-route blocks channels → Freerouting fails ~3/8 runs (SPARE_D33, SEG_CLOCK, SPARE_TX3). Fix so 5/5 consecutive full rebuilds route | `projects/reflex-machine/gen/make_pcb.py` (+ `pcb.py` route strategy only if needed) | medium | MD-T11 | 5/5 reflex rebuilds 0/0/0 | 🔄 |
 | MD-T7 | Mutation suite (data-driven `tests/mutations/mutations.json`, P1-T4 extends it): each of the 16 mistake classes injected into a temp copy, asserts the pipeline exits non-zero at the expected stage; reports catch rate | `tests/mutations/` (new) | high | MD-T1..T6 | 16/16 caught; runtime reported | ✅ (22/23; M-hole → MD-T11) |
 **DoD:** G0 met; all 3 fixtures pass every new stage (or carry written waivers).
 
@@ -79,8 +80,9 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P1-T6 `parts` stage | ✅ |
 | P1-T7 generic/connector/mechanical records | ✅ |
 | P1-T8 crosschecked records for real parts | ✅ (PC817 → owner) |
-| P1-T9a API: pins-by-function, PARTS_RECORDS_DIR, registered-refs API, PR-HOLE severities, `parts new` MPN field | 🔄 |
-| P1-T9b migrate fixtures, strict mode, C_Polarized (+ replace lint's monkeypatch of `parts.registry_part` with an explicit `parts.py` API: lenient load + registered-refs tracking) | ⬜ |
+| P1-T9a API: pins-by-function, PARTS_RECORDS_DIR, registered-refs API, PR-HOLE severities, `parts new` MPN field | ✅ |
+| P1-T9b migrate fixtures to registry (pins by function, `nc=`), `PARTS_STRICT`, C_Polarized | 🔄 |
+| P1-T10 stock source fix: JLCPCB assembly stock (smtGood) for `pcba`, LCSC detail endpoint fallback, jlcsearch last; covers modules + passives (from MV-T0) | ✅ |
 
 ### MP Production-ready outputs (both assembly modes) - MP-T1/T2 superseded by P1 above; MP-T3 remains (P5)
 | ID | Task | Files | Effort | Deps | Acceptance | St |
@@ -92,6 +94,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 ### MS Scales to complex boards
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
+| MS-T0 | Antenna keep-out rule: module records carry the keep-out polygon (from the vendor guide); `check` fails on copper/parts inside it and on antenna not at the board edge (from MV-T0) | `parts/records`, `tools/boardgen/pcb.py` | medium | P1 | ESP32-S3 fixture with copper under antenna fails | ⬜ |
 | MS-T1 | Automatic placement: group-based placer from `netlist.py` groups (connectors on edges, decoupling caps within 3 mm of their IC pin, courtyard-aware packing); `placements()` becomes optional overrides | `tools/boardgen/autoplace.py` (new), `tools/boardgen/pcb.py` | high | MD | a 60+ part board places with 0 courtyard errors and every decoupling cap ≤3 mm from its pin | ⬜ |
 | MS-T2 | SMD routing support: fan-out vias for SMD pads, netclasses from `NET_SPEC` (power/signal widths), 4-layer stackup option (In1=GND, In2=power) | `tools/boardgen/pcb.py` | high | MD-T2 | SMD fixture routes 0/0/0 on 2 and 4 layers | ⬜ |
 | MS-T3 | Multi-sheet (hierarchical) schematic generation from `netlist.py` groups, so a complex schematic stays readable | `tools/boardgen/make_sch.py` | high | - | 1 sheet per group; netlist compare 0 mismatches | ⬜ |
@@ -99,6 +102,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 ### MV Proof
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
+| MV-T0 | Reference board brief + architecture (`projects/ref-esp32/`): ESP32-S3-WROOM-1-N8, LDL1117 (not AMS1117: dropout), USB-C FS, 2-layer, ~0.9 W LDO peak → ≥2 cm² tab copper; Q1-Q13 defaults accepted | `projects/ref-esp32/*.md` | high | - | docs reviewed | ✅ |
 | MV-T1 | Reference complex board built through the platform only: PCBA, e.g. ESP32-S3 module + USB-C (power + data) + 3V3 LDO + ESD + I2C sensor + status LEDs + buttons | `projects/ref-esp32/` (new) | high | MP, MS | every stage green; fab zip + BOM + CPL pass JLCPCB upload checks | ⬜ |
 | MV-T2 | Rebuild the 3 fixtures from their `netlist.py` with all new gates | `projects/*` | medium | MD, MP | all green or written waivers | ⬜ |
 
@@ -106,15 +110,16 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | ID | Task | St |
 |---|---|---|
 | PA-1 design IR + `ir` stage | ⬜ |
-| PA-2 stage registry + incremental runner | ⬜ |
+| PA-2 stage registry + incremental runner | ✅ (`tools/boardgen/stages.json`; `--describe`; `--no-cache`) |
 | PA-3 port checks to the IR | ⬜ |
 | PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |
 | PA-5 parallel + tiered mutation runner | ⬜ |
-| PA-6 run report + tool versions + determinism | ⬜ |
+| PA-6 run report + tool versions + determinism | ✅ (`out/run/<ts>/report.html`; 2 runs → git clean) |
 | PA-7 finding taxonomy, `--explain`, board markers | ⬜ |
 | PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
 | PA-9 pre-commit + CI | ⬜ |
 | PA-10 ADRs + CHANGELOG + platform version | ⬜ |
+| PA-11 KiCad-schematic input adapter (hand-drawn schematic → PCB) | ⬜ |
 
 ### Independent verification (PLATFORM_PLAN §9) - queued
 | ID | Task | Phase | St |

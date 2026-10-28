@@ -4,14 +4,23 @@ Spec: docs/design/P1_PARTS_REGISTRY.md.  Records: parts/records/*.json, schema: 
 
     from boardgen import parts
     rec = parts.get("ne555p-dip8")
-    PARTS.append(parts.registry_part("U1", "ne555p-dip8", "NE555P", {1: "GND", ...}, group))
+    PARTS.append(parts.registry_part("U1", "ne555p-dip8", "NE555P",
+                                     {"GND": "GND", "TRIG": "TRIG", "OUT": "OUT", "RESET": "VCC", "CONT": "CV",
+                                      "THRES": "TRIG", "DISCH": "DISCH", "VCC": "VCC"}, group))
 
+Pins are connected BY FUNCTION (the record's pin name or alias): the pad numbers come from the record, so a part
+swapped for one with another pinout renumbers by construction. Numbers stay accepted (and are required for generics
+and connectors whose pin names are "~" / "Pin_1"). A name shared by several pins needs "GND#2" or the pad number.
+Every pad the netlist leaves unconnected must be declared in `nc=[...]` (fail closed).
+
+Environment: PARTS_RECORDS_DIR points the registry at another records directory (tests; replaces a sitecustomize hook).
 Release rules key on `verification` (unverified / crosschecked / verified), not on `status`.
 Self-test: python tools/boardgen/parts.py --selftest
 """
 import copy
 import hashlib
 import json
+import os
 import re
 import shutil
 import sys
@@ -19,7 +28,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RECORDS_DIR = ROOT / "parts" / "records"
+DEFAULT_RECORDS_DIR = ROOT / "parts" / "records"
 SCHEMA_PATH = ROOT / "parts" / "schema.json"
 
 # Sections covered by signed_hash (spec section 1). Sourcing drift never breaks a signature.
@@ -28,6 +37,12 @@ SIGNED_FIELDS = ("mpn", "package", "kicad", "pins", "tht", "polarity")
 
 class RegistryError(ValueError):
     """Raised for an invalid record or an unknown id. The message names file and field path."""
+
+
+def records_dir():
+    """The records directory: $PARTS_RECORDS_DIR if set (tests), else parts/records. Read at call time."""
+    d = os.environ.get("PARTS_RECORDS_DIR")
+    return Path(d) if d else DEFAULT_RECORDS_DIR
 
 
 # --------------------------------------------------------------------------- validation
@@ -160,39 +175,76 @@ def resolve_v_max(v, pin_volts):
 _registry = None
 
 
-def load_all(records_dir=None, strict=True):
-    """Load and validate every record. Raises RegistryError listing ALL problems when strict."""
-    d = Path(records_dir) if records_dir else RECORDS_DIR
-    recs, problems = {}, []
+def _tier_problems(rec, who):
+    """PR-TIER / PR-HASH messages for a schema-valid record ('who' = file name or record id)."""
+    msgs = []
+    if rec["verification"] != "unverified" and rec.get("signed_hash") is None:
+        msgs.append("%s: signed_hash: tier %s needs a signed_hash, found none (PR-TIER)" % (who, rec["verification"]))
+    if rec["verification"] != "unverified" and not rec.get("evidence"):
+        msgs.append("%s: evidence: tier %s needs at least one evidence entry (PR-TIER)" % (who, rec["verification"]))
+    if not hash_ok(rec):
+        msgs.append("%s: signed_hash: signed fields changed since sign-off (PR-HASH)" % who)
+    return msgs
+
+
+def load_all(records_dir_=None, lenient=False):
+    """Load and validate every record in records_dir_ (default records_dir(): $PARTS_RECORDS_DIR or parts/records).
+
+    Default (fail closed): raise RegistryError listing ALL problems; returns {id: record}.
+    lenient=True: never raises for a bad record; returns (records, problems) with problems = {record id (file name
+    if unreadable): [messages]}. A schema-invalid record is left out; one with a broken hash/tier stays usable so
+    lint can report it per use instead of crashing the netlist import. Release code uses the fail-closed form."""
+    d = Path(records_dir_) if records_dir_ else records_dir()
+    if not d.is_dir():
+        raise RegistryError("records directory %s does not exist (PARTS_RECORDS_DIR=%r)"
+                            % (d, os.environ.get("PARTS_RECORDS_DIR", "")))
+    recs, problems, hard = {}, {}, []                  # hard = messages that make the fail-closed load raise
     for f in sorted(d.glob("*.json")):
         try:
             rec = json.loads(f.read_text(encoding="utf-8"))
         except ValueError as e:
-            problems.append("%s: (root): invalid JSON: %s" % (f.name, e))
+            msg = "%s: (root): invalid JSON: %s" % (f.name, e)
+            problems.setdefault(f.name, []).append(msg)
+            hard.append(msg)
             continue
         errs = validate(rec, f.name)
-        if not errs and rec["id"] in recs:
-            errs = ["%s: id: duplicate id %r" % (f.name, rec["id"])]
-        if not errs and rec["verification"] != "unverified" and rec.get("signed_hash") is None:
-            errs = ["%s: signed_hash: tier %s needs a signed_hash, found none (PR-TIER)" % (f.name, rec["verification"])]
-        if not errs and rec["verification"] != "unverified" and not rec.get("evidence"):
-            errs = ["%s: evidence: tier %s needs at least one evidence entry (PR-TIER)" % (f.name, rec["verification"])]
-        if not errs and not hash_ok(rec):
-            errs = ["%s: signed_hash: signed fields changed since sign-off (PR-HASH)" % f.name]
         if errs:
-            problems.extend(errs)
-        else:
-            recs[rec["id"]] = rec
-    if problems and strict:
-        raise RegistryError("\n".join(problems))
+            key = rec["id"] if isinstance(rec, dict) and isinstance(rec.get("id"), str) else f.name
+            problems.setdefault(key, []).extend(errs)
+            hard.extend(errs)
+            continue
+        pid = rec["id"]
+        if pid in recs:
+            msg = "%s: id: duplicate id %r" % (f.name, pid)
+            problems.setdefault(pid, []).append(msg)
+            hard.append(msg)
+            continue
+        recs[pid] = rec
+        hard.extend(_tier_problems(rec, f.name))
+        soft = _tier_problems(rec, pid)
+        if soft:
+            problems.setdefault(pid, []).extend(soft)
+    if lenient:
+        return recs, problems
+    if hard:
+        raise RegistryError("\n".join(hard))
     return recs
 
 
 def registry():
+    """The fail-closed registry (cached): every record valid, consistent and signed as its tier requires."""
     global _registry
     if _registry is None:
         _registry = load_all()
     return _registry
+
+
+def use_lenient_registry():
+    """Install the lenient registry as the cache get()/registry() read (lint and the parts stage, which report
+    record problems per use). Returns the per-record problems {id: [messages]}."""
+    global _registry
+    _registry, problems = load_all(lenient=True)
+    return problems
 
 
 def get(part_id):
@@ -227,17 +279,147 @@ def generic(part_id, value=None):
 
 
 # --------------------------------------------------------------------------- netlist.py path
-def registry_part(ref, part_id, value, pins, group):
-    """Return a dict in the exact shape of netlist.py's PARTS entries (ref, lib_id, value,
-    footprint, pins, group, lcsc), derived from the registry record. Unknown pin numbers raise."""
+# Registered-parts tracker. A netlist.py declares parts through registry_part(); lint and the parts stage need to
+# know which refs those were. begin_netlist_load() resets the tracker, so call it right before importing a netlist.
+_refs = {}                 # ref -> registry record id
+_nc = {}                   # ref -> [pad numbers explicitly declared NC]
+_build_problems = {}       # ref -> [messages], only filled in lenient build mode
+_lenient_build = [False]
+
+
+def begin_netlist_load(lenient=False):
+    """Reset the registered-refs tracker before importing a netlist. lenient=True (lint): a pin/NC mistake in a
+    registry_part() call is recorded (build_problems()) and the part is still built, so later rules can run and
+    report every problem at once; the default raises RegistryError at the first bad call (fail closed)."""
+    _refs.clear()
+    _nc.clear()
+    _build_problems.clear()
+    _lenient_build[0] = bool(lenient)
+
+
+def registered_refs():
+    """{ref: registry record id} for every part declared through registry_part() since begin_netlist_load()."""
+    return dict(_refs)
+
+
+def registered_nc():
+    """{ref: [pad numbers]} explicitly declared not-connected (nc=[...]) since begin_netlist_load()."""
+    return {r: list(v) for r, v in _nc.items()}
+
+
+def build_problems():
+    """{ref: [messages]} recorded in lenient build mode (empty otherwise)."""
+    return {r: list(v) for r, v in _build_problems.items()}
+
+
+def _norm_name(n):
+    return re.sub(r"[~{} ]", "", str(n)).upper()
+
+
+def _padkey(k):
+    return (len(k), k)
+
+
+def _pad_names(rec):
+    """{normalised name or alias: [pad numbers, sorted]} for a record."""
+    out = {}
+    for num, p in rec["pins"].items():
+        for nm in {p["name"], p.get("alias") or p["name"]}:
+            if _norm_name(nm):
+                out.setdefault(_norm_name(nm), []).append(num)
+    return {k: sorted(set(v), key=_padkey) for k, v in out.items()}
+
+
+def _choices(rec):
+    return "; ".join("%s=%s" % (num, p["name"]) for num, p in sorted(rec["pins"].items(), key=lambda kv: _padkey(kv[0])))
+
+
+def resolve_pin(rec, key):
+    """Pad number for a pin key: a pad number, or the pin name/alias (case-insensitive, ~{} ignored), or "NAME#n"
+    (n-th pad with that name, 1-based, by pad number). Raises RegistryError (no ref prefix) on unknown/ambiguous."""
+    s = str(key).strip()
+    if s in rec["pins"]:
+        return s
+    m = re.match(r"^(.*?)#(\d+)$", s)
+    base, idx = (m.group(1), int(m.group(2))) if m else (s, None)
+    cands = _pad_names(rec).get(_norm_name(base))
+    if not cands:
+        raise RegistryError('pin %s is neither a pad number nor a pin name of record "%s" (pins: %s)'
+                            % (s, rec["id"], _choices(rec)))
+    if idx is not None:
+        if not 1 <= idx <= len(cands):
+            raise RegistryError('pin %s: record "%s" has %d pin(s) named %s (pads %s)'
+                                % (s, rec["id"], len(cands), base, ",".join(cands)))
+        return cands[idx - 1]
+    if len(cands) > 1:
+        raise RegistryError('pin name "%s" is ambiguous in record "%s": %s; write "%s#<n>" or the pad number'
+                            % (s, rec["id"], ", ".join("%s#%d = pad %s" % (s, i + 1, c) for i, c in enumerate(cands)), s))
+    return cands[0]
+
+
+def registry_part(ref, part_id, value, pins, group, nc=()):
+    """Return a dict in the exact shape of netlist.py's PARTS entries (ref, lib_id, value, footprint, pins, group,
+    lcsc), derived from the registry record.
+
+    pins  {key: net}; key = pin FUNCTION (record pin name or alias, "GND#2" for the 2nd pin of that name) or a pad
+          number. Pad numbers are derived from the record, so swapping the record for another pinout renumbers
+          correctly. Generics/connectors (names "~" / "Pin_1") use numbers. A net of None/"" declares the pin NC.
+    nc    pins explicitly not connected: a key or list of keys (same forms), or "rest" = every pad not otherwise
+          mentioned (only for connector/mechanical records, e.g. a shield with 90 spare pins).
+    Fail closed: an unknown or ambiguous key, a pad given twice, or a pad of the record that is neither connected
+    nor declared NC raises RegistryError (lint mode records it instead, see begin_netlist_load)."""
     rec = get(part_id)
-    extra = sorted(str(k) for k in pins if str(k) not in rec["pins"])
-    if extra:
-        raise RegistryError('%s: pin(s) %s not in registry record "%s" (has %s)'
-                            % (ref, ", ".join(extra), part_id, ", ".join(rec["pins"])))
+    errs, out, listed_nc = [], {}, []
+
+    def bad(msg):
+        errs.append("%s: %s" % (ref, msg))
+
+    for k, net in pins.items():
+        try:
+            pad = resolve_pin(rec, k)
+        except RegistryError as e:
+            bad(str(e))
+            if net:
+                out.setdefault(str(k), net)                 # best effort so lint can keep going
+            continue
+        if pad in out or pad in listed_nc:
+            bad("pad %s of record \"%s\" is given twice (key %s)" % (pad, part_id, k))
+        elif net:
+            out[pad] = net
+        else:
+            listed_nc.append(pad)
+    rest = False
+    for k in ([nc] if isinstance(nc, (str, int)) else list(nc)):
+        if k == "rest":
+            if rec["kind"] not in ("connector", "mechanical"):
+                bad('nc="rest" is only allowed for connector/mechanical records, "%s" is a %s: list its NC pins'
+                    % (part_id, rec["kind"]))
+            rest = True
+            continue
+        try:
+            pad = resolve_pin(rec, k)
+        except RegistryError as e:
+            bad("nc: " + str(e))
+            continue
+        if pad in out:
+            bad("pad %s of record \"%s\" is both connected (net %s) and declared NC" % (pad, part_id, out[pad]))
+        elif pad not in listed_nc:
+            listed_nc.append(pad)
+    if not rest and not errs:
+        left = sorted((p for p in rec["pins"] if p not in out and p not in listed_nc), key=_padkey)
+        if left:
+            bad('pin(s) %s of record "%s" are neither connected nor declared NC (add nc=[...])'
+                % (", ".join("%s (%s)" % (p, rec["pins"][p]["name"]) for p in left), part_id))
+    if errs:
+        if not _lenient_build[0]:
+            raise RegistryError("\n".join(errs))
+        _build_problems.setdefault(ref, []).extend(errs)
+    if rest:
+        listed_nc += [p for p in sorted(rec["pins"], key=_padkey) if p not in out and p not in listed_nc]
+    _refs[ref] = part_id
+    _nc[ref] = sorted(listed_nc, key=_padkey)
     return dict(ref=ref, lib_id=rec["kicad"]["symbol"], value=value, footprint=rec["kicad"]["footprint"],
-                pins={str(k): v for k, v in pins.items() if v}, group=group,
-                lcsc=(rec.get("lcsc") or {}).get("id", ""))
+                pins=out, group=group, lcsc=(rec.get("lcsc") or {}).get("id", ""))
 
 
 # --------------------------------------------------------------------------- self-test
@@ -246,7 +428,7 @@ _FIXTURE = {   # self-contained NE555P-like record; the selftest never reads par
     "lcsc": {"id": "C46749", "class": "extended"}, "sourcing": {"stock": 1, "price_1": 0.3, "snapshot_date": "2026-01-01"},
     "package": {"name": "DIP-8", "mount": "tht"}, "kicad": {"symbol": "Timer:NE555P", "footprint": "Package_DIP:DIP-8_W7.62mm"},
     "pins": {"1": {"name": "GND", "class": "power_in"}, "2": {"name": "TRIG", "class": "input"},
-             "3": {"name": "OUT", "class": "output"}, "4": {"name": "RESET", "class": "input"},
+             "3": {"name": "OUT", "class": "output"}, "4": {"name": "RESET", "alias": "~RST", "class": "input"},
              "5": {"name": "CONT", "class": "analog"}, "6": {"name": "THRES", "class": "input"},
              "7": {"name": "DISCH", "class": "open_collector"}, "8": {"name": "VCC", "class": "power_in"}},
     "evidence": [], "signed_hash": None}
@@ -297,15 +479,104 @@ def selftest():
     ok(parse_v_max(18) == {"abs": 18.0} and parse_v_max(None) is None, "absolute / null v_max parse")
     ok(abs(resolve_v_max("pin:8+0.3", {"8": 5.0}) - 5.3) < 1e-9, "relative v_max resolves against pin voltage")
 
-    e = registry_part("U1", "ne555p-dip8", "NE555P", {1: "GND", 8: "VCC", 4: None}, "G")
-    ok(e["lib_id"] == "Timer:NE555P" and e["lcsc"] == "C46749" and e["pins"] == {"1": "GND", "8": "VCC"}
+    # ---- registry_part: pins by function, NC policy (fail closed), registered-refs tracker
+    begin_netlist_load()
+    by_name = {"GND": "GND", "TRIG": "T", "OUT": "O", "RESET": "VCC", "CONT": "CV", "THRES": "T", "DISCH": "D", "VCC": "VCC"}
+    want = {"1": "GND", "2": "T", "3": "O", "4": "VCC", "5": "CV", "6": "T", "7": "D", "8": "VCC"}
+    e = registry_part("U1", "ne555p-dip8", "NE555P", by_name, "G")
+    ok(e["lib_id"] == "Timer:NE555P" and e["lcsc"] == "C46749" and e["pins"] == want
        and sorted(e) == sorted(["ref", "lib_id", "value", "footprint", "pins", "group", "lcsc"]),
-       "registry_part gives the legacy PARTS dict shape")
+       "registry_part by function derives pad numbers and keeps the legacy PARTS dict shape")
+    ok(registry_part("U1", "ne555p-dip8", "NE555P", {int(k): v for k, v in want.items()}, "G")["pins"] == want
+       and registry_part("U1", "ne555p-dip8", "NE555P", {"gnd": "GND", "TRIG": "T", "OUT": "O", "RST": "VCC", "CONT": "CV",
+                                                       "THRES": "T", "DISCH": "D", "vcc": "VCC"}, "G")["pins"] == want,
+       "numeric keys, alias (RST = ~RST), and case-insensitive names all resolve")
+
+    def raises(fn, *needles):
+        try:
+            fn()
+        except RegistryError as ex:
+            return all(n in str(ex) for n in needles)
+        return False
+    ok(raises(lambda: registry_part("U1", "ne555p-dip8", "NE555P", dict(by_name, **{"9": "X"}), "G"), "U1:", "pin 9", "neither a pad number nor a pin name"),
+       "unknown pin raises, names the pin")
+    ok(raises(lambda: registry_part("U1", "ne555p-dip8", "NE555P", {"GND": "GND", "VCC": "VCC"}, "G"),
+              "U1:", "2 (TRIG)", "5 (CONT)", "nc=["), "unconnected pins that are not declared NC raise, naming each pad")
+    ok(registry_part("U1", "ne555p-dip8", "NE555P", {"GND": "GND", "VCC": "VCC"}, "G",
+                     nc=["TRIG", 3, "RESET", "CONT", "THRES", "DISCH"])["pins"] == {"1": "GND", "8": "VCC"}
+       and registered_nc()["U1"] == ["2", "3", "4", "5", "6", "7"], "nc=[names or numbers] declares pins not connected")
+    ok(registry_part("U1", "ne555p-dip8", "NE555P", dict(by_name, RESET=None), "G")["pins"].get("4") is None
+       and registered_nc()["U1"] == ["4"], "a net of None declares that pin NC")
+    ok(raises(lambda: registry_part("U1", "ne555p-dip8", "NE555P", by_name, "G", nc=["OUT"]), "both connected", "NC"),
+       "a pin that is connected AND in nc raises")
+    ok(raises(lambda: registry_part("U1", "ne555p-dip8", "NE555P", dict(by_name, **{"1": "X"}), "G"), "given twice"),
+       "the same pad given twice (name and number) raises")
+    ok(raises(lambda: registry_part("U1", "ne555p-dip8", "NE555P", {"GND": "GND"}, "G", nc="rest"), "only allowed for connector"),
+       'nc="rest" is refused for a part record')
+
+    for rid, order in (("q-ebc", "EBC"), ("q-cbe", "CBE")):      # same part, two pinouts (2N3904 vs BC547)
+        q = copy.deepcopy(r)
+        q["id"], q["pins"] = rid, {str(i + 1): {"name": n, "class": "passive"} for i, n in enumerate(order)}
+        recs[rid] = q
+    fn = {"E": "GND", "B": "OUT", "C": "LED_A"}
+    ok(registry_part("Q1", "q-ebc", "x", fn, "G")["pins"] == {"1": "GND", "2": "OUT", "3": "LED_A"}
+       and registry_part("Q1", "q-cbe", "x", fn, "G")["pins"] == {"3": "GND", "2": "OUT", "1": "LED_A"},
+       "same functions on a record with another pinout renumber the pads (wrong-pinout class impossible)")
+
+    dual = copy.deepcopy(r)                      # two pins named GND (pads 1 and 4)
+    dual["id"] = "dual-gnd"
+    dual["pins"]["4"].pop("alias", None)
+    dual["pins"]["4"]["name"] = "GND"
+    recs["dual-gnd"] = dual
+    rest = {k: "N" for k in ("TRIG", "OUT", "CONT", "THRES", "DISCH", "VCC")}
+    ok(raises(lambda: registry_part("U2", "dual-gnd", "x", dict(rest, GND="GND"), "G"),
+              "ambiguous", "GND#1 = pad 1", "GND#2 = pad 4", "pad number"),
+       "a duplicated pin name is ambiguous: error lists GND#1/GND#2 with their pads")
+    ok(registry_part("U2", "dual-gnd", "x", dict(rest, **{"GND#1": "GND", "GND#2": "GND"}), "G")["pins"]["4"] == "GND"
+       and registry_part("U2", "dual-gnd", "x", dict(rest, **{"1": "GND", "GND#2": "GND"}), "G")["pins"]["1"] == "GND",
+       "GND#n and pad numbers disambiguate")
+    ok(raises(lambda: registry_part("U2", "dual-gnd", "x", dict(rest, **{"GND#3": "GND", "1": "G"}), "G"), "2 pin(s) named GND"),
+       "GND#3 beyond the pins with that name raises")
+    conn = copy.deepcopy(r)
+    conn["id"], conn["kind"] = "conn8", "connector"
+    recs["conn8"] = conn
+    ok(registry_part("J1", "conn8", "c", {"GND": "GND"}, "G", nc="rest")["pins"] == {"1": "GND"}
+       and registered_nc()["J1"] == ["2", "3", "4", "5", "6", "7", "8"], 'nc="rest" allowed for a connector record')
+
+    ok(set(registered_refs()) == {"U1", "Q1", "U2", "J1"} and registered_refs()["J1"] == "conn8", "registered_refs() tracks every call")
+    begin_netlist_load()
+    ok(registered_refs() == {} and registered_nc() == {} and build_problems() == {}, "begin_netlist_load() resets the tracker")
+    begin_netlist_load(lenient=True)
+    d = registry_part("U1", "ne555p-dip8", "NE555P", {"GND": "GND", "BOGUS": "X"}, "G")
+    ok("U1" in build_problems() and registered_refs() == {"U1": "ne555p-dip8"} and d["pins"]["1"] == "GND"
+       and any("BOGUS" in m for m in build_problems()["U1"]),
+       "lenient build mode records the problem and still builds the part")
+    begin_netlist_load()
+
+    # ---- $PARTS_RECORDS_DIR and lenient loading
+    saved_env = os.environ.get("PARTS_RECORDS_DIR")
     try:
-        registry_part("U1", "ne555p-dip8", "NE555P", {9: "X"}, "G")
-        ok(False, "unknown pin raises")
-    except RegistryError:
-        ok(True, "unknown pin raises")
+        os.environ["PARTS_RECORDS_DIR"] = str(tmp)
+        ok(records_dir() == tmp, "PARTS_RECORDS_DIR redirects records_dir()")
+        (tmp / "ne555p.json").write_text(json.dumps(_FIXTURE), encoding="utf-8")
+        ok("ne555p-dip8" in load_all(), "load_all() with no argument reads $PARTS_RECORDS_DIR")
+        tam = copy.deepcopy(_FIXTURE)
+        tam.update(verification="crosschecked", evidence=[{"verified_by": "t"}])
+        tam["signed_hash"] = signed_hash(tam)
+        tam["mpn"] = "NE555Q"
+        (tmp / "ne555p.json").write_text(json.dumps(tam), encoding="utf-8")
+        lrecs, lprob = load_all(lenient=True)
+        ok("ne555p-dip8" in lrecs and any("PR-HASH" in m for m in lprob.get("ne555p-dip8", [])),
+           "load_all(lenient=True) returns (records, problems): tampered record kept, PR-HASH reported per record")
+        ok(raises(load_all, "PR-HASH"), "load_all() (fail closed) raises on the same tampered record")
+        os.environ["PARTS_RECORDS_DIR"] = str(tmp / "nope")
+        ok(raises(load_all, "does not exist"), "a missing PARTS_RECORDS_DIR raises instead of loading zero records")
+    finally:
+        if saved_env is None:
+            os.environ.pop("PARTS_RECORDS_DIR", None)
+        else:
+            os.environ["PARTS_RECORDS_DIR"] = saved_env
+        (tmp / "ne555p.json").write_text(json.dumps(_FIXTURE), encoding="utf-8")
 
     for tier, mut, what in (("crosschecked", {"evidence": [{"verified_by": "t"}]}, "needs a signed_hash"),
                             ("verified", {"signed_hash": "0" * 64, "evidence": []}, "evidence entry")):

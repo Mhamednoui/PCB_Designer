@@ -39,7 +39,7 @@ AGENT = "agent-crosscheck"
 
 # --------------------------------------------------------------------------- records
 def find(pid, rdir=None):
-    d = Path(rdir) if rdir else reg.RECORDS_DIR
+    d = Path(rdir) if rdir else reg.records_dir()
     for f in sorted(d.glob("*.json")):
         try:
             r = json.loads(f.read_text(encoding="utf-8"))
@@ -392,7 +392,7 @@ def cmd_sign(a):
 def audit(rdir=None):
     """Tier claims a hand-edit could fake: crosschecked/verified needs a signature that matches, and evidence
     by the right kind of signer. (parts.load_all only checks a hash that is present.)"""
-    d = Path(rdir) if rdir else reg.RECORDS_DIR
+    d = Path(rdir) if rdir else reg.records_dir()
     out = []
     for f in sorted(d.glob("*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
@@ -427,7 +427,7 @@ def cmd_selftest(a):
             fails.append(what)
     tmp = Path(tempfile.mkdtemp(prefix="parts_sign_"))
     try:
-        for f in reg.RECORDS_DIR.glob("*.json"):
+        for f in reg.records_dir().glob("*.json"):
             shutil.copy(f, tmp / f.name)
         pid = "ne555p-dip8"
         path, rec = find(pid, tmp)

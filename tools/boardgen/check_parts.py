@@ -3,11 +3,12 @@
 For every part a project declares through the parts registry (`registry_part`, docs/design/P1_PARTS_REGISTRY.md),
 checks the record + the footprint actually used against live (or cached) LCSC / EasyEDA data:
 
-    MPN    the LCSC id used in the BOM resolves (jlcsearch `mfr`, EasyEDA `Manufacturer Part`) to the record's MPN
+    MPN    the LCSC id used in the BOM resolves (JLCPCB/LCSC detail MPN via the P1-T10 source chain, EasyEDA `Manufacturer Part`) to the record's MPN
     GEO    KiCad footprint pads vs EasyEDA footprint pads: pad count, pitch, row spacing, drill -> ERROR when they
            differ by more than 0.15 mm; pad SIZE differs legitimately between the two libraries -> WARN only (> 0.3 mm)
     PKG    record `package.lcsc_package` vs the package string LCSC lists (Chinese THT strings: WARN not judged)
-    STOCK  stock vs boards x qty x 1.2, per ASSEMBLY mode of netlist.py: `hand` = INFO, `pcba` = ERROR (spec section 9.4)
+    STOCK  stock vs boards x qty x 1.2, per ASSEMBLY mode of netlist.py: `hand` = INFO (LCSC stock), `pcba` = ERROR
+           (JLCPCB assembly stock, source printed per part; spec section 9.4, P1-T10)
     FRESH  age of the data used (pcba: stock snapshot older than 7 days = ERROR), record status/lifecycle/snapshot_date
 
 netlist.py settings (all optional): ASSEMBLY = "hand" | "pcba" (default hand), BOARDS = number of boards (default 5).
@@ -36,7 +37,6 @@ from boardgen import parts as _parts                          # noqa: E402
 from boardgen import parts_cache as _cache                    # noqa: E402
 from boardgen import project as _project                      # noqa: E402
 from boardgen import waivers as _waivers                      # noqa: E402
-from boardgen.lint_netlist import prepare_registry            # noqa: E402  (lenient record loading, shared with lint)
 from boardgen.sexp import parse, find_all, find               # noqa: E402
 
 GEO_TOL_MM = 0.15            # pitch / row spacing / drill, spec section 3 PR-GEO
@@ -205,19 +205,6 @@ def fp_path(NL, fp_id):
     return os.path.join(base, lib + ".pretty", name + ".kicad_mod")
 
 
-class Trace:
-    """Wraps parts.registry_part to remember which refs were declared through the registry."""
-    def __init__(self):
-        self.refs = {}
-        self._orig = _parts.registry_part
-        _parts.registry_part = self
-
-    def __call__(self, ref, part_id, value, pins, group):
-        d = self._orig(ref, part_id, value, pins, group)
-        self.refs[ref] = part_id
-        return d
-
-
 class Fetch:
     """One cached lookup: .f (parts_cache.Fetched or None), .why (reason it is missing), .offline (cache fallback)."""
     def __init__(self, fn, lcsc, offline):
@@ -267,7 +254,7 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
         groups.setdefault((rec["id"], lcsc, p["footprint"]), []).append(ref)
         refs_by_lcsc_need[lcsc] = refs_by_lcsc_need.get(lcsc, 0) + 1
 
-    jl_cache, ee_cache = {}, {}
+    jl_cache, ee_cache, sr_cache = {}, {}, {}
     for (rid, lcsc, fp), refs in groups.items():
         rec, who = _parts.registry()[rid], "%s (%s)" % (",".join(refs), rid)
         entry = {"record": rid, "lcsc": lcsc, "refs": refs, "mpn": rec["mpn"], "footprint": fp, "rules": {}}
@@ -275,7 +262,11 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
         if lcsc not in jl_cache:
             jl_cache[lcsc] = Fetch(_cache.jlcsearch, lcsc, offline_flag)
             ee_cache[lcsc] = Fetch(_cache.easyeda, lcsc, offline_flag)
-        jl, ee = jl_cache[lcsc], ee_cache[lcsc]
+            sr_cache[lcsc] = Fetch(_cache.sourcing, lcsc, offline_flag)
+            if sr_cache[lcsc].f is not None and not offline_flag:         # a failed/reshaped source is named, never silent
+                for w in sr_cache[lcsc].f.warns:
+                    findings.append(Finding("WARN", "STOCK", "%s (%s)" % (",".join(refs), lcsc), "source fallthrough: " + w, refs))
+        jl, ee, sr = jl_cache[lcsc], ee_cache[lcsc], sr_cache[lcsc]
 
         def add(sev, rule, msg, judged=True):
             findings.append(Finding(sev, rule, who, msg, refs))
@@ -293,14 +284,13 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
         # ---- MPN
         jd, ed = jl.data, ee.data
         sources = []
-        if jd is not None:
-            sources.append(("jlcsearch mfr", jd.get("mfr")))
+        if sr.data is not None and sr.data.get("mpn"):                       # authoritative: JLCPCB / LCSC detail
+            sources.append(("%s MPN" % sr.f.src["mpn"], sr.data["mpn"]))
         if ed is not None:
-            c = (((ed.get("easyeda_json") or {}).get("dataStr") or {}).get("head") or {}).get("c_para") or {}
-            if c.get("Manufacturer Part"):
-                sources.append(("EasyEDA Manufacturer Part", c["Manufacturer Part"]))
+            if _cache.easyeda_mpn(ed):
+                sources.append(("EasyEDA Manufacturer Part", _cache.easyeda_mpn(ed)))
         if not sources:
-            nj("MPN", jl if jl.not_judged() else ee)
+            nj("MPN", sr if sr.not_judged() else ee)
         else:
             bad = False
             for label, val in sources:
@@ -310,8 +300,9 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
                     bad = True
                     add("ERROR", "MPN", '%s is "%s" on LCSC (%s), record says "%s"' % (lcsc, val, label, rec["mpn"]))
             if not bad:
-                if jl.offline or ee.offline:
-                    nj("MPN", jl if jl.offline else ee)
+                sr_stale = sr.f is not None and sr.f.is_stale("mpn")
+                if sr_stale or ee.offline:
+                    nj("MPN", sr if sr_stale else ee)
                 else:
                     entry["rules"].setdefault("MPN", []).append({"severity": "OK", "message": "%s = %s" % (lcsc, rec["mpn"])})
 
@@ -383,7 +374,7 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
     # ---- STOCK / FRESH(stock): one verdict per LCSC id, need summed over every ref using it
     stock_report = []
     for lcsc, qty in sorted(refs_by_lcsc_need.items()):
-        jl = jl_cache.get(lcsc)
+        sr = sr_cache.get(lcsc)
         refs = sorted(r for g, rs in groups.items() if g[1] == lcsc for r in rs)
         need = int(math.ceil(boards * qty * STOCK_MARGIN))
         who = "%s (%s)" % (",".join(refs), lcsc)
@@ -395,31 +386,41 @@ def run_checks(NL, reg_refs, offline_flag, assembly, boards):
             ent.setdefault("findings", []).append({"severity": sev, "rule": rule, "message": msg})
             if not judged:
                 unjudged_refs.update(refs)
-        if jl is None or jl.data is None:
-            add("WARN", "STOCK", "not judged (%s)" % (jl.not_judged() if jl else "no lookup"), judged=False)
+        if sr is None or sr.data is None:
+            add("WARN", "STOCK", "not judged (%s)" % (sr.not_judged() if sr else "no lookup"), judged=False)
             continue
-        stock, age = jl.data.get("stock"), jl.f.age_days or 0
-        ent.update(stock=stock, cache_age_days=round(age, 2), offline=jl.offline)
-        cls, rec_cls = lcsc_class(jl.data), None
+        # pcba -> JLCPCB assembly stock; hand (you buy the parts) -> LCSC stock (P1-T10)
+        field = "jlc_stock" if assembly == "pcba" else "lcsc_stock"
+        label = "JLCPCB assembly stock" if assembly == "pcba" else "LCSC stock"
+        d, src = sr.data, sr.f.src
+        stock, age = d.get(field), sr.f.field_age(field) or 0
+        stale = bool(stock is not None and sr.f.is_stale(field))
+        ent.update(stock=stock, stock_field=field, stock_source=src.get(field), cache_age_days=round(age, 2), offline=stale,
+                   stock_jlc=d.get("jlc_stock"), stock_jlc_source=src.get("jlc_stock"),
+                   stock_lcsc=d.get("lcsc_stock"), stock_lcsc_source=src.get("lcsc_stock"), class_source=src.get("class"))
+        cls, rec_cls = d.get("class"), None
         for g in groups:
             if g[1] == lcsc:
                 rec_cls = (_parts.registry()[g[0]].get("lcsc") or {}).get("class")
-        if rec_cls and cls != rec_cls:
-            add("WARN", "STOCK", "LCSC class changed: record says %s, LCSC lists %s%s" % (
-                rec_cls, cls, " (extended parts add a feeder fee at assembly)" if cls == "extended" else ""))
-        if jl.offline:
-            add("WARN", "STOCK", "not judged (%s): last known stock %s vs need %d" % (jl.not_judged(), stock, need),
-                judged=False)
+        if rec_cls and cls and cls != rec_cls:
+            add("WARN", "STOCK", "class changed: record says %s, %s lists %s%s" % (
+                rec_cls, src.get("class"), cls, " (extended parts add a feeder fee at assembly)" if cls == "extended" else ""))
+        if stock is None:
+            why = "; ".join(sr.f.warns) if sr.f.warns else "no source returned it"
+            add("WARN", "STOCK", "%s unknown: not judged (%s)" % (label, why), judged=False)
+            continue
+        if stale:
+            add("WARN", "STOCK", "not judged (offline, cache age %.1f d): last known %s %s [%s] vs need %d" % (
+                age, label, stock, src.get(field), need), judged=False)
             if assembly == "pcba" and age > STOCK_MAX_AGE_DAYS:
                 add("ERROR", "FRESH", "stock snapshot is %.1f days old (limit %d for a pcba release)" % (age, STOCK_MAX_AGE_DAYS))
             continue
-        if stock is None:
-            add("WARN", "STOCK", "LCSC reports no stock figure (not judged)", judged=False)
-        elif stock < need:
-            msg = "stock %d < need %d (%d boards x %d per board x %.1f margin)" % (stock, need, boards, qty, STOCK_MARGIN)
+        if stock < need:
+            msg = "%s %d < need %d (%d boards x %d per board x %.1f margin) [%s]" % (
+                label, stock, need, boards, qty, STOCK_MARGIN, src.get(field))
             add("ERROR" if assembly == "pcba" else "INFO", "STOCK", msg + ("" if assembly == "pcba" else " (hand-assembled: informational)"))
         else:
-            add("INFO", "STOCK", "stock %d >= need %d (%s)" % (stock, need, assembly))
+            add("INFO", "STOCK", "%s %d >= need %d (%s) [%s]" % (label, stock, need, assembly, src.get(field)))
     return findings, report_parts, stock_report, groups, unjudged_refs
 
 
@@ -442,8 +443,8 @@ def main(argv):
     if not pid:
         raise SystemExit("usage: check_parts.py <project-id> [--offline]")
     offline = True if ("--offline" in argv or _cache.is_offline()) else None
-    prepare_registry()
-    trace = Trace()
+    _parts.use_lenient_registry()               # record problems are reported by lint (PR-HASH/PR-TIER), not here
+    _parts.begin_netlist_load()                 # fail closed: a bad registry_part() call aborts the stage
     try:
         NL = _project.load_netlist(pid)
     except _parts.RegistryError as e:
@@ -453,7 +454,7 @@ def main(argv):
     assembly = str(getattr(NL, "ASSEMBLY", "hand")).lower()
     boards = int(getattr(NL, "BOARDS", DEFAULT_BOARDS))
     all_refs = [p["ref"] for p in NL.PARTS]
-    reg_refs = dict(trace.refs)
+    reg_refs = _parts.registered_refs()
     skipped = [r for r in all_refs if r not in reg_refs]
     findings, rparts, stock, groups, unjudged = [], [], [], {}, set()
     if reg_refs:

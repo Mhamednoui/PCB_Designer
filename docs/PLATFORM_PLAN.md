@@ -328,3 +328,19 @@ Scaling axes and the change each needs:
 | PA-10 | `docs/adr/` with the decisions taken so far; CHANGELOG + platform version | low |
 **PA exit (with §10):** a new check is added by scaffold → fill → its mutation flips to CAUGHT, touching no core file;
 every failing run can be diagnosed from its run report alone.
+
+### 10.1 Design entry points (decided 2026-10-27)
+The design IR has **input adapters**; everything downstream is source-agnostic.
+- `netlist.py` (scripted/AI-written) - today's path.
+- **KiCad schematic drawn by a person** (`SOURCE = "schematic"`): `kicad-cli sch export netlist` → `ir_from_kicad_sch`.
+  Electrical intent and identity come from symbol fields: `Registry` (registry id) or `LCSC`, `Net voltage`/`Net current`
+  on a net-label or power symbol (or a sidecar `projects/<id>/intent.json`). Missing intent **fails closed**
+  ("VBUS: no current declared") - the checks never assume.
+- Any other EDA tool via a KiCad-importable netlist (same adapter).
+- **One source of truth per project:** a project declares exactly one `SOURCE`; the generator never overwrites a
+  hand-drawn schematic, and a hand-edited generated schematic is detected (IR hash) and refused.
+- Placement for drawn schematics comes from the P4 auto-placer (no coordinates needed).
+
+| ID | Task | Effort | Deps |
+|---|---|---|---|
+| PA-11 | `ir_from_kicad_sch` adapter + symbol-field/intent conventions + a hand-drawn fixture (redraw blinky by hand in KiCad, must produce an IR equivalent to blinky's `netlist.py` IR) | high | PA-1 |
