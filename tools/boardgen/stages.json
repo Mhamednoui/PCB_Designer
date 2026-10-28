@@ -179,6 +179,22 @@
       "outputs": ["projects/{project}/out/REQUIREMENTS.md"]
     },
     {
+      "name": "release",
+      "description": "Release coverage gate (spec P2 4.2): recomputes field coverage, electrical rules and requirements from out/design.json; pcba FAILS on any NOT_JUDGED / NOT_EVALUATED / zero requirements, hand blocks only on its own cells; prints the SIGNED OFF line; writes out/RELEASE_GATE.md.",
+      "applies": "has_netlist",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/make_release_gate.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/make_release_gate.py", "tools/boardgen/ir/*.py", "tools/boardgen/req/*", "tools/boardgen/elec/*.py",
+        "tools/boardgen/rules/*.py", "tools/boardgen/parts.py", "tools/boardgen/project.py",
+        "projects/{project}/out/design.json", "parts/records/**"
+      ],
+      "outputs": ["projects/{project}/out/RELEASE_GATE.md"],
+      "env": ["PARTS_RECORDS_DIR"]
+    },
+    {
       "name": "review",
       "description": "Design review (kicad-happy schematic/PCB/EMC analyzers + waivers.json): decoupling distance, EMC, power tree.",
       "applies": "has_gen_script:make_pcb.py",
