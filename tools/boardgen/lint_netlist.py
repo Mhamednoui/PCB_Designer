@@ -9,6 +9,7 @@ record with named pins declared by pad NUMBERS a PR-BYNAME error;
 otherwise those parts keep the FAMILY-map fallback. Output: `ERROR|WARN rule ref/net: message`;
 unjudgeable things are WARN. Exit 1 on any unwaived ERROR. Waivers: projects/<id>/waivers.json =
 [{"check":"lint","rule":..,"refs":[..] | "nets":[..],"why":".."}]; unused waivers are reported as WARN."""
+import fnmatch
 import math
 import os
 import re
@@ -416,7 +417,7 @@ def rule_registry(M, reg_refs, rec_problems):
         k = rec["kicad"]
         for what, have, want in (("symbol", p["lib_id"], k["symbol"]), ("footprint", p["footprint"], k["footprint"])):
             if have != want:
-                if what == "footprint" and any(_parts._squash(a) in _parts._squash(have.split(":", 1)[-1])
+                if what == "footprint" and any(fnmatch.fnmatchcase(have, a) or fnmatch.fnmatchcase(have.split(":", 1)[-1], a)
                                                for a in rec.get("footprint_aliases") or []):
                     continue                                  # a declared alias of the record's footprint
                 M.add("ERROR", "PR-REF", ref, "%s %s differs from registry record %s (%s)" % (what, have, pid, want),
