@@ -482,7 +482,7 @@ def stage_route(passes=40):
             with open(ROUTED, "wb") as f:
                 f.write(start)
         print("=== route attempt %d/%d ===" % (attempt, ROUTE_ATTEMPTS))
-        left = _route_attempt(passes)
+        left = _route_attempt(passes, attempt)
         if not left:
             return
         print("attempt %d left %d net(s) unconnected: %s" % (attempt, len(left), ", ".join(left)))
@@ -490,7 +490,27 @@ def stage_route(passes=40):
                      % (len(left), ROUTE_ATTEMPTS, ", ".join(left)))
 
 
-def _route_attempt(passes):
+def _shuffle_dsn_nets(dsn, seed):
+    """Freerouting's result depends on the order of the DSN's (net ...) blocks, and a retry from the same
+    board gets the same order, so it repeats the same failure. Reorder the nets (seeded by the attempt
+    number, so it is reproducible) to give a retry a genuinely different start."""
+    import random
+    import re
+    with open(dsn, encoding="utf-8") as f:
+        text = f.read()
+    net_block = re.compile(r"^    \(net .*?^    \)$", re.M | re.S)
+    blocks = net_block.findall(text)
+    if len(blocks) < 2:
+        return
+    order = list(blocks)
+    random.Random(seed).shuffle(order)
+    it = iter(order)
+    with open(dsn, "w", encoding="utf-8") as f:
+        f.write(net_block.sub(lambda m: next(it), text))
+    print("DSN: shuffled %d net blocks for attempt %d" % (len(blocks), seed))
+
+
+def _route_attempt(passes, attempt=1):
     """One Freerouting run from the board in ROUTED, imported back into ROUTED. -> unconnected net names."""
     board = pcbnew.LoadBoard(ROUTED)
     # Detach GND: every GND pad (+ its fan-out track/via) gets its own one-pad net, so the
@@ -519,6 +539,8 @@ def _route_attempt(passes):
         os.remove(ses)
     ok = pcbnew.ExportSpecctraDSN(board, dsn)
     print("DSN export:", ok, dsn)
+    if attempt > 1:
+        _shuffle_dsn_nets(dsn, attempt)
     cmd = [FREEROUTING, "-de", dsn, "-do", ses, "-mp", str(passes), "--gui.enabled=false"]
     print("running:", " ".join(cmd), "(no seed option: result varies run to run)")
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=3600)
