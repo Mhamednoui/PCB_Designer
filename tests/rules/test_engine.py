@@ -113,7 +113,7 @@ def main():
     engine.REGISTRY.load_builtin()
     prob = engine.selftest()
     check("real rules: registry + fixtures + probe", prob == [], prob)
-    check("real rules registered", sorted(engine.REGISTRY.rules) == ["EL-ABSMAX", "EL-CONTENTION", "EL-OD-PULLUP", "LINT-SHORT", "LINT-SINGLE-PIN"], sorted(engine.REGISTRY.rules))
+    check("real rules registered", sorted(engine.REGISTRY.rules) == ["EL-ABSMAX", "EL-CONN-PROT", "EL-CONTENTION", "EL-OD-PULLUP", "LINT-SHORT", "LINT-SINGLE-PIN"], sorted(engine.REGISTRY.rules))
     text = engine.explain("single-pin")
     check("--explain renders doc, mutation, example", all(s in text for s in ("LINT-SINGLE-PIN", "Example fix", "mutation: M-split", "ERROR single-pin R1/OUT")), text)
     check("--explain works on the demo registry", "DEMO-NEGATIVE" in engine.explain("DEMO-NEGATIVE", demo))

@@ -1,21 +1,20 @@
 {
  "counts": {
-  "NOT_JUDGED": 86,
-  "claimed-only": 13,
-  "conflict": 2,
-  "derived": 9
+  "NOT_JUDGED": 25,
+  "claimed-only": 12,
+  "conflict": 1,
+  "derived": 72
  },
  "nets": 110,
  "reasons": {
   "NOT_JUDGED": {
-   "divider": 15,
-   "driver": 1,
-   "external": 57,
+   "divider": 1,
+   "external": 11,
    "load": 1,
    "no-vf": 12
   },
   "claimed-only": {
-   "external": 3,
+   "external": 2,
    "state-dependent": 10
   }
  }

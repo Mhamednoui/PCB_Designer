@@ -16,6 +16,7 @@ PRJ_NAME = "uno-toggle"
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(PRJ_DIR)), "tools"))
 from boardgen.kicad_paths import SHARE as KICAD_SHARE, SYMBOLS as KICAD_SYMBOLS, \
     FOOTPRINTS as KICAD_FOOTPRINTS  # noqa: E402
+from boardgen import netlist_ext as X  # noqa: E402
 from boardgen import parts as _parts  # noqa: E402
 PROJECT_LIBS = ("arduino-library",)
 
@@ -99,6 +100,21 @@ NET_SPEC = {
     "LED1": {"v": 5.0, "i_max": 0.02},
     "LED2": {"v": 5.0, "i_max": 0.02},
 }
+
+
+# What is on the other side of each connector (P2 electrical analyzer, EL-CONN-PROT). The only connector is the Uno itself
+# (A1, a shield socket): its pins are the outside world. 5 V logic (USB-powered Uno: 4.4-5.25 V). GND pins are ground-class.
+EXTERNAL = X.merge(
+    X.pins("A1", ["D2", "D3"], dir="out", v=(0.0, 5.25),
+           why="Uno inputs with INPUT_PULLUP (firmware/uno_toggle.ino); this board pulls them to GND through a button"),
+    # no `v` here on purpose: NET_SPEC's 5 V is the ACTIVE level (lint needs it for the LED current), the pin's honest range
+    # is 0..5.25 V and declaring it would make the model report a NET_SPEC conflict.
+    X.pins("A1", ["D8", "D9"], dir="in",
+           why="Uno digital outputs, 5 V logic, drive the LED resistors (max 40 mA per pin, 10 mA used)"),
+    # The tactile switches are series elements between an Uno pin and GND, not a cable: the only thing that leaves
+    # the board is the Uno itself (A1). Their finger-ESD exposure is judged on the A1 pin nets.
+    X.none("SW1", "SW2"),
+)
 
 
 FIRMWARE = {

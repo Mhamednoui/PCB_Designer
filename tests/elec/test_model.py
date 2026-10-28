@@ -44,9 +44,13 @@ def raises(exc, fn):
     return False
 
 
-def blinky_ir():
+def blinky_ir(declared=False):
+    """blinky-555's IR. The project now declares EXTERNAL (P2-T7); these tests are about the model, so by default the
+    declaration is stripped (declared=False) to keep testing the 'EXTERNAL not declared' behaviour."""
     ir = {"ir_version": 2}
     ir.update(from_netlist.build("blinky-555"))
+    if not declared:
+        ir["external"] = {"declared": False, "pins": {}, "none": []}
     return ir
 
 
@@ -176,6 +180,10 @@ def test_blinky():
     check("VCC: U1.8 supply sink, U1.4 (RESET) receiver", d("VCC", "supply_sinks") == [("U1.8", "power_in")]
           and d("VCC", "receivers") == [("U1.4", "cmos")], (d("VCC", "supply_sinks"), d("VCC", "receivers")))
 
+    # the project's own EXTERNAL (netlist.py, P2-T7): J1.1 supply 9..12 V -> VCC derived, no claim conflict
+    mr = build_model(blinky_ir(declared=True))
+    check("blinky's real EXTERNAL makes VCC derived 9..12 V", mr.nets["VCC"].status == "derived" and near(mr.nets["VCC"].interval, 9, 12),
+          (mr.nets["VCC"].status, mr.nets["VCC"].interval))
     # J1 declared in EXTERNAL with v = 9..12 V -> VCC becomes derived; the claim 9..12 contains it
     ir2 = copy.deepcopy(ir)
     ir2["external"] = {"declared": True, "none": [], "pins": {

@@ -179,7 +179,7 @@ def check_rules():
     """Rule-engine registry check (P2-T1): every registered rule has a doc, a fixture (green + red) and a mutation id that
     exists in mutations.json, its fixtures behave, and the engine's own tests pass."""
     bad = []
-    for cmd in ([sys.executable, "tools/boardgen/rules", "--check"], [sys.executable, "tests/rules/test_engine.py"]):
+    for cmd in ([sys.executable, "tools/boardgen/rules", "--check"], [sys.executable, "tests/rules/test_engine.py"], [sys.executable, "tests/rules/test_el_conn_prot.py"]):
         r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
         lines = r.stdout.strip().splitlines() or ["(no output)"]
         print("  %s -> %s" % (" ".join(cmd[1:]), lines[-1]))
