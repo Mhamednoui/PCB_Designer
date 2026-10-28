@@ -1,0 +1,65 @@
+"""@NAME@ - single source of truth for schematic AND PCB. TODO: what the board is and why.
+
+Pin keys are symbol pin numbers (== footprint pad numbers); registry parts connect ICs BY FUNCTION (record pin name).
+"""
+import os
+import sys
+import uuid
+
+PRJ_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PRJ_NAME = "@NAME@"
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(PRJ_DIR)), "tools"))
+from boardgen.kicad_paths import SHARE as KICAD_SHARE, SYMBOLS as KICAD_SYMBOLS, \
+    FOOTPRINTS as KICAD_FOOTPRINTS  # noqa: E402,F401
+from boardgen import parts as _parts  # noqa: E402
+from boardgen import netlist_ext as X  # noqa: E402,F401
+PROJECT_LIBS = ()        # stock libraries only - nothing to vendor into projects/@NAME@/lib
+
+SCH_TITLE = "@NAME@"
+SCH_SUBTITLE = "TODO"
+SCH_DATE = "TODO"
+SCH_REV = "0.1"
+
+_NS = uuid.uuid5(uuid.NAMESPACE_DNS, "@NAME@")
+
+
+def uid(*parts):
+    return str(uuid.uuid5(_NS, "/".join(parts)))
+
+
+PARTS_STRICT = True        # every part must be declared through the registry (lint rule PR-REF)
+
+# ASSEMBLY: how the board is built (hand | jlcpcb | ...); see docs/NEW_BOARD_PLAYBOOK.md. TODO decide, then declare it.
+# ASSEMBLY = {"mode": "hand", "boards": 1}
+
+# Registry part ids (parts/records/<id>.json). TODO: add them, then declare parts below with
+# PARTS.append(_parts.registry_part("R1", R_ID, "10k", {1: "NET_A", 2: "GND"}, "group"))
+PARTS = []
+
+GROUPS = [          # (group key, schematic title)
+]
+POWER_FLAG_NETS = ["GND"]
+
+# Electrical intent, read by lint_netlist.py (v in volts: number or (min, max); i_max in A).
+NET_SPEC = {
+}
+
+# What the outside world does to every connector pin (EL-CONN-PROT). TODO: X.pins("J1", [1], dir="supply", v=(.., ..), i=.., why="..")
+EXTERNAL = {}
+
+# Executable requirements judged by the `requirements` stage (kinds: path, path_absent, net_v, static_logic ...).
+REQUIREMENTS = [
+]
+
+
+def nets():
+    out = {}
+    for p in PARTS:
+        for pin, n in p["pins"].items():
+            out.setdefault(n, set()).add((p["ref"], pin))
+    return out
+
+
+if __name__ == "__main__":
+    ns = nets()
+    print("%d parts, %d nets" % (len(PARTS), len(ns)))

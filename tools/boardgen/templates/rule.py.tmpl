@@ -1,0 +1,14 @@
+"""@ID@: TODO one sentence - what mistake this rule catches (fill in; the doc page is docs/rules/@ID@.md).
+
+Scaffolded by `python pipeline.py --scaffold rule @ID@`. Until the body is written it reports NOT_JUDGED, never a pass.
+"""
+from boardgen.rules.engine import rule
+
+
+@rule(id="@ID@", severity="ERROR", needs=("parts", "nets"), doc="docs/rules/@ID@.md",
+      fixture="tests/rules/fixtures/@ID@", mutation="@MUT@")
+def check(ctx):
+    # TODO: iterate ctx.ir["parts"] / ctx.ir["nets"]; call ctx.examined() per item judged; yield
+    # ctx.finding("ERROR", "why", where={...}, target=ref_or_net, fix="how to fix") for each problem.
+    ctx.examined()
+    yield ctx.not_judged("not judged: rule @ID@ is a scaffold stub and checks nothing yet", target="@ID@")

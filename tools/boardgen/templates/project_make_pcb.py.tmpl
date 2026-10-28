@@ -1,0 +1,32 @@
+"""Board data for @NAME@: placements, outline, silkscreen. The place/route/finish/check/render machinery is shared -
+see tools/boardgen/pcb.py.
+
+Usage (KiCad python):  python make_pcb.py place | route | finish | check | render
+Board-local coordinates in mm, origin = top-left corner of the board, +Y down. The coordinate is the FOOTPRINT ORIGIN,
+which is usually not the part centre: measure with `python tools/fp_bbox.py <lib>:<footprint>` first.
+"""
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import netlist as NL  # noqa: E402
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(HERE))), "tools"))
+from boardgen import pcb  # noqa: E402
+
+BW, BH = 50.0, 40.0         # board size in mm - TODO choose
+
+
+def placements():
+    """ref -> (x, y, rotation_degrees). TODO: one entry per part, rows by signal flow."""
+    return {
+    }
+
+
+MOUNTING_HOLES = []
+TEXTS = []      # (text, x, y, size)
+SECTIONS = []   # (text, x, y, size)
+
+if __name__ == "__main__":
+    pcb.main(NL, placements, OX=100.0, OY=50.0, BW=BW, BH=BH, MOUNTING_HOLES=MOUNTING_HOLES,
+             SHOW_REF_PREFIX=("U", "J", "D", "R", "C"), TEXTS=TEXTS, SECTIONS=SECTIONS)
