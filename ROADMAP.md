@@ -114,7 +114,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | PA-3 port checks to the IR | ⬜ |
 | PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |
 | PA-5 parallel + tiered mutation runner | ⬜ |
-| PA-6 run report + tool versions + determinism (also: feed captured tool versions - LTspice, gerbonara, Freerouting - into PA-2's cache key; MANUFACTURING.md timestamp churn) | ⬜ |
+| PA-6 run report + tool versions + determinism | ✅ (`out/run/<ts>/report.html`; 2 runs → git clean) |
 | PA-7 finding taxonomy, `--explain`, board markers | ⬜ |
 | PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
 | PA-9 pre-commit + CI | ⬜ |
