@@ -2,7 +2,7 @@
 
 Written for: the next Claude session (after a compaction, a usage limit, or a new chat) continuing as
 SUPERVISOR of this repo. Everything needed is in files; nothing lives only in chat. Updated after every merge.
-**Last updated: 2026-10-28 (after P2-T8 merge; ROADMAP stale statuses fixed at 5fb903f; only P2-T6 + P2-T9 in flight).**
+**Last updated: 2026-10-28 (after P2-T9 merge cf8cba5; only P2-T6 in flight).**
 
 ## 1. Where things are
 | What | Where |
@@ -52,18 +52,18 @@ SUPERVISOR of this repo. Everything needed is in files; nothing lives only in ch
   pins by function, strict), PA-1 (design IR), PA-2 (stage registry + cache), PA-5 (parallel tiered mutations),
   PA-6 (run report), PA-9 (CI on GitHub), PA-10 (ADRs, CHANGELOG, VERSION 0.2.0), P2-T1 (rule engine),
   P2-T2 (electrical data, IR v2), P2-T3 (electrical model), P2-T4 (EL-ABSMAX/CONTENTION/OD-PULLUP +
-  `electrical` stage), P2-T7(+b) (EXTERNAL + EL-CONN-PROT; blinky got a reverse-polarity diode), P2-T8 (EL-STRAP).
+  `electrical` stage), P2-T7(+b) (EXTERNAL + EL-CONN-PROT; blinky got a reverse-polarity diode), P2-T8 (EL-STRAP),
+  P2-T9 (requirements engine + `requirements` stage; fast mutation tier 41/41).
 - All 3 fixtures green on every stage; pipeline order: see `python pipeline.py blinky-555 --list`.
 
 ### Agents in flight (check their worktrees if the session restarted)
 | Task | Branch | Worktree | What to do |
 |---|---|---|---|
 | P2-T6 budget/dropout/thermal | `feat/p2-t6-power` | `C:\Users\nouir\PCB_wt\p2t6` | if it has a final commit `feat(P2-T6)...` → review + merge per §3; if only uncommitted work → wip-commit + new agent |
-| P2-T9 requirements engine | `feat/p2-t9-req` | `C:\Users\nouir\PCB_wt\p2t9` | same |
 Check with: `git worktree list`, `git -C <worktree> log --oneline -3`, `git -C <worktree> status --short`.
 
 ## 5. Next queue (in order)
-1. Merge P2-T6, P2-T9.
+1. Merge P2-T6.
 2. P2-T5 (EL-FLOAT, EL-LEVEL, EL-NETSPEC - note reflex has 2 NET_SPEC conflicts: +5V K7805 tolerance, +12V_REG after diode).
 3. P2-T10 (release coverage gate, `docs/RULES.md` generator, migrate remaining lint rules) → **P2 exit**.
 4. PA-3 (port remaining checks to the IR), PA-8 (scaffolds + CONTRIBUTING), PA-4 (layer-agnostic + blinky-4L), PA-11 (hand-drawn schematic input).

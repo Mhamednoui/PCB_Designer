@@ -133,20 +133,21 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P2-T6 budget, dropout, thermal | 🔄 |
 | P2-T7 EL-CONN-PROT + EXTERNAL (+T7b: RC-filter, direction severity, expansion class; blinky D2 reverse-polarity fix) | ✅ |
 | P2-T8 strap evaluator (ESP32-S3) | ✅ (`blocks/esp32s3.strap.json`, data-driven) |
-| P2-T9 requirements engine (IV-2) | 🔄 |
+| P2-T9 requirements engine (IV-2) | ✅ (`requirements` stage, `req/eval.py`; kinds path/path_absent/net_v/rail_peak/static_logic; net_i + spice = NOT_EVALUATED; M-req/-bypass/-typo) |
 | P2-T10 release coverage gate, RULES.md, lint migration | ⬜ |
 
 ### Independent verification (PLATFORM_PLAN §9) - queued
 | ID | Task | Phase | St |
 |---|---|---|---|
 | IV-1 | Electrical static analyzer (voltage/current propagation, abs-max per pin, contention, floating inputs, pull-ups, rail budget, dissipation) | P2 | ⬜ |
-| IV-2 | Executable `REQUIREMENTS` in netlist.py (graph paths, part-class-in-path, voltage/current, simulated behaviour) | P2 | ⬜ |
+| IV-2 | Executable `REQUIREMENTS` in netlist.py (graph paths, part-class-in-path, voltage/current, simulated behaviour) | P2 | ✅ (P2-T9; `net_i`/`spice` kinds still NOT_EVALUATED) |
 | IV-3 | Gerber-level DRC `fabcheck` (own geometry, reuses lvs) | P5 | ⬜ |
 | IV-4 | IPC-D-356 export for fab electrical test | P5 | ⬜ |
 | IV-5 | Property-based generator fuzzing (Hypothesis) | P6 | ⬜ |
 | IV-6 | AI design-review agent (advisory; confirmed findings → rule + mutation) | P6 | ⬜ |
 
 ## Backlog (after MV)
+- **Watch: M-libpin-byname flake** - failed as a negative control in 2 of ~4 runs at `--jobs 4` (P2-T9 agent), clean at `--jobs 1` and in the supervisor rerun. Stages lint/sch/sch-check (KiCad processes in parallel). If it recurs, capture that entry's stage log before rerunning.
 ### M2 Test
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
