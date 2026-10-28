@@ -51,6 +51,10 @@ review designs, source parts, and prepare fabrication files (JLCPCB/PCBWay).
 - **SKiDL 2.3.0 / kicad-skip 0.2.5** - circuits as Python / edit KiCad files from Python (import verified)
 - **Freerouting 2.4.1** - autorouter, used by the `route` stage (DSN export -> route -> SES import)
 
+## CONTINUING THE IMPROVEMENT WORK? Read `docs/SUPERVISOR_HANDOVER.md` FIRST
+It holds the supervisor procedure, the agents in flight (branches/worktrees), the next queue and the owner's
+standing instructions. Nothing about the ongoing work lives only in chat.
+
 ## Status (2026-10-28)
 Goal is the **platform** (pipeline + gates + parts registry + webview), not any one board. The three projects
 (blinky-555, uno-toggle, reflex-machine) are rebuildable regression fixtures. Read: `ROADMAP.md` (task status),
