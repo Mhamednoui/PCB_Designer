@@ -1,0 +1,10 @@
+# Fast local gate. Install once with: pre-commit install   (not installed automatically)
+repos:
+  - repo: local
+    hooks:
+      - id: ci-fast
+        name: compile + secrets + control chars
+        entry: python tools/ci_checks.py compile secrets ctrlchars
+        language: system
+        pass_filenames: false
+        always_run: true
