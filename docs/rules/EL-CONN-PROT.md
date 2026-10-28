@@ -7,6 +7,8 @@ protection its class needs. A missing protection is an ERROR (waivable only with
 |---|---|---|
 | **supply** input | a passive connector pin declared `dir: "supply"` | a surge clamp (TVS/zener to GND) on the rail; **reverse-polarity protection** (series diode or P-FET, or a TVS/diode across the rail with its cathode on the rail *behind a fuse*, a crowbar that blows the fuse); a **fuse/PTC** if the declaration gives a source current `i` |
 | **signal** | any other passive connector pin | a clamp on the net or behind its first resistors: TVS/zener to GND, a diode to a rail (flyback), or an ESD IC. Reported class: `protected` / `isolated` (only optocoupler pins behind it) / `series-R-only` / `bare`. The last two are ERRORs |
+| **filtered** (signal) | a series R into the board plus a shunt C to GND on the node behind it (an RC filter) | nothing, reported as INFO |
+| **expansion** connector | `EXTERNAL["J16"] = {"class": "expansion", "why": ...}` | its unprotected nets are a WARN ("protection is the user's responsibility") instead of an ERROR |
 | **module** | the connector pin's *record* class is not `passive` (an Arduino/ESP32 socket) | nothing: the other side is an active board with its own protection |
 | **supply-output** | a rail the board hands out (`dir: "out"`) | nothing (the spec only constrains inputs); it is reported |
 
@@ -19,7 +21,7 @@ and nothing else in the pipeline notices.
 
 **Basis.** Graph analysis of the IR: `parts`, `nets`, `external`. No voltages are used, so this rule does not need the
 electrical model. Severity ERROR; a waiver (`projects/<id>/waivers.json`, `"check": "electrical"`, `"rule": "EL-CONN-PROT"`,
-`why` of 20+ characters) may demote it to WAIVED. Findings are grouped: one per missing item on a supply input, one
+`why` of 20+ characters, optional `"match": "<substring of the message>"` to waive one finding of the rule) may demote it to WAIVED. Findings are grouped: one per missing item on a supply input, one
 per connector for its unprotected signals (every net is listed with its class).
 
 **Run it.**

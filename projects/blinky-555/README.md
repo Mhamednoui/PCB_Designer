@@ -84,3 +84,6 @@ Two parts can be fitted the wrong way round and both are marked on the silkscree
 
 The LED and the 555 itself are also polarised (cathode flat / pin-1 notch), marked by the footprints'
 own silkscreen.
+
+## Reverse-polarity diode (P2-T7b)
+J1 now feeds the board through a series 1N4007 (D2): VIN -> D2 -> VCC. A reversed adapter no longer reaches the 555. The drop (about 0.7 V at 15 mA) leaves ~8.3 V at the worst case (9 V in), well inside the NE555's 4.5-16 V range; the LED current at 9 V fell to 13.3 mA (SPICE). The fuse and TVS findings of EL-CONN-PROT are waived in `waivers.json` with reasons (50 mA load, battery or bench supply, short lead).

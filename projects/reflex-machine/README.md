@@ -47,3 +47,9 @@ analysis/             cached kicad-happy analyzer output
 out/fab/              gerbers, BOM, CPL for JLCPCB
 out/docs/             STEP, schematic PDF, renders, full BOM
 ```
+
+## Known deviation from the brief: reverse-polarity protection
+DESIGN_BRIEF (section on the 12 V input) promised a P-MOSFET reverse-polarity stage. The board as built has none.
+The protection is the P6KE15A TVS (D1) across `+12V` behind the 10 A blade fuse F1: a reversed supply forward-biases D1
+and blows the fuse (a crowbar). That is cheaper and survives, but it destroys a fuse on every wrong-way connection and
+the 10 A fuse is slow against a 1.5 A-per-channel load. Found by EL-CONN-PROT (P2-T7); not changed.

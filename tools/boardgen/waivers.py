@@ -1,7 +1,8 @@
 """Shared waiver loading for every checker stage: projects/<id>/waivers.json =
 [{"check": "<stage>", "rule": "<id>", "refs": [...] | "nets": [...], "why": "<required, >= 20 chars>",
   "by": "<who>", "date": "<when>", "expires": "YYYY-MM-DD"}].
-A waiver without refs/nets matches the whole rule. `check` defaults to "lint" (legacy).
+A waiver without refs/nets matches the whole rule. Optional "match": a substring the finding's message must contain, to waive ONE
+finding of a rule on a ref (e.g. the missing fuse but not the missing reverse protection). `check` defaults to "lint" (legacy).
 Waivers v2 (P2-T1): `why` must be at least MIN_WHY characters; an `expires` date in the past makes the waiver an ERROR
 (reported as a problem, not applied); a waiver demotes ONLY an ERROR finding to WAIVED - never NOT_JUDGED, WARN or INFO
 (missing data is fixed in the record, not waived); an unused waiver is a WARN (`apply`)."""
@@ -73,7 +74,8 @@ def apply(findings, ws, problems=()):
     for i, w in ws:
         used = False
         for f in findings:
-            if f.severity == "ERROR" and f.waived is None and matches(w, f.rule_ids, f.refs, f.nets):
+            if (f.severity == "ERROR" and f.waived is None and matches(w, f.rule_ids, f.refs, f.nets)
+                    and (not w.get("match") or w["match"] in f.why)):
                 f.waived = {"why": w["why"], "by": w.get("by"), "date": w.get("date")}
                 used = True
         if not used:

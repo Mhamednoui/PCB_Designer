@@ -46,6 +46,7 @@ def placements():
         "R2": (28.0, 12.0, 0),     # 47k  DISCH -> TRIG   x 26.95..39.21
         "R3": (48.0, 12.0, 0),     # 470R OUT -> LED      x 46.95..59.21
         # middle row - power in at the left, timer, LED at the right
+        "D2": (19.5, 24.0, 0),     # 1N4007 reverse-polarity diode, DO-41 horizontal, x 18.5..28 (J1 ends 18.0, U1 starts 28.94)
         "J1": (10.0, 24.0, 0),     # terminal block   x  6.50..18.00  y 19.50..28.31
         "U1": (30.0, 22.0, 0),     # NE555P, DIP-8    x 28.94..38.67  y 20.48..31.14
         "D1": (52.0, 24.0, 0),     # 5 mm LED         x 50.06..56.49  y 20.79..27.21

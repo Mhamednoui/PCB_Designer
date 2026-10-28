@@ -17,6 +17,7 @@ EXTERNAL grammar (netlist.py, optional):
         "J1.1": {"v": (4.4, 5.25), "i": 0.5, "dir": "supply", "why": "USB host VBUS"},   # a connector pin, in PARTS pad naming
         "J1.2": {"dir": "in", "why": "..."},
         "J2": "none",                                                                        # connector with no external nets
+        "J3": {"class": "expansion", "why": "spare header for user add-ons"},               # class of a connector (EL-CONN-PROT)
     }
     EXTERNAL = {}  means "declared: nothing is external"; no EXTERNAL at all means "not declared" (P2 treats every connector
     as NOT_JUDGED). v = (min, max) volts, i = amperes, dir in in|out|bidir|supply. Unknown pin or ref = IRError.
@@ -28,6 +29,7 @@ from . import IRError
 PIN_IO_KEYS = ("supply_pin", "tristate", "vih", "vil", "voh", "vol", "i_out_max_ma", "i_in_leak", "note")
 PART_SKIP = ("pins", "pin_defaults", "value_match")
 EXT_DIRS = ("in", "out", "bidir", "supply")
+CONN_CLASSES = ("expansion",)
 
 
 def part_electrical(rec, value):
@@ -76,13 +78,19 @@ def parse_external(nl, parts):
         return {"declared": False, "pins": {}, "none": []}
     if not isinstance(raw, dict):
         raise IRError("EXTERNAL must be a dict, got %s" % type(raw).__name__)
-    pins, none = {}, []
+    pins, none, classes = {}, [], {}
     for key in sorted(raw, key=str):
         val = raw[key]
         ref, dot, pad = str(key).partition(".")
         if ref not in parts:
             raise IRError("EXTERNAL[%r]: no part %s in netlist.py" % (key, ref))
         if not dot:
+            if isinstance(val, dict):
+                if set(val) - {"class", "why"} or val.get("class") not in CONN_CLASSES or not str(val.get("why", "")).strip():
+                    raise IRError("EXTERNAL[%r]: a connector class must be {'class': one of %s, 'why': non-empty}, got %r"
+                                  % (key, CONN_CLASSES, val))
+                classes[ref] = {"class": val["class"], "why": val["why"]}
+                continue
             if val != "none":
                 raise IRError("EXTERNAL[%r]: a bare reference must be the string 'none' (a connector with no external nets), got %r" % (key, val))
             none.append(ref)
@@ -110,6 +118,9 @@ def parse_external(nl, parts):
         if not isinstance(why, str):
             raise IRError("EXTERNAL[%r]['why'] must be a string" % (key,))
         pins["%s.%s" % (ref, pad)] = {"v": v, "i": None if i is None else float(i), "dir": d, "why": why}
-    return {"declared": True,
-            "pins": {k: pins[k] for k in sorted(pins, key=lambda p: [x for x in p.split(".", 1)])},
-            "none": sorted(none)}
+    out = {"declared": True,
+           "pins": {k: pins[k] for k in sorted(pins, key=lambda p: [x for x in p.split(".", 1)])},
+           "none": sorted(none)}
+    if classes:
+        out["classes"] = {k: classes[k] for k in sorted(classes)}
+    return out

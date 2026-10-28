@@ -898,6 +898,16 @@
     "declared": {
      "type": "boolean"
     },
+    "classes": {
+     "type": "object",
+     "description": "connector ref -> {class: expansion, why}: a connector whose unprotected nets are the user's responsibility (EL-CONN-PROT WARN instead of ERROR).",
+     "additionalProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "why"],
+      "properties": {"class": {"enum": ["expansion"]}, "why": {"type": "string"}}
+     }
+    },
     "pins": {
      "type": "object",
      "additionalProperties": {

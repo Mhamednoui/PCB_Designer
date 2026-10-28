@@ -1,9 +1,9 @@
 # electrical data coverage (P2-T2): required fields present vs NOT_JUDGED, per project
 # tier hand = needed for a hand-assembled release, pcba = needed for a pcba release (superset). See tools/boardgen/ir/coverage.py
 
-project blinky-555 (9 parts)
+project blinky-555 (10 parts)
   hand  required    1   present    1   NOT_JUDGED    0
-  pcba  required   31   present   22   NOT_JUDGED    9
+  pcba  required   32   present   23   NOT_JUDGED    9
   NOT_JUDGED (part, field, tier first needed, refs, pins):
     ne555p-dip8 | load_ma.peak | pcba | U1
     ne555p-dip8 | pin.abs_max | pcba | U1 pins 3,7
