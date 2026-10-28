@@ -1,6 +1,6 @@
 # uno-toggle - every connection, in plain words
 
-_Generated 2026-10-27 23:34 by `tools/boardgen/make_connections.py` from the real board copper (`uno-toggle.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py uno-toggle --only connections`._
+_Generated 2026-10-28 04:02 by `tools/boardgen/make_connections.py` from the real board copper (`uno-toggle.kicad_pcb`), with pin names from the schematic. Regenerate: `python pipeline.py uno-toggle --only connections`._
 
 ## How to use this file
 

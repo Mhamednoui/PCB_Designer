@@ -102,7 +102,8 @@ Prefix `PR-`. Each gets a doc line, `waivers.json` support, a fixture, the mutat
 | PR-SYM | lint | KiCad symbol pins vs `pins` (number, name/alias, class) | `Q1: symbol pin 1 is E, registry (BC547) says C` | M-libpin: swap pin 1/3 names in the BC547 record |
 | PR-PAD | lint | footprint pad multiset vs `pins` + `fp_pad_copies`; netlist pins subset | `U2: footprint pads 1,2,3 but registry expects 1,2,2,3` | M-fp: bind U2 to `SOT-223-5` or a TO-92 |
 | PR-HOLE | lint | footprint drill vs `tht` lead | `U1: drill 0.80 < lead 0.56 + 0.20` | set lead_mm to [0.9,0.3] |
-| PR-PKG-NAME | lint | `package.name` token in footprint name | `footprint name has no "DIP-8"` | set record package to SOT-23 |
+| PR-PKG-NAME | lint | package FAMILY match: `package.name` token, else the unsigned `footprint_aliases`, else a known family (DIP/SOIC/SOT/TO/SIP: `TO-220AB` = `TO-220-3_Vertical`); unknown mapping = WARN "not judged" | `footprint name has no "DIP-8"` | set record package to SOT-23 |
+| PR-BYNAME | lint (`PARTS_STRICT`) | kind=part record with >= 3 distinct pin names declared by pad NUMBERS (error, waivable) | `Q1: pin(s) 1 (C), 2 (B), 3 (E) given as pad numbers; declare by NAME` | M-libpin-swap: type `{1: ..}` for a BC547 |
 | PR-V | lint (P2 engine) | NET_SPEC volts of each net on a pin vs pin `abs_max` (error) and `v_op` (warn) | `A2 pin 25 (ESP32 RX2, abs-max 3.6 V) on net ESP_RX2 up to 5.0 V` | M-volt: remove divider R62/R63 in reflex |
 | PR-MPN | parts | cached jlcsearch `mfr` and EasyEDA `Manufacturer Part` vs `mpn` | `C46749 is "NE555P" on LCSC, record says "NE556"` | change `lcsc.id` |
 | PR-GEO | parts | KiCad vs EasyEDA footprint: pad count, pitch, row spacing, drill (error >0.15 mm); sizes warn | `U1: pitch 2.54 vs LCSC 2.00` | bind a 2.0 mm pitch record to a 2.54 mm footprint |
@@ -200,6 +201,7 @@ Parallel groups (disjoint files, max 3): T1 first; then T2, T3, T4; then T5, T6,
    schematic shows +; consumers skip `kind=mechanical` records for BOM/symbols. **P1-T8 must datasheet-crosscheck the K7805-2000R3
    pin order** (1 IN, 2 GND, 3 OUT is only KiCad-RECOM-derived; a swap destroys the module and the Mega) and reconcile its record id.
 9. **Pins by FUNCTION, not number (decided 2026-10-27, from P1-T4's M-libpin-swap known-gap):** for registry parts, `netlist.py`
+   *P1-T9b follow-up:* generics keep their per-instance LCSC id via `registry_part(..., lcsc="Cxxxx")` (ref-level id wins over the record; `check_parts` checks it resolves and its LCSC package fits `lcsc_package`/`lcsc_package_aliases`, the value check is WARN); the 22 `package.name` edits were reverted, PR-PKG-NAME matches families instead; PR-BYNAME closes the pad-number escape hatch in strict projects.
    connects pins by the record's pin NAME/function (`pins={"B": "BASE", "E": "GND", "C": "LED_K"}`); `registry_part` derives the
    pad numbers from the (crosschecked) record. Swapping a part for one with a different pinout then renumbers correctly by
    construction - the wrong-library-pinout class (R1) becomes structurally impossible for registry parts. Numbers stay accepted

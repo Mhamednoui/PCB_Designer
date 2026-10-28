@@ -45,8 +45,14 @@ MEGA_ID, ESP32_ID = "arduino-mega2560-r3-shield", "esp32-devkit-v1-30pin-socket"
 PARTS = []
 
 
+# Per-instance LCSC ids of the generic parts, keyed by value (the ids the BOM carried before the registry).
+# A generic record has no id of its own: a 10k and a 1M resistor are the same record.
+LCSC_BY_VALUE = {"10k": "C2649453", "1nF": "C49002957", "220uF 25V": "C47344177", "1000uF 25V": "C48935382",
+                 "RED": "C2895470", "1N5822": "C2476", "1N4007": "C2985028", "P6KE15A": "C294003"}
+
+
 def rp(ref, part_id, value, pins, group, nc=()):
-    PARTS.append(_parts.registry_part(ref, part_id, value, pins, group, nc))
+    PARTS.append(_parts.registry_part(ref, part_id, value, pins, group, nc, lcsc=LCSC_BY_VALUE.get(value)))
 
 
 def R(ref, value, a, b, group):

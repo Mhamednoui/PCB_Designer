@@ -51,8 +51,8 @@ def C(ref, value, a, b, group):
     PARTS.append(_parts.registry_part(ref, C_ID, value, {1: a, 2: b}, group))
 
 
-def LED(ref, color, cathode, anode, group):
-    PARTS.append(_parts.registry_part(ref, LED_ID, color, {"K": cathode, "A": anode}, group))
+def LED(ref, color, cathode, anode, group, lcsc=None):
+    PARTS.append(_parts.registry_part(ref, LED_ID, color, {"K": cathode, "A": anode}, group, lcsc=lcsc))
 
 
 # ── 1. Controller (the shield headers that plug into the Uno) ──
@@ -80,7 +80,7 @@ C("C2", "100nF", "BTN2", "GND", G)
 # ── 3. LEDs: pin -> 330R -> LED anode, cathode to GND (~10mA at 5V) ──
 G = "leds"
 R("R1", "330R", "LED1", "LED1_A", G)
-LED("D1", "RED", "GND", "LED1_A", G)
+LED("D1", "RED", "GND", "LED1_A", G, lcsc="C2895470")
 R("R2", "330R", "LED2", "LED2_A", G)
 LED("D2", "GREEN", "GND", "LED2_A", G)
 

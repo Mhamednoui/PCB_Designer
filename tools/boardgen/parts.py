@@ -489,12 +489,12 @@ def judge_lcsc_package(rec, lcsc_package):
 
 
 def by_name_required(rec):
-    """PR-BYNAME: a kind=part record with >= 3 pins that all have meaningful (non-empty, non-'~', non-numeric) names
+    """PR-BYNAME: a kind=part record whose pins carry >= 3 distinct meaningful (non-empty, non-'~', non-numeric) names
     must be wired by pin NAME, because a pad number typed against a library pinout is the R1 trap."""
-    if rec.get("kind") != "part" or len(rec["pins"]) < 3:
+    if rec.get("kind") != "part":
         return False
-    names = [p["name"] for p in rec["pins"].values()]
-    return all(_norm_name(n) and not _norm_name(n).isdigit() for n in names) and len({_norm_name(n) for n in names}) >= 3
+    names = {_norm_name(p["name"]) for p in rec["pins"].values()}
+    return len({n for n in names if n and not n.isdigit()}) >= 3
 
 
 # --------------------------------------------------------------------------- self-test

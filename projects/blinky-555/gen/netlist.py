@@ -77,7 +77,7 @@ G = "timer"
 PARTS.append(_parts.registry_part("U1", DIP8_ID, "NE555P", {
     "GND": "GND", "TRIG": "TRIG", "OUT": "OUT", "RESET": "VCC",
     "CONT": "CONT", "THRES": "TRIG", "DISCH": "DISCH", "VCC": "VCC",
-}, G))
+}, G, lcsc=""))   # BOM unchanged from before the registry (no LCSC id on U1)
 R("R1", "10k", "VCC", "DISCH", G)          # charge path
 R("R2", "47k", "DISCH", "TRIG", G)         # charge + discharge path
 C("C1", "10uF", "TRIG", "GND", G, CP_ID)   # timing cap, Device:C_Polarized: pad 1 = +, pad 2 = -
@@ -86,7 +86,7 @@ C("C2", "10nF", "CONT", "GND", G)          # noise filter on the control pin
 # ── 3. Output ──
 G = "led"
 R("R3", "470R", "OUT", "LED_A", G)
-PARTS.append(_parts.registry_part("D1", LED_ID, "RED", {"K": "GND", "A": "LED_A"}, G))
+PARTS.append(_parts.registry_part("D1", LED_ID, "RED", {"K": "GND", "A": "LED_A"}, G, lcsc="C2895470"))
 GROUPS = [
     ("power", "POWER IN: 9-12 V DC VIA J1"),
     ("timer", "NE555 ASTABLE: ~1.4 Hz, 50%% DUTY IS NOT EXPECTED (R1+R2 CHARGE, R2 DISCHARGES)"),

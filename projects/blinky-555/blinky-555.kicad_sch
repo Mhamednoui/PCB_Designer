@@ -2147,17 +2147,6 @@
 				)
 			)
 		)
-		(property "LCSC" "C46749"
-			(at 48.26 116.84 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1" (uuid "1d295f2a-ab5d-5f6d-9653-e9edf1386549"))
 		(pin "2" (uuid "3fef8a1d-0116-55d8-a5d3-53c80d673d08"))
 		(pin "3" (uuid "6c4cd21d-9fd9-5cc5-a08d-c24098a68d7c"))
@@ -2832,6 +2821,17 @@
 			)
 		)
 		(property "ki_keywords" "LED diode"
+			(at 50.8 170.18 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C2895470"
 			(at 50.8 170.18 0)
 			(show_name no)
 			(do_not_autoplace no)
