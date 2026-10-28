@@ -554,3 +554,4 @@ Freerouting usage. Update it whenever a new trap costs more than a few minutes.
   CONNECTIONS.md / SPICE-vs-Wokwi / io_map. Rewrote `docs/NEW_BOARD_PLAYBOOK.md` around one **A-to-Z
   checklist (steps A-M)**, pointed CLAUDE.md + README at it, added the 3 new shared stages to
   PCB_CREATION_GUIDE. Remaining gap: no `pipeline.py --new <id>` scaffold yet.
+- **2026-10-28** - P2-T3 electrical model v1 (`tools/boardgen/elec/`): interval propagation with provenance (NET_SPEC treated as a claim; EXTERNAL / regulator records / ground = real sources), divider rule, driver/receiver classes, `ctx.model` for rules. blinky-555 matches its hand calc (tests/elec). Details in AGENT_NOTES.md.
