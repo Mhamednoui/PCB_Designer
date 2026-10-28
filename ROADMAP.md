@@ -129,7 +129,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P2-T2 record `electrical` block + IR abs_max/EXTERNAL + fixture data | ✅ (IR v2; coverage golden) |
 | P2-T3 electrical model v1 | ✅ (`elec/model.py`, `ctx.model`, tests/elec) |
 | P2-T4 EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP | ✅ (`electrical` stage; follow-ups: `pull: external` in EXTERNAL → INFO; contention vs EXTERNAL drivers) |
-| P2-T5 EL-FLOAT, EL-LEVEL, EL-NETSPEC | ⬜ |
+| P2-T5 EL-FLOAT, EL-LEVEL, EL-NETSPEC | ✅ (reflex +5V NET_SPEC corrected to 4.75-5.25 V; 0 model conflicts left; limits: levels through R / MCU GPIO NOT_JUDGED, EL-FLOAT does not follow FET/switch paths) |
 | P2-T6 budget, dropout, thermal | ✅ (`elec/budget.py`, `elec/devices.py`, `rules/el_budget.py` / `el_dropout.py` / `el_thermal.py`; fixture `projects/synth-ldo`) |
 | P2-T7 EL-CONN-PROT + EXTERNAL (+T7b: RC-filter, direction severity, expansion class; blinky D2 reverse-polarity fix) | ✅ |
 | P2-T8 strap evaluator (ESP32-S3) | ✅ (`blocks/esp32s3.strap.json`, data-driven) |
@@ -148,7 +148,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 
 ## Backlog (after MV)
 - **EL-BUDGET simultaneity/duty**: EXTERNAL loads have no duty or "at most N on at once" field, so reflex's 10 coils sum to 15 A (waived, README). Add `duty`/`group_max` to the EXTERNAL grammar + budget.
-- **Watch: M-libpin-byname flake** - failed as a negative control in 2 of ~4 runs at `--jobs 4` (P2-T9 agent), clean at `--jobs 1` and in the supervisor rerun. Stages lint/sch/sch-check (KiCad processes in parallel). If it recurs, capture that entry's stage log before rerunning.
+- **Parallel mutation flakes - diagnosed (2026-10-28)**: one cause captured = KiCad `sch` crashing with 0xC0000005 under parallel load. The runner now reruns an entry ONCE under the global lock when a stage dies from a crash code (NTSTATUS >= 0xC0000000 / POSIX signal) and lists it ("tool crashes rerun once serially"); wrong verdicts are never retried. It also always prints the output tail of an unexpected verdict, so the next intermittent failure is diagnosable from one run. 9 later parallel runs were clean.
 ### M2 Test
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|

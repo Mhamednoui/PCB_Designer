@@ -476,3 +476,10 @@ Moved verbatim from CLAUDE.md on 2026-10-28.
   done; next P2-T3. reflex-machine routes reliably again (MD-T12). Agent types pcb-light / pcb-worker added.
 
 - **P2-T4** - first three electrical rules EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP (`tools/boardgen/rules/el_*.py`, docs in `docs/rules/`, fixtures in `tests/rules/fixtures/`) and the new pipeline stage `electrical` (after `ir`; `tools/boardgen/check_electrical.py`, findings to `PCB_FINDINGS_FILE`). Mutations M-volt / M-pullup / M-contend are active; the harness gained a `delete` op (drop the .kicad_pcb so a netlist-topology mutation reaches the stage after the IR cross-check). Fixture results: blinky 0 errors / 3 NOT_JUDGED, uno-toggle 0 / 0, reflex 0 / 18; reflex I2C_SDA/SCL (spare header J16, no on-board pull-up) is NOT_JUDGED because the net leaves the board.
+
+- **2026-10-28 (supervisor)** - merged P2-T9 (requirements engine, `requirements` stage after `electrical`), P2-T6
+  (EL-BUDGET/DROPOUT/THERMAL, `projects/synth-ldo` reproduces ref-esp32 power numbers within 2 %) and P2-T5
+  (EL-FLOAT/LEVEL/NETSPEC; reflex +5V NET_SPEC corrected). reflex-machine EL-BUDGET (10 coils x 1.5 A = 15 A > 10 A
+  fuse/copper) waived as an accepted, fail-safe design limit until 2027-04-30 (owner to measure coil current).
+  Mutation runner: LF-normalised copies, `.history` ignored, crash-only single retry, failing tails always printed.
+  Full suite 49/49 + 4/4 controls.

@@ -399,3 +399,13 @@ router in a different order each build and routed fully or left one net open ("f
 identically on all retries). `place` now assigns UUIDs derived from the reference (`_stable_uuids`), the DSN net
 blocks start sorted (retries shuffle them with the attempt number), and the route check also treats a router-made
 short (`shorting_items`) as a failure. Check determinism with: run `place` twice, diff the files after stripping uuids.
+
+### Mutation copies: CRLF working files and KiCad's `.history` (2026-10-28)
+- This checkout has `core.autocrlf=true`, so `.py` files are CRLF on disk while the index (and Linux CI, and a fresh
+  agent worktree written by Python) is LF. A mutation op whose `old` text contains `\n` matched in the agent's worktree
+  and failed in the main checkout. Git Bash `grep`/`od` hide the `\r`; count bytes with Python (`open(p,'rb')`) or
+  `git ls-files --eol`. Fix: `make_copy` normalises the copy's text files to LF.
+- KiCad 10's GUI keeps a local history git repo in `projects/<id>/.history/` (read-only object files). Copying it into a
+  mutation copy then failing to delete it left a stale `_mut_<id>` that broke the next run. Fix: `.history` is in the
+  copy IGNORE list and the runner's `rmtree` clears read-only bits.
+- Exit code 3221225477 = 0xC0000005 (access violation): a KiCad tool crashed, it is not a gate verdict.

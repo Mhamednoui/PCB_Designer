@@ -76,6 +76,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import threading
@@ -87,13 +88,27 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 PROJECTS = os.path.join(ROOT, "projects")
 MUTATIONS = os.path.join(HERE, "mutations.json")
 TEXT_EXT = (".kicad_pro", ".kicad_sch", ".kicad_pcb", ".kicad_dru", ".py", ".json", ".md", ".ino", ".toml")
+# .history = KiCad 10 local history (a git repo with read-only objects) created by the GUI; never part of a fixture
 IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "docs", ".pio", "*-routed.*", "*-backup*", "run",
-                                "*.lck", "review", ".pipeline_cache.json")
+                                "*.lck", "review", ".pipeline_cache.json", ".history")
 TIMEOUT_S = 900
 SLOW_STAGES = {"route", "finish", "outputs", "review", "fabreport", "connections", "place"}
 SERIAL_STAGES = {"route"}
 RouteLock = threading.Lock()
 PrintLock = threading.Lock()
+CrashRetries = []          # ids rerun once after a tool crash (reported in the summary, never silent)
+
+
+def rmtree(path):
+    """Delete a mutation copy, clearing read-only bits (Windows) so a stale copy cannot break the next run's copytree."""
+    def onerror(func, p, _exc):
+        try:
+            os.chmod(p, stat.S_IWRITE)
+            func(p)
+        except OSError:
+            pass
+    if os.path.isdir(path):
+        shutil.rmtree(path, onerror=onerror)
 
 
 def tier_of(e):
@@ -115,7 +130,7 @@ def make_copy(fixture, pid):
     if not os.path.isdir(src):
         raise SetupError("fixture projects/%s does not exist" % fixture)
     if os.path.exists(dst):
-        shutil.rmtree(dst)
+        rmtree(dst)
     shutil.copytree(src, dst, ignore=IGNORE)
     # Files named after the project (<id>.kicad_pcb, out/fab/<id>_gerbers_JLCPCB.zip ...) are renamed, and the
     # id inside text files is rewritten, because netlist.PRJ_NAME decides which file names every stage opens.
@@ -123,15 +138,18 @@ def make_copy(fixture, pid):
         for f in files:
             if f.startswith(fixture):
                 os.replace(os.path.join(base, f), os.path.join(base, pid + f[len(fixture):]))
+    # Text is also normalised to LF: a Windows checkout with core.autocrlf=true has CRLF working files, and an op's
+    # "old" text containing "\n" would then match on Linux CI / a fresh worktree but not in the main checkout.
     for base, _, files in os.walk(dst):
         for f in files:
             p = os.path.join(base, f)
             if f.endswith(TEXT_EXT) and os.path.getsize(p) < 8_000_000:
                 with open(p, encoding="utf-8", newline="") as fh:
                     s = fh.read()
-                if fixture in s:
+                t = s.replace("\r\n", "\n").replace(fixture, pid)
+                if t != s:
                     with open(p, "w", encoding="utf-8", newline="") as fh:
-                        fh.write(s.replace(fixture, pid))
+                        fh.write(t)
     return dst
 
 
@@ -270,19 +288,36 @@ def run_entry(e, keep):
         # --no-cache: a mutation must be judged by actually running its stages. A skip on matching hashes
         # would be a green result nobody earned, and the mutated copy is a fresh project every time.
         cmd = [sys.executable, "-B", "pipeline.py", pid, "--force", "--no-cache", "--only", ",".join(e["stages"])]
-        try:
-            serial = bool(SERIAL_STAGES & set(e["stages"]))
-            if serial:
-                RouteLock.acquire()
+        serial = bool(SERIAL_STAGES & set(e["stages"]))
+        note = ""
+        for attempt in (1, 2):
             try:
-                r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, timeout=TIMEOUT_S,
-                                   text=True, encoding="utf-8", errors="replace")
-            finally:
-                if serial:
-                    RouteLock.release()
-            out, rc = (r.stdout or "") + (r.stderr or ""), r.returncode
-        except subprocess.TimeoutExpired:
-            return "-", "ERROR", time.time() - t0, "timed out after %ds" % TIMEOUT_S
+                if serial or attempt == 2:
+                    RouteLock.acquire()
+                try:
+                    r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, timeout=TIMEOUT_S,
+                                       text=True, encoding="utf-8", errors="replace")
+                finally:
+                    if serial or attempt == 2:
+                        RouteLock.release()
+                out, rc = note + (r.stdout or "") + (r.stderr or ""), r.returncode
+            except subprocess.TimeoutExpired:
+                return "-", "ERROR", time.time() - t0, "timed out after %ds" % TIMEOUT_S
+            crash = crashed_stage(out)
+            if not crash or attempt == 2:
+                break
+            # A crashed tool (KiCad access violation under parallel load) is not a gate verdict: rerun the entry once
+            # under the global lock. A second crash is judged as-is; a wrong verdict is never retried.
+            with PrintLock:
+                print("%-24s stage %s crashed (%s), rerunning once serially" % (e["id"], crash[0], crash[1]))
+            CrashRetries.append(e["id"])
+            note = "[attempt 1: stage %s crashed with %s; this is attempt 2]\n" % crash
+            rmtree(dst)
+            try:
+                make_copy(e["fixture"], pid)
+                apply_ops(dst, pid, e["op"])
+            except (SetupError, KeyError, OSError, ValueError) as ex:
+                return "-", "ERROR", time.time() - t0, "retry setup failed: %s: %s" % (type(ex).__name__, ex)
         failed = re.findall(r"^--- (\S+) FAILED", out, re.M)
         actual = failed[0] if failed else ("-" if rc == 0 else "pipeline")
         want = e["expect_stage"]
@@ -301,7 +336,17 @@ def run_entry(e, keep):
         return actual, verdict, time.time() - t0, out
     finally:
         if not keep and os.path.isdir(dst):
-            shutil.rmtree(dst, ignore_errors=True)
+            rmtree(dst)
+
+
+def crashed_stage(out):
+    """-> (stage, exit code as hex) if a stage died from a crash (Windows NTSTATUS >= 0xC0000000, or a POSIX
+    signal = negative code), else None. Ordinary non-zero exits are gate verdicts and return None."""
+    for name, code in re.findall(r"^--- (\S+) FAILED after [\d.]+s \(exit (-?\d+)\)", out, re.M):
+        c = int(code)
+        if c < 0 or c >= 0xC0000000:
+            return name, hex(c)
+    return None
 
 
 def tail(out, n=25):
@@ -344,7 +389,7 @@ def main():
         return 0
 
     for stale in [d for d in os.listdir(PROJECTS) if d.startswith("_mut_")]:
-        shutil.rmtree(os.path.join(PROJECTS, stale), ignore_errors=True)
+        rmtree(os.path.join(PROJECTS, stale))
 
     t_all = time.time()
     rows, planned, tiers = [], [], {}
@@ -364,7 +409,8 @@ def main():
         actual, verdict, secs, out = run_entry(e, args.keep)
         with PrintLock:
             print("%-24s %-11s %-11s %-12s %7.1f" % (e["id"], e["expect_stage"] or "(pass)", actual, verdict, secs))
-            if verdict not in ("CAUGHT", "CLEAN") and (args.verbose or verdict in ("ERROR",)):
+            # always show the tail of an unexpected verdict: an intermittent failure must be diagnosable from one run
+            if verdict not in ("CAUGHT", "CLEAN", "GAP") or (args.verbose and verdict == "GAP"):
                 print(tail(out))
             sys.stdout.flush()
         return e, verdict, secs
@@ -393,6 +439,8 @@ def main():
                                                        for k, v in sorted(tiers.items()))))
     classes = sorted({e["expect_stage"] for e, _ in rows if e["expect_stage"]})
     print("gate classes exercised this run: " + ", ".join(classes))
+    if CrashRetries:
+        print("tool crashes rerun once serially: " + ", ".join(sorted(CrashRetries)))
     if bad:
         print("FAILED entries: " + ", ".join(bad))
     return 1 if bad else 0
