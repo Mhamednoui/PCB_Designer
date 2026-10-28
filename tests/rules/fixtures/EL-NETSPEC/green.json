@@ -1,0 +1,100 @@
+{
+ "expected": [],
+ "ir": {
+  "assembly": {
+   "boards": null,
+   "mode": null
+  },
+  "external": {
+   "declared": true,
+   "none": [],
+   "pins": {
+    "J1.1": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      9.0,
+      12.0
+     ],
+     "why": "fixture"
+    },
+    "J1.2": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      0.0,
+      0.0
+     ],
+     "why": "fixture"
+    }
+   }
+  },
+  "fab_profile": {
+   "declared": false,
+   "name": "x"
+  },
+  "ir_version": 2,
+  "meta": {
+   "git_commit": null,
+   "input_hashes": {},
+   "project": "fixture",
+   "source": "netlist"
+  },
+  "nets": {
+   "GND": {
+    "class": "ground",
+    "i_max": null,
+    "pins": [
+     "J1.2"
+    ],
+    "v": [
+     0.0,
+     0.0
+    ]
+   },
+   "VIN": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "J1.1"
+    ],
+    "v": [
+     9.0,
+     12.0
+    ]
+   }
+  },
+  "parts": {
+   "J1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "",
+    "group": null,
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector:Conn",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "VIN"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J1",
+    "registry": null,
+    "value": "J1"
+   }
+  },
+  "requirements": []
+ }
+}

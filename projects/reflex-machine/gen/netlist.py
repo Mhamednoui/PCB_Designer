@@ -209,7 +209,7 @@ NET_SPEC = {
     "+12V_IN": {"v": (10.8, 13.2), "i_max": 10.0},   # 12 V +-10 % (the user's supply)
     "+12V": {"v": (10.8, 13.2), "i_max": 10.0},
     "+12V_REG": {"v": (9.8, 13.2), "i_max": 1.0},        # only feeds the 5 V module (via D2)
-    "+5V": {"v": 5.0, "i_max": 2.0},                # K7805-2000R3 module, 2 A
+    "+5V": {"v": (4.75, 5.25), "i_max": 2.0},                # K7805-2000R3 module (derived 4.85-5.15 V) or Mega USB 5 V; was a point 5.0 = EL-NETSPEC conflict
     "+3V3": {"v": 3.3, "i_max": 0.5},
     "+3V3_ESP": {"v": 3.3, "i_max": 0.5},
 }

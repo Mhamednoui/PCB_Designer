@@ -340,8 +340,8 @@ def test_reflex():
     check("every net has a status and the counts add up", sum(c.values()) == len(m.nets) == len(ir["nets"]), (c, len(m.nets)))
     check("every non-derived net says why", all(n.reason for n in m.nets.values() if n.status != "derived"),
           [n.name for n in m.nets.values() if n.status != "derived" and not n.reason])
-    check("+5V comes from the K7805 module record and conflicts with the point claim 5 V",
-          m.nets["+5V"].status == "conflict" and near(m.nets["+5V"].interval, 4.85, 5.15), (m.nets["+5V"].status, m.nets["+5V"].interval))
+    check("+5V comes from the K7805 module record (4.85-5.15 V) and lies inside the corrected NET_SPEC claim 4.75-5.25 V (P2-T5; was a point 5 V = conflict)",
+          m.nets["+5V"].status == "derived" and near(m.nets["+5V"].interval, 4.85, 5.15), (m.nets["+5V"].status, m.nets["+5V"].interval))
     check("the 12 V chain is explained (fuse, series diode)", any("fuse" in s for s in m.nets["+12V_REG"].path) and any("DIODE D2" in s for s in m.nets["+12V_REG"].path))
     both = sorted(n.name for n in m.nets.values() if n.state_dependent and n.name.endswith("_OUT"))
     check("the 10 MOSFET drains (MAGn_OUT) are state-dependent: gates are driven by the MCU, not fixed",

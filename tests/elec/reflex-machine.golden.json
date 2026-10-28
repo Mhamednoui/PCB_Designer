@@ -2,8 +2,8 @@
  "counts": {
   "NOT_JUDGED": 25,
   "claimed-only": 12,
-  "conflict": 1,
-  "derived": 72
+  "conflict": 0,
+  "derived": 73
  },
  "nets": 110,
  "reasons": {
