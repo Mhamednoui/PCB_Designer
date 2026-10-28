@@ -291,6 +291,26 @@ FIRMWARE = {
 }
 
 
+# Executable requirements (judged by the `requirements` stage -> out/REQUIREMENTS.md); design intent from DESIGN_BRIEF.md.
+REQUIREMENTS = [
+    {"id": "R1", "kind": "path", "from": "J1.1", "to": "+12V", "through": {"class": "fuse"},
+     "text": "The 12 V input reaches the board rail only through the 10 A fuse F1"},
+    {"id": "R2", "kind": "path", "from": "+12V", "to": "U1.IN", "through": {"ref": "D2"},
+     "text": "The 5 V module is fed through the reverse-polarity diode D2"},
+    {"id": "R3", "kind": "path_absent", "from": "+12V_REG", "to": "+12V",
+     "text": "The module supply never back-feeds the magnet rail (D2 blocks it)"},
+    {"id": "R4", "kind": "path_absent", "from": "J12.3", "to": "COIN_IN",
+     "text": "The coin acceptor signal reaches the Mega only through the PC817 optocoupler (no galvanic path)"},
+    {"id": "R5", "kind": "path_absent", "from": "+12V", "to": "+5V",
+     "text": "No passive DC path from the 12 V rail to the 5 V rail except through the module"},
+    {"id": "R6", "kind": "path_absent", "from": "+12V", "to": "MAG1_PWM",
+     "text": "The 12 V rail has no passive path to a Mega PWM pin"},
+] + [
+    {"id": "M%d" % i, "kind": "path", "from": "J%d.2" % (1 + i), "to": "Q%d.S" % i, "with": {"Q%d" % i: "on"},
+     "text": "Magnet %d: with its MOSFET Q%d on, the magnet terminal MAG%d_OUT conducts to GND" % (i, i, i)}
+    for i in range(1, 11)
+]
+
 def nets():
     out = {}
     for p in PARTS:

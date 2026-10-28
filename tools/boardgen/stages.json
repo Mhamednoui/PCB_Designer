@@ -164,6 +164,21 @@
       "outputs": []
     },
     {
+      "name": "requirements",
+      "description": "Executable requirements (REQUIREMENTS in netlist.py: path, path_absent, net_v, rail_peak, static_logic) judged over out/design.json + the electrical model; writes out/REQUIREMENTS.md. NOT_EVALUATED is never PASS.",
+      "applies": "has_netlist",
+      "interpreter": "system",
+      "cwd": "root",
+      "argv": ["{boardgen}/make_requirements.py", "{project}"],
+      "design_stage": false,
+      "inputs": [
+        "tools/boardgen/req/*", "tools/boardgen/elec/*.py", "tools/boardgen/make_requirements.py",
+        "tools/boardgen/rules/finding.py", "tools/boardgen/rules/engine.py", "tools/boardgen/project.py",
+        "projects/{project}/out/design.json"
+      ],
+      "outputs": ["projects/{project}/out/REQUIREMENTS.md"]
+    },
+    {
       "name": "review",
       "description": "Design review (kicad-happy schematic/PCB/EMC analyzers + waivers.json): decoupling distance, EMC, power tree.",
       "applies": "has_gen_script:make_pcb.py",
