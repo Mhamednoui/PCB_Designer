@@ -50,7 +50,7 @@ def placements():
     # column C: beside the Mega, left of the power strip
     for k, ref in enumerate(["R55", "R56", "R57", "R58", "R59", "R60", "R61", "R41", "R42", "R63",
                              "C9", "C10", "C11"]):
-        P[ref] = (99.4, 53.0 + 3.6 * k, 0)
+        P[ref] = (99.0, 53.0 + 3.6 * k, 0)
     # column B: short column beside the Mega, below the ICs
     for k, ref in enumerate(["C12", "C8"]):
         P[ref] = (86.0, 84.0 + 4.5 * k, 0)
@@ -137,12 +137,10 @@ def extra_routes(board, P, net):
     pcb.add_track(board, [(u3x + 7.62, u3y + 7.62), (u3x + 3.81, u3y + 7.62),
                           (u3x + 3.81, u3y + 17.78), (u3x, u3y + 17.78)], 0.4, net("GND"), B)
 
-    # heavy power path J1 -> fuse (both holder pads). NET_SPEC says 10 A on +12V_IN and this is the
-    # only non-poured copper carrying all of it: IPC-2221 (1 oz, 10 C rise) needs 7.2 mm, so 7.5 mm.
-    # Geometry: J1 pad 1 = (150,90), J1 pad 2 (GND) = (150,84.92) - the run along y=91.5 spans
-    # y 87.75..95.25 (1.5 mm clear of that GND pad), then up x=144 (x 140.25..147.75, 0.95 mm clear of it)
-    # to the fuse's +12V_IN pad pair at (142,74) / (145.4,74). Both fuse pads sit inside the 7.5 mm band.
-    pcb.add_track(board, [(150.0, 91.5), (144.0, 91.5), (144.0, 74.0)], 7.5, net("+12V_IN"))
+    # heavy power path J1 -> fuse (both holder pads): only a 2.5 mm skeleton here, so the autorouter keeps
+    # its channels. The 10 A copper (IPC-2221: 7.2 mm at 1 oz / 10 C) is the +12V_IN pour added after
+    # routing in extra_pours; a 7.5 mm track present during routing made Freerouting fail ~3 in 8 builds.
+    pcb.add_track(board, [(150.0, 90.0), (146.4, 90.0), (146.4, 74.0), (145.4, 74.0)], 2.5, net("+12V_IN"))
 
 
 def extra_pours(board, nets, inset):

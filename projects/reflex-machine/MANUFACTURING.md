@@ -1,6 +1,6 @@
 # reflex-machine - manufacturing details
 
-_Generated 2026-10-27 23:11 by `tools/boardgen/make_fab_report.py` from `reflex-machine.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py reflex-machine --only fabreport`._
+_Generated 2026-10-27 23:54 by `tools/boardgen/make_fab_report.py` from `reflex-machine.kicad_pcb` - measured from the real board and drill file, not copied from other docs. Regenerate after any board change: `python pipeline.py reflex-machine --only fabreport`._
 
 ## Quick answers (what a PCB price calculator asks)
 
@@ -9,7 +9,7 @@ _Generated 2026-10-27 23:11 by `tools/boardgen/make_fab_report.py` from `reflex-
 | Width | **16 cm** (160 mm) |
 | Height | **12.5 cm** (125 mm) |
 | Layers | **2** (copper on: F.Cu, B.Cu) |
-| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 261 vias. A one-layer fab can't make it without a redesign. |
+| Can it be made single-sided (one layer)? | **No** - it has copper on 2 layers, 283 vias. A one-layer fab can't make it without a redesign. |
 | Solder mask | **Yes, both sides** (colour not set in design - green is the cheap default) |
 | Silkscreen | Yes, top only (white) |
 | Board thickness | 1.6 mm |
@@ -17,7 +17,7 @@ _Generated 2026-10-27 23:11 by `tools/boardgen/make_fab_report.py` from `reflex-
 | Surface finish | not set in design - **HASL lead-free** is the cheap default and fine for hand soldering |
 | Material | FR-4 (KiCad default) |
 | Board area | 200 cm² (outline rectangle) |
-| Total holes to drill | 703 (442 component/mounting + 261 vias) |
+| Total holes to drill | 725 (442 component/mounting + 283 vias) |
 | Components | 123 (123 through-hole, 0 SMD) + 2 mechanical (mounting holes etc.) |
 | Assembly needed from the fab? | No - all through-hole, hand solderable |
 
@@ -53,14 +53,14 @@ What is on each copper layer:
 
 | Copper layer | Tracks | Track length | Track widths used | Pour zones | Poured area | Pads |
 |---|---|---|---|---|---|---|
-| F.Cu | 432 | 2546.04 mm | 0.3 mm, 0.79 mm, 1.5 mm, 7.5 mm | 3 | 14826.27 mm² (74.13% of board) | 442 |
-| B.Cu | 622 | 3273.34 mm | 0.3 mm, 0.31 mm, 0.4 mm, 0.5 mm, 0.79 mm, 1.5 mm | 1 | 13567.56 mm² (67.84% of board) | 442 |
+| F.Cu | 454 | 2566.94 mm | 0.3 mm, 0.79 mm, 1.5 mm, 2.5 mm | 3 | 14263.59 mm² (71.32% of board) | 442 |
+| B.Cu | 603 | 3100.57 mm | 0.3 mm, 0.31 mm, 0.4 mm, 0.5 mm, 0.79 mm, 1.5 mm | 1 | 13732.3 mm² (68.66% of board) | 442 |
 
 Silkscreen: 292 text items (smallest 0.7 mm high), 1030 lines/shapes (thinnest 0.12 mm).
 
 ## Holes
 
-From the design (703 holes in total):
+From the design (725 holes in total):
 
 | Diameter (mm) | Plated? | Shape | Count |
 |---|---|---|---|
@@ -74,28 +74,30 @@ From the design (703 holes in total):
 | 1.6 | yes (PTH) | round | 20 |
 | 1.78 | yes (PTH) | round | 4 |
 | 3.2 | no (NPTH) | round | 6 |
-| 0.3 | yes (via, 0.6 mm pad) | round | 33 |
-| 0.4 | yes (via, 0.8 mm pad) | round | 228 |
+| 0.3 | yes (via, 0.6 mm pad) | round | 37 |
+| 0.4 | yes (via, 0.8 mm pad) | round | 245 |
+| 0.6 | yes (via, 1.2 mm pad) | round | 1 |
 
 - Plated pads: 436 through-hole, 0 SMD; non-plated holes: 6; slots: 0
 - Smallest hole 0.3 mm, largest 3.2 mm
 
-Cross-check against the drill file the fab receives, `out/fab/gerbers/reflex-machine.drl`: **703 holes**, matches the design.
+Cross-check against the drill file the fab receives, `out/fab/gerbers/reflex-machine.drl`: **725 holes**, matches the design.
 
 | Tool | Diameter (mm) | Plating | Holes | Slots |
 |---|---|---|---|---|
-| T1 | 0.3 | Plated | 33 | 0 |
-| T2 | 0.4 | Plated | 228 | 0 |
-| T3 | 0.8 | Plated | 150 | 0 |
-| T4 | 0.9 | Plated | 24 | 0 |
-| T5 | 1 | Plated | 60 | 0 |
-| T6 | 1.02 | Plated | 92 | 0 |
-| T7 | 1.1 | Plated | 32 | 0 |
-| T8 | 1.2 | Plated | 32 | 0 |
-| T9 | 1.3 | Plated | 22 | 0 |
-| T10 | 1.6 | Plated | 20 | 0 |
-| T11 | 1.78 | Plated | 4 | 0 |
-| T12 | 3.2 | NonPlated | 6 | 0 |
+| T1 | 0.3 | Plated | 37 | 0 |
+| T2 | 0.4 | Plated | 245 | 0 |
+| T3 | 0.6 | Plated | 1 | 0 |
+| T4 | 0.8 | Plated | 150 | 0 |
+| T5 | 0.9 | Plated | 24 | 0 |
+| T6 | 1 | Plated | 60 | 0 |
+| T7 | 1.02 | Plated | 92 | 0 |
+| T8 | 1.1 | Plated | 32 | 0 |
+| T9 | 1.2 | Plated | 32 | 0 |
+| T10 | 1.3 | Plated | 22 | 0 |
+| T11 | 1.6 | Plated | 20 | 0 |
+| T12 | 1.78 | Plated | 4 | 0 |
+| T13 | 3.2 | NonPlated | 6 | 0 |
 
 ## Tightest geometry vs. typical fab limits
 
@@ -122,20 +124,20 @@ Closest two holes: A1 pad GND2 (124.64, 151.80) and via on GND (125.83, 152.05).
 | Net | i_max | Needs (IPC-2221) | Carried by | Narrowest track | Tracks below need | |
 |---|---|---|---|---|---|---|
 | +12V | 10 A | 7.2 mm | pour on F.Cu | 1.5 mm | 96 of 96 | pour-carried: **review** pour neck / thermals |
-| +12V_IN | 10 A | 7.2 mm | pour on F.Cu | 1.5 mm | 3 of 5 | pour-carried: **review** pour neck / thermals |
-| +12V_REG | 1 A | 0.31 mm | tracks | 0.31 mm | 0 of 5 | OK |
-| +5V | 2 A | 0.79 mm | tracks | 0.79 mm | 0 of 43 | OK |
+| +12V_IN | 10 A | 7.2 mm | pour on F.Cu | 1.5 mm | 4 of 4 | pour-carried: **review** pour neck / thermals |
+| +12V_REG | 1 A | 0.31 mm | tracks | 0.31 mm | 0 of 16 | OK |
+| +5V | 2 A | 0.79 mm | tracks | 0.79 mm | 0 of 54 | OK |
 | GND | 10 A | 7.2 mm | pour on F.Cu+B.Cu | 0.4 mm | 6 of 6 | pour-carried: **review** pour neck / thermals |
-| MAG10_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 9 | OK |
+| MAG10_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
 | MAG1_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
-| MAG2_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 9 | OK |
-| MAG3_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 9 | OK |
+| MAG2_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 8 | OK |
+| MAG3_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
 | MAG4_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
-| MAG5_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 10 | OK |
-| MAG6_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 9 | OK |
-| MAG7_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 10 | OK |
+| MAG5_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 7 | OK |
+| MAG6_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
+| MAG7_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
 | MAG8_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
-| MAG9_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 9 | OK |
+| MAG9_OUT | 1.5 A | 0.53 mm | tracks | 1.5 mm | 0 of 6 | OK |
 
 Pour-carried nets are not failed: the zone, not each stub, carries the current. Review them by eye - the narrowest copper between the source (connector/fuse) and the loads sets the real limit, and this report does not measure it.
 
@@ -205,7 +207,7 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3).
 | Check | Result |
 |---|---|
 | DRC errors | **0** |
-| DRC warnings | 410 |
+| DRC warnings | 411 |
 | Unconnected items | 0 |
 | Schematic vs board differences | 0 |
 
@@ -241,4 +243,4 @@ Mechanical: H1 (MountingHole_3.2mm_M3), H2 (MountingHole_3.2mm_M3).
 | `out/fab/BOM_JLCPCB.csv` | 0.04 KB | assembly only |
 | `out/fab/CPL_JLCPCB.csv` | 0.04 KB | assembly only |
 | `out/fab/positions_raw.csv` | 0.04 KB | raw placement data (not needed for bare boards) |
-| `out/fab/reflex-machine_gerbers_JLCPCB.zip` | 456.26 KB | **upload this** - gerbers + drill |
+| `out/fab/reflex-machine_gerbers_JLCPCB.zip` | 450.29 KB | **upload this** - gerbers + drill |
