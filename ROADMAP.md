@@ -40,7 +40,7 @@ board is *consistent* (netlist = schematic = copper), not that the *design is ri
 | M1-T3 | Extract `make_pcb.py` into `tools/boardgen/pcb.py` per §A plan (blinky version wins; 5 hooks); `stage_check`/`stage_finish` exit 1 on violations | `tools/boardgen/pcb.py` (new), `projects/*/gen/make_pcb.py` | high | - | blinky `--force` rebuild = 0/0/0 + 3 silk; uno/reflex: `check` results unchanged + `place` into a scratch copy diffs only in expected silk text (see D1) | ✅ |
 **DoD:** G1 + G2 met; blinky full rebuild green; uno/reflex boards untouched in git.
 
-### MD Design & PCB correctness (top priority)
+### MD Design & PCB correctness (top priority) - ✅ P0 EXIT 2026-10-28: full mutation suite 39/39, all 3 fixtures green on every stage
 Evidence: `AGENT_NOTES.md` §D-R (best practice), §D-K (kicad-happy analyzers), §D-X (catch matrix).
 **Shared data contract** (all MD tasks use it; MD-T1 adds it to the 3 projects' `netlist.py`; others default sensibly when absent):
 ```python
@@ -126,8 +126,8 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | ID | St |
 |---|---|
 | P2-T1 rule engine + Finding + waivers v2 + `--explain` (incl. PA-7) | ✅ |
-| P2-T2 record `electrical` block + IR abs_max/EXTERNAL + fixture data | 🔄 |
-| P2-T3 electrical model v1 | ⬜ |
+| P2-T2 record `electrical` block + IR abs_max/EXTERNAL + fixture data | ✅ (IR v2; coverage golden) |
+| P2-T3 electrical model v1 | 🔄 |
 | P2-T4 EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP | ⬜ |
 | P2-T5 EL-FLOAT, EL-LEVEL, EL-NETSPEC | ⬜ |
 | P2-T6 budget, dropout, thermal | ⬜ |
