@@ -43,5 +43,34 @@
   "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED Schottky/flyback family, stood vertically (reflex D11-D20 1N5822). Pin 1 = cathode, pin 2 = anode; the vertical footprint hides the band, so mounting direction must follow the silk 'K'.",
   "status": "draft",
   "verification": "unverified",
+  "electrical": {
+   "role": "rectifier",
+   "value_match": [
+    "1N5822"
+   ],
+   "vf": [
+    {
+     "max": 0.525,
+     "unit": "V",
+     "at": {
+      "if_a": 3.0
+     },
+     "cond": "1N5822 maximum instantaneous forward voltage, pulse",
+     "src": "https://www.vishay.com/docs/88526/1n5820.pdf (Vishay 1N5820-1N5822, doc 88526, rev 05-Apr-2019) PDF p1"
+    },
+    {
+     "max": 0.95,
+     "unit": "V",
+     "at": {
+      "if_a": 9.4
+     },
+     "cond": "1N5822 maximum instantaneous forward voltage, pulse",
+     "src": "https://www.vishay.com/docs/88526/1n5820.pdf (Vishay 1N5820-1N5822, doc 88526, rev 05-Apr-2019) PDF p1"
+    }
+   ],
+   "gaps": [
+    "average forward current, VRRM, theta_JA and junction limit not extracted"
+   ]
+  },
   "signed_hash": null
 }

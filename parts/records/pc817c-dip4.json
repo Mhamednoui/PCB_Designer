@@ -21,5 +21,81 @@
   "evidence": [
     {"section": "pins,ratings,tht", "doc_url": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594", "page": 2, "rev": "AOTE PC817X product data sheet, version B1, release 2024-11-01 (12 PDF pages; PDF page 2 is printed page 1)", "method": "agent read the datasheet and viewed the page images: PDF p2 'Pin Configuration 1.Anode 2.Cathode 3.Emitter 4.Collector' with the package schematic (LED between pins 1-2 on the left, phototransistor 4 collector / 3 emitter on the right); PDF p3 absolute maximum ratings (IF 50 mA, VR 6 V, IFP 1 A, PC 150 mW, IC 50 mA, VCEO 80 V, VECO 6 V, Viso 5000 Vrms, Topr -55..+110 C); PDF p7 DIP4 outline (pitch 2.54, row spacing 7.6 +-0.2, lead width 0.5 +-0.1, lead thickness 0.25 +-0.1)", "verified_by": "agent-P1-T8", "date": "2026-10-27", "notes": "Agent read, a person has not. KiCad Isolator:PC817 pin numbers 1-4 agree with the datasheet (1 A, 2 K, 3 E, 4 C), and the reflex fixture wires 1=COIN_OPTO_A (anode), 2=COIN_SIG (cathode), 3=GND (emitter), 4=COIN_IN (collector): correct polarity. lead_mm is the datasheet MAXIMUM (0.5+0.1 x 0.25+0.1). Pin abs_max holds only the forward/collector current and the collector-emitter voltage (VCEO 80 V, applied from collector to emitter); the LED reverse voltage VR = 6 V and VECO = 6 V are across-pin ratings, not absolute pin voltages, so they are not stored per pin. The abs-max table text extracts scrambled (columns), so the per-row values were read from the page image. Fixture says value 'PC817' but the LCSC part C20612594 is the PC817C (CTR bin C): the datasheet header gives CTR 80-600 % across the whole X series; the bin ranges are not tabulated on the cited pages."}
   ],
+  "electrical": {
+   "role": "optocoupler",
+   "pins": {
+    "1": {
+     "abs_max": {
+      "v_min": -6,
+      "i_ma": 50,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "note": "anode; v_min = reverse voltage VR 6 V (vs cathode); IF 50 mA, IFP 1000 mA 1 us pulse"
+     }
+    },
+    "2": {
+     "abs_max": {
+      "i_ma": 50,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "note": "cathode; IF 50 mA"
+     }
+    },
+    "4": {
+     "abs_max": {
+      "v_max": 80,
+      "i_ma": 50,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "note": "collector; VCEO 80 V, IC 50 mA"
+     }
+    },
+    "3": {
+     "abs_max": {
+      "v_min": -6,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3",
+      "note": "emitter; VECO 6 V emitter-collector reverse voltage (limit on pin 3 relative to pin 4)"
+     }
+    }
+   },
+   "vf": [
+    {
+     "typ": 1.2,
+     "max": 1.4,
+     "unit": "V",
+     "at": {
+      "if_ma": 20
+     },
+     "cond": "input LED forward voltage, TA=25 C",
+     "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p4"
+    }
+   ],
+   "i_f_max_ma": {
+    "max": 50,
+    "unit": "mA",
+    "cond": "absolute maximum forward current",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3"
+   },
+   "ctr_pct": {
+    "min": 200,
+    "max": 400,
+    "unit": "%",
+    "at": {
+     "if_ma": 1,
+     "vce_v": 5
+    },
+    "cond": "CTR rank C (200-400 %) assuming the 'C' in PC817C is the CTR rank letter (not stated in the record); whole-series range 80-600 %",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p4"
+   },
+   "p_max_mw": {
+    "max": 150,
+    "unit": "mW",
+    "cond": "collector power dissipation PC; input power dissipation PD 70 mW",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/651f5d913fc6138bbe5dad03d63b2e19.pdf?productCode=C20612594 (AOTE PC817X B1, 2024-11-01) PDF p3"
+   },
+   "gaps": [
+    "recommended operating conditions table could not be read unambiguously from the PDF text (columns scrambled): not used",
+    "VCE(sat) value not unambiguous in the extracted text",
+    "junction temperature / theta_JA not stated in the datasheet",
+    "IF vs. CTR rank assumption: confirm the C suffix against the part marking"
+   ]
+  },
   "notes": "Machine data: jlcsearch (mfr PC817C, DIP-4, stock 180320) + EasyEDA 2026-10-27. Reflex U2 (coin-acceptor optocoupler). Hand-written because `parts new` refuses C20612594: EasyEDA's component TITLE is 'PC817C_C20612594' (it appends the LCSC id) while its 'Manufacturer Part' field is 'PC817C' and jlcsearch mfr is 'PC817C'. A is the LED anode, K the cathode, E/C the phototransistor. STAYS unverified, on purpose: `crosscheck` cannot be satisfied because KiCad's Isolator:PC817 has EMPTY pin names (name \"\" on all four pins, so only pin numbers and geometry can be compared) and EasyEDA names pin 2 'C' (cathode) and pin 4 'COLLECTOR', so the two machine sources do not share a name vocabulary (assist: 5 diffs, all naming; pad multiset 1,2,3,4 agrees everywhere). Agent geometry check of the KiCad symbol: pin 1 top-left, 2 bottom-left, 3 bottom-right, 4 top-right = the datasheet package schematic (1 anode, 2 cathode, 3 emitter, 4 collector) and EasyEDA's order A, C(athode), E, COLLECTOR. Owner decision needed: sign it after reading the datasheet p2, or add names to the symbol. Fixture value string is 'PC817'; the orderable part is the PC817C bin."
 }

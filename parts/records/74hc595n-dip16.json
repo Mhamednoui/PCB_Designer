@@ -33,6 +33,184 @@
     {"section": "pins,ratings,tht", "doc_url": "https://datasheet.lcsc.com/datasheet/pdf/a3fbc4f7888fd390190e6295c01a3aa8.pdf?productCode=C507175", "page": 3, "rev": "HGSEMI (HuaGuan) 74HC595 datasheet VER:V1.3, 13 pages", "method": "agent read the datasheet and viewed the page images: p3 DIP-16 pinout drawing + pin function table (1 QB, 2 QC, 3 QD, 4 QE, 5 QF, 6 QG, 7 QH, 8 GND, 9 Q'H, 10 SCLR, 11 SCK, 12 RCK, 13 G (output enable), 14 SER, 15 QA, 16 VCC); p4 absolute maximum ratings (VCC -0.5..6.5 V, VIN/VOUT -0.5..VCC+0.5 V, IIK/IOK +-20 mA, IOUT +-35 mA, ICC/IGND +-70 mA, PD 500 mW, TA -40..85 C); recommended VCC 3.2-6 V; p10 DIP-16 outline (pitch 2.54 BSC, row spacing D1 7.42-7.82, lead dimension c 0.40-0.50, b 0.85-0.90, L 0.50-0.70)", "verified_by": "agent-P1-T8", "date": "2026-10-27", "notes": "Agent read, a person has not. The pin function table in the HGSEMI datasheet says '1~7 QB~QG' (7 pins, 6 names) but its own pinout drawing shows pin 7 = QH, the standard 74HC595 order, so the table is a vendor typo and the drawing was used. Pin NAMES differ per source (KiCad SRCLK/RCLK/~{OE}/SER, HGSEMI SCK/RCK/G/SER, EasyEDA SHIFT_CLOCK/LATCH_CLOCK/OUTPUT_ENABLE/A, RESET/SRCLR/SCLR for pin 10, SQH/Q'H for pin 9); the functions agree pin by pin and are stored as aliases. The alias 'A' on pin 14 (serial data) is the EasyEDA name and is loose; do not reuse it elsewhere. The alias 'QH' on pin 9 (Q'H, the serial-out) exists only because the page-text check tokenises on [A-Z0-9] and so can never find a name with an apostrophe: for pin 9 that part of the check is vacuous (pin 7 is also QH); pin 9 was verified by eye on the TI and HGSEMI page images (9 = Q'H on both). lead_d_mm 0.5 is ILLUSTRATIVE: the outline lettering is ambiguous, 0.5 is the datasheet 'c' maximum (0.40-0.50) read as the lead in the hole; the 0.85-0.90 'b' is the shoulder above the board. The TI SN74HC595 datasheet (SCLS041J rev J, https://www.ti.com/lit/ds/symlink/sn74hc595.pdf, p3 pinout drawing + Table 5-1) was also read and shows the identical pin table (16 pins, same numbers). The registry's automatic page-text check cites that TI page 3 because the HGSEMI page-3 text layer is garbled (subscripted Q names), so the machine check could not read it; the HGSEMI page 3 was verified by eye from the page image. Abs-max VCC differs: TI 7 V, HGSEMI 6.5 V; the stricter HGSEMI 6.5 V (the actual LCSC part) is recorded. Same package as the reflex fixture's FP_DIP16 (KiCad DIP-16_W7.62mm: 2.54 pitch, 7.62 rows)."},
     {"section": "pins", "doc_url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf", "page": 3, "method": "crosscheck: pin/pad diff of kicad symbol, kicad footprint, easyeda symbol, easyeda footprint against the record, 0 diffs; datasheet page text ok", "verified_by": "agent-crosscheck", "date": "2026-10-27", "notes": "Scope: pin numbers, pin names and pad multiset ONLY. NOT checked: pin class, abs_max, ratings, tht lead size, polarity (those need the owner). EasyEDA data fetched 2026-10-27T22:11:23Z (C507175). page 3 of sn74hc595.pdf names all 16 pins. A person has not read the datasheet.", "rev": "SCLS041J (TI SN74HC595 rev J, Oct 2021); HGSEMI V1.3 p3 identical"}
   ],
+  "electrical": {
+   "role": "logic",
+   "input_type": "cmos",
+   "pin_defaults": {
+    "input": {
+     "supply_pin": "16",
+     "vih": {
+      "min": "ratio:0.7*vdd",
+      "unit": "V",
+      "cond": "VCC 4.5-6 V (3.15 V at 4.5 V, 4.2 V at 6 V); at 2 V the limit is 1.5 V (0.75 x VCC)",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     },
+     "vil": {
+      "max": "ratio:0.3*vdd",
+      "unit": "V",
+      "cond": "VCC 4.5-6 V (1.35 V at 4.5 V, 1.8 V at 6 V); at 2 V the limit is 0.5 V",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     },
+     "i_in_leak": {
+      "max": 1000,
+      "unit": "nA",
+      "at": {
+       "vcc_v": 6
+      },
+      "cond": "II, VI=VCC or 0, SN74HC595 over temperature (25 C max 100 nA)",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p5"
+     }
+    },
+    "output": {
+     "supply_pin": "16",
+     "tristate": true,
+     "abs_max": {
+      "i_ma": 35,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4",
+      "note": "IO continuous +-35 mA per output; IOK clamp +-20 mA; voltage limited via clamp current, no VO row"
+     },
+     "voh": {
+      "min": 3.84,
+      "unit": "V",
+      "at": {
+       "vcc_v": 4.5,
+       "ioh_ma": -6
+      },
+      "cond": "QA-QH, IOH=-6 mA, SN74HC595 over recommended temperature range (-20 uA: min 4.4 V)",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p5"
+     },
+     "vol": {
+      "max": 0.33,
+      "unit": "V",
+      "at": {
+       "vcc_v": 4.5,
+       "iol_ma": 6
+      },
+      "cond": "QA-QH, IOL=6 mA, SN74HC595 over recommended temperature range",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p5"
+     },
+     "i_out_max_ma": {
+      "max": 35,
+      "unit": "mA",
+      "cond": "absolute maximum continuous output current",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     }
+    }
+   },
+   "pins": {
+    "16": {
+     "class": "power_in",
+     "abs_max": {
+      "v_min": -0.5,
+      "v_max": 7,
+      "i_ma": 70,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4",
+      "note": "VCC -0.5..7 V; continuous current through VCC or GND +-70 mA"
+     }
+    },
+    "8": {
+     "class": "power_in",
+     "abs_max": {
+      "i_ma": 70,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     }
+    },
+    "9": {
+     "class": "output",
+     "tristate": false,
+     "supply_pin": "16",
+     "abs_max": {
+      "i_ma": 35,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     },
+     "voh": {
+      "min": 3.84,
+      "unit": "V",
+      "at": {
+       "vcc_v": 4.5,
+       "ioh_ma": -4
+      },
+      "cond": "QH', IOH=-4 mA, SN74HC595 over temperature",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p5"
+     },
+     "vol": {
+      "max": 0.33,
+      "unit": "V",
+      "at": {
+       "vcc_v": 4.5,
+       "iol_ma": 4
+      },
+      "cond": "QH', IOL=4 mA, SN74HC595 over temperature",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p5"
+     },
+     "i_out_max_ma": {
+      "max": 35,
+      "unit": "mA",
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     }
+    },
+    "10": {
+     "abs_max": {
+      "i_ma": 20,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4",
+      "note": "no VI row; input clamp current IIK +-20 mA when VI<0 or VI>VCC; ratings may be exceeded if current ratings are observed (p4 note 2)"
+     }
+    },
+    "11": {
+     "abs_max": {
+      "i_ma": 20,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     }
+    },
+    "12": {
+     "abs_max": {
+      "i_ma": 20,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     }
+    },
+    "13": {
+     "abs_max": {
+      "i_ma": 20,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     }
+    },
+    "14": {
+     "abs_max": {
+      "i_ma": 20,
+      "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+     }
+    }
+   },
+   "theta_ja": [
+    {
+     "typ": 67,
+     "unit": "C/W",
+     "cond": "N (PDIP-16) package, JEDEC thermal metric (not this PCB)",
+     "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p5"
+    }
+   ],
+   "tj_max": {
+    "max": 150,
+    "unit": "C",
+    "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p4"
+   },
+   "load_ma": {
+    "typ": {
+     "max": 0.08,
+     "unit": "mA",
+     "at": {
+      "vcc_v": 6
+     },
+     "cond": "static ICC max 80 uA SN74HC595 over temperature (VI=VCC or 0, IO=0); output load current NOT included",
+     "src": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf (TI SCLS041J, Oct 2021) PDF p5"
+    }
+   },
+   "gaps": [
+    "no explicit VI/VO absolute-maximum voltage row in this revision (only clamp currents); EL-ABSMAX on inputs needs a person to choose the rule (-0.5..VCC+0.5 is the usual HC convention but is not in this datasheet)",
+    "dynamic (switching) supply current not extracted",
+    "datasheet is the TI SN74HC595; the registry part is the HGSEMI 74HC595N: the figures are the TI family's, not verified against the clone's own datasheet"
+   ]
+  },
   "signed_hash": "c9ca3019103e10a8cd27f9462257ce56c2a3864c0738815488c55349bbde7cd9",
   "notes": "Machine data: EasyEDA C507175 (title 74HC595N, Manufacturer Part 74HC595N, Manufacturer HGSEMI, class Extended Part, package DIP-16) + LCSC product page (HGSEMI 74HC595N, DIP-16). FINDING: jlcsearch has NO entry for C507175 (exact-id lookup returns 0 results; same for the alternatives C78711 TI SN74HC595N, C6622703 NTE, C112387 AIP74HC595-DIP), so `parts new` refuses it and stock / price are unverified (sourcing block deliberately omitted, PR-STOCK/PR-MPN against jlcsearch cannot judge it; LCSC product pages exist). The fixture (reflex U3, value '74HC595N') points at C507175. Hand-written record. Reflex U3 7-segment driver: pins 14 SER=SEG_DATA, 12 RCLK=SEG_LATCH, 11 SRCLK=SEG_CLOCK, 10 SRCLR=+5V, 13 OE=GND, 8 GND, 16 VCC, 1-7 QB..QH, 15 QA unused. class values: 'output' for the tri-state Qx (the registry vocabulary has no tri_state). Tier covers pin numbers/names/pads only; class, abs_max, lead_d_mm, ratings are agent-read, owner sign-off needed.",
   "sourcing": {"stock": 2095, "price_1": 0.1526, "snapshot_date": "2026-10-27"}

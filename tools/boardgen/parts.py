@@ -59,8 +59,13 @@ def _is_type(v, t):
     return isinstance(v, _TYPES[t])
 
 
-def _check(v, sch, path, errs):
-    """Validate v against the JSON Schema subset used by parts/schema.json."""
+def _check(v, sch, path, errs, root=None):
+    """Validate v against the JSON Schema subset used by parts/schema.json (and the design IR schema).
+    "$ref": "#/$defs/<name>" is resolved against the top-level schema (root)."""
+    if root is None:
+        root = sch
+    if "$ref" in sch:
+        sch = root["$defs"][sch["$ref"].rsplit("/", 1)[1]]
     if "enum" in sch and v not in sch["enum"]:
         errs.append((path, "must be one of %s, got %r" % (sch["enum"], v)))
         return
@@ -81,7 +86,7 @@ def _check(v, sch, path, errs):
             errs.append((path, "needs at most %d items" % sch["maxItems"]))
         if "items" in sch:
             for i, x in enumerate(v):
-                _check(x, sch["items"], "%s[%d]" % (path, i), errs)
+                _check(x, sch["items"], "%s[%d]" % (path, i), errs, root)
     if isinstance(v, dict):
         props = sch.get("properties", {})
         for r in sch.get("required", []):
@@ -92,15 +97,15 @@ def _check(v, sch, path, errs):
         for k, x in v.items():
             p = "%s.%s" % (path, k) if path else k
             if k in props:
-                _check(x, props[k], p, errs)
+                _check(x, props[k], p, errs, root)
                 continue
             hit = [s for pat, s in pats.items() if re.search(pat, k)]
             if hit:
-                _check(x, hit[0], p, errs)
+                _check(x, hit[0], p, errs, root)
             elif addl is False:
                 errs.append((p, "unknown field"))
             elif isinstance(addl, dict):
-                _check(x, addl, p, errs)
+                _check(x, addl, p, errs, root)
 
 
 _schema_cache = None
@@ -127,6 +132,35 @@ def validate(rec, source="<record>"):
                 ref = parse_v_max(vm)["pin"]
                 if ref not in rec["pins"]:
                     out.append("%s: pins.%s.abs_max.v_max: refers to pin %s which does not exist" % (source, pin, ref))
+        out += electrical_problems(rec, source)
+    return out
+
+
+_NUM_KEYS = ("min", "typ", "max", "v_min", "v_max", "i_ma")
+
+
+def electrical_problems(rec, source="<record>"):
+    """Messages for the optional `electrical` block (P2-T2): every number needs a `src` (URL + page) or an explicit
+    `illustrative: true`, and per-pin entries must name pins the record has. Never guesses a value."""
+    el = rec.get("electrical")
+    out = []
+    if not el:
+        return out
+    for pad in el.get("pins", {}):
+        if pad not in rec["pins"]:
+            out.append("%s: electrical.pins.%s: record has no such pin" % (source, pad))
+
+    def walk(v, path):
+        if isinstance(v, dict):
+            if any(isinstance(v.get(k), (int, float, str)) and not isinstance(v.get(k), bool) for k in _NUM_KEYS)                     and not v.get("src") and not v.get("illustrative"):
+                out.append("%s: %s: a number with no `src` (datasheet URL + page) and no `illustrative: true`" % (source, path))
+            for k, x in v.items():
+                if k != "at":                             # test conditions, not claims
+                    walk(x, "%s.%s" % (path, k))
+        elif isinstance(v, list):
+            for i, x in enumerate(v):
+                walk(x, "%s[%d]" % (path, i))
+    walk(el, "electrical")
     return out
 
 

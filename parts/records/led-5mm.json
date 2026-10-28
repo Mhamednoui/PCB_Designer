@@ -46,5 +46,39 @@
   "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED. Pin 1 = cathode (K), pin 2 = anode (A); square pad = cathode. Colour/forward voltage are per part (value field: RED, GREEN).",
   "status": "draft",
   "verification": "unverified",
+  "electrical": {
+   "role": "led",
+   "value_match": [
+    "RED"
+   ],
+   "vf": [
+    {
+     "typ": 1.85,
+     "max": 2.5,
+     "unit": "V",
+     "at": {
+      "if_ma": 20
+     },
+     "cond": "Kingbright L-53SRC-C super bright red (GaAlAs), Vf tolerance +-0.1 V; used as the RED-value family figure. Other colours: NOT covered",
+     "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2"
+    }
+   ],
+   "i_f_max_ma": {
+    "max": 30,
+    "unit": "mA",
+    "cond": "DC forward current, super bright red",
+    "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2"
+   },
+   "p_max_mw": {
+    "max": 100,
+    "unit": "mW",
+    "cond": "power dissipation, super bright red",
+    "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2"
+   },
+   "gaps": [
+    "GREEN (and any other colour) Vf: no datasheet read - NOT_JUDGED (the values on this record apply only to value RED)",
+    "the cited part is a representative 5 mm red LED; the actual purchased LED (LCSC C2895470 for blinky/uno D1) was not matched to its own datasheet"
+   ]
+  },
   "signed_hash": null
 }

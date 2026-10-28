@@ -6,7 +6,7 @@
 1. from_netlist.build()        meta, parts, nets, assembly, fab_profile   (netlist.py + parts registry)
 2. from_kicad_pcb.parse_board()  board                                      (only when <id>.kicad_pcb exists)
 3. cross_check()               the netlist's net -> pins must EQUAL the board's pad nets (independent consistency check)
-4. validate against schema.json (ir_version 1)
+4. validate against schema.json (ir_version 2)
 5. write canonical JSON (sorted keys, no timestamps) - byte-identical for identical inputs.
 
 Fail closed: any IRError, any cross-check ERROR or any schema violation prints the reasons, REMOVES a stale design.json
@@ -144,7 +144,7 @@ def selftest():
         for name, mut in (("missing meta.project", lambda x: x["meta"].pop("project")),
                           ("bad net class", lambda x: x["nets"]["VCC"].update({"class": "x"})),
                           ("unknown field", lambda x: x["parts"]["R1"].update({"extra": 1})),
-                          ("wrong ir_version", lambda x: x.update({"ir_version": 2}))):
+                          ("wrong ir_version", lambda x: x.update({"ir_version": 1}))):
             x = copy.deepcopy(ir)
             mut(x)
             if not validate(x, eng):
@@ -162,6 +162,57 @@ def selftest():
         mut(x)
         if not cross_check(x)[0]:
             bad.append("cross_check misses: %s" % name)
+    bad += _selftest_electrical(ir)
+    from boardgen.ir import coverage
+    msg = coverage.check_golden()
+    if msg:
+        bad.append(msg)
+    return bad
+
+
+def _selftest_electrical(ir):
+    """P2-T2: EXTERNAL grammar, pin/part electrical resolution and the schema's v2 fields."""
+    import copy
+    import types
+    from boardgen.ir import IRError, elec
+    bad = []
+    parts = {"J1": {"pins": {"1": {}, "2": {}}}, "J2": {"pins": {"1": {}}}}
+    nl = types.SimpleNamespace()
+    if elec.parse_external(nl, parts) != {"declared": False, "pins": {}, "none": []}:
+        bad.append("EXTERNAL absent must be declared=false")
+    nl.EXTERNAL = {}
+    if elec.parse_external(nl, parts) != {"declared": True, "pins": {}, "none": []}:
+        bad.append("EXTERNAL = {} must be declared=true with nothing external")
+    nl.EXTERNAL = {"J1.1": {"v": (4.4, 5.25), "i": 0.5, "dir": "supply", "why": "USB VBUS"}, "J2": "none"}
+    got = elec.parse_external(nl, parts)
+    if got["pins"]["J1.1"] != {"v": [4.4, 5.25], "i": 0.5, "dir": "supply", "why": "USB VBUS"} or got["none"] != ["J2"]:
+        bad.append("EXTERNAL grammar not parsed: %s" % got)
+    for name, ext in (("unknown ref", {"J9.1": {}}), ("unknown pad", {"J1.7": {}}), ("bare ref not none", {"J1": {}}),
+                      ("bad v", {"J1.1": {"v": (5, 4)}}), ("bad dir", {"J1.1": {"dir": "x"}}), ("unknown key", {"J1.1": {"z": 1}})):
+        nl.EXTERNAL = ext
+        try:
+            elec.parse_external(nl, parts)
+            bad.append("EXTERNAL accepted: %s" % name)
+        except IRError:
+            pass
+    u1 = ir["parts"]["U1"]["pins"]
+    if not (u1["2"]["abs_max"] and u1["2"]["abs_max"]["cited"] and u1["2"]["abs_max"]["v_max"] == "pin:8+0"):
+        bad.append("NE555 TRIG abs_max not carried into the IR as cited: %s" % u1["2"]["abs_max"])
+    if ir["parts"]["D1"]["electrical_status"] != "ok" or not ir["parts"]["D1"]["electrical"]["vf"]:
+        bad.append("RED LED family electrical data missing from the IR")
+    rec = {"pins": {"1": {"name": "A", "class": "input", "abs_max": {"v_max": 5}}},
+           "electrical": {"pins": {"1": {"abs_max": {"v_max": 3.6, "src": "x"}}}}}
+    cls, am, io = elec.resolve_pin(rec, "1", "ok")
+    if (cls, am["v_max"], am["cited"]) != ("input", 3.6, True):
+        bad.append("electrical abs_max must replace the legacy one")
+    cls, am, io = elec.resolve_pin(rec, "1", "value_not_covered")
+    if am["cited"] or am["v_max"] != 5:
+        bad.append("a value-not-covered part must fall back to the legacy abs_max as uncited")
+    from boardgen import parts as _parts
+    r = copy.deepcopy(_parts.get("ne555p-dip8"))
+    r["electrical"]["pins"]["8"]["abs_max"].pop("src")
+    if not any("no `src`" in m for m in _parts.electrical_problems(r)):
+        bad.append("a record number without src must be rejected")
     return bad
 
 
@@ -172,8 +223,14 @@ def main(argv):
             print("FAIL ir selftest: " + b)
         print("ir selftest: %s" % ("FAILED (%d)" % len(bad) if bad else "ok"))
         return 1 if bad else 0
+    if argv and argv[0] == "--coverage":
+        if argv[1:] not in ([], ["--write-golden"]):
+            print("usage: build.py --coverage [--write-golden]")
+            return 2
+        from boardgen.ir import coverage
+        return coverage.main(write_golden=bool(argv[1:]))
     if len(argv) != 1 or argv[0].startswith("-"):
-        print("usage: build.py <project-id>")
+        print("usage: build.py <project-id> | --coverage [--write-golden] | --selftest")
         return 2
     pid = argv[0]
     dst = out_path(pid)

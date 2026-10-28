@@ -44,5 +44,21 @@
   "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. Unpolarised. Covers every axial 1/4 W resistor (blinky 3, uno-toggle 2, reflex 55). Real MPN binding goes through orderable_as at release (decision 9.2), empty on hand boards. Value range 1 ohm .. 10 Mohm is a sanity bound, not a datasheet limit.",
   "status": "draft",
   "verification": "unverified",
+  "electrical": {
+   "role": "resistor",
+   "p_max_mw": {
+    "max": 250,
+    "unit": "mW",
+    "at": {
+     "ta_c": 70
+    },
+    "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+    "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2"
+   },
+   "gaps": [
+    "tolerance and temperature coefficient are per MPN: not stated in this family record",
+    "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+   ]
+  },
   "signed_hash": null
 }

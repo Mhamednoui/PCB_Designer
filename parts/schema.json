@@ -2,6 +2,144 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Parts registry record (docs/design/P1_PARTS_REGISTRY.md)",
   "type": "object",
+  "$defs": {
+    "datum": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ],
+          "pattern": "^ratio:[0-9.]+\\*vdd([+-][0-9.]+)?$"
+        },
+        "typ": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ],
+          "pattern": "^ratio:[0-9.]+\\*vdd([+-][0-9.]+)?$"
+        },
+        "max": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ],
+          "pattern": "^ratio:[0-9.]+\\*vdd([+-][0-9.]+)?$"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "at": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "string"
+            ]
+          }
+        },
+        "cond": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string"
+        },
+        "illustrative": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "pinelec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "class": {
+          "enum": [
+            "power_in",
+            "power_out",
+            "input",
+            "output",
+            "bidirectional",
+            "open_collector",
+            "passive",
+            "analog",
+            "nc",
+            "unspecified"
+          ]
+        },
+        "abs_max": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "v_min": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "v_max": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ],
+              "pattern": "^pin:[A-Za-z0-9]+[+-][0-9.]+$"
+            },
+            "i_ma": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "src": {
+              "type": "string"
+            },
+            "illustrative": {
+              "type": "boolean"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "supply_pin": {
+          "type": "string"
+        },
+        "tristate": {
+          "type": "boolean"
+        },
+        "vih": {
+          "$ref": "#/$defs/datum"
+        },
+        "vil": {
+          "$ref": "#/$defs/datum"
+        },
+        "voh": {
+          "$ref": "#/$defs/datum"
+        },
+        "vol": {
+          "$ref": "#/$defs/datum"
+        },
+        "i_out_max_ma": {
+          "$ref": "#/$defs/datum"
+        },
+        "i_in_leak": {
+          "$ref": "#/$defs/datum"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    }
+  },
   "required": ["id", "kind", "verification", "kicad", "pins"],
   "properties": {
     "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
@@ -62,6 +200,182 @@
       "section": {"type": "string"}, "doc_url": {"type": "string"}, "page": {"type": ["string", "integer"]},
       "rev": {"type": "string"}, "method": {"type": "string"}, "verified_by": {"type": "string"},
       "date": {"type": "string"}, "notes": {"type": "string"}}}},
+    "electrical": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Electrical data for the P2 analyzer (docs/design/P2_ELECTRICAL_ANALYZER.md 2, 4.3). UNSIGNED: not in parts.SIGNED_FIELDS. The signature (ADR 0006) attests pin identity (names, numbers, pads) which a tool can crosscheck; electrical numbers are read from a datasheet by an agent and need a person's sign-off that no tool can give, so signing them would make a crosscheck tier claim it does not earn, and adding them to the signed set would drop every crosschecked record to unverified. Each number carries its own `src` (URL + page + revision) instead; a number with neither `src` nor `illustrative: true` is rejected by validate(). A value that could not be cited is null and listed in `gaps`; it is never guessed. electrical.pins.<pad>.class/abs_max override the legacy pins.<pad>.class/abs_max (which are signed and may be illustrative) when both exist.",
+      "properties": {
+        "value_match": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "description": "family records only: the part values (netlist value) this block covers, e.g. RED; other values are NOT_JUDGED"
+        },
+        "input_type": {
+          "enum": [
+            "cmos",
+            "ttl",
+            "schmitt"
+          ]
+        },
+        "tristate": {
+          "type": "boolean"
+        },
+        "role": {
+          "enum": [
+            "clamp",
+            "rectifier",
+            "led",
+            "resistor",
+            "regulator",
+            "mosfet",
+            "optocoupler",
+            "logic",
+            "mcu",
+            "sensor"
+          ]
+        },
+        "pins": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9]+$": {
+              "$ref": "#/$defs/pinelec"
+            }
+          },
+          "additionalProperties": false
+        },
+        "pin_defaults": {
+          "type": "object",
+          "patternProperties": {
+            "^(power_in|power_out|input|output|bidirectional|open_collector|passive|analog|nc|unspecified)$": {
+              "$ref": "#/$defs/pinelec"
+            }
+          },
+          "additionalProperties": false
+        },
+        "regulator": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "topology": {
+              "enum": [
+                "ldo",
+                "switcher_module"
+              ]
+            },
+            "vin": {
+              "$ref": "#/$defs/datum"
+            },
+            "vout": {
+              "$ref": "#/$defs/datum"
+            },
+            "dropout": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/datum"
+              }
+            },
+            "i_max_ma": {
+              "$ref": "#/$defs/datum"
+            },
+            "i_limit_ma": {
+              "$ref": "#/$defs/datum"
+            },
+            "iq_ma": {
+              "$ref": "#/$defs/datum"
+            },
+            "min_load_ma": {
+              "$ref": "#/$defs/datum"
+            },
+            "efficiency_pct": {
+              "$ref": "#/$defs/datum"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "vf": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/datum"
+          }
+        },
+        "vth": {
+          "$ref": "#/$defs/datum"
+        },
+        "rds_on": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/datum"
+          }
+        },
+        "ctr_pct": {
+          "$ref": "#/$defs/datum"
+        },
+        "i_f_max_ma": {
+          "$ref": "#/$defs/datum"
+        },
+        "theta_ja": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/datum"
+          }
+        },
+        "tj_max": {
+          "$ref": "#/$defs/datum"
+        },
+        "p_max_mw": {
+          "$ref": "#/$defs/datum"
+        },
+        "load_ma": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "typ": {
+              "$ref": "#/$defs/datum"
+            },
+            "peak": {
+              "$ref": "#/$defs/datum"
+            }
+          }
+        },
+        "clamp": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "v_standoff": {
+              "$ref": "#/$defs/datum"
+            },
+            "v_breakdown": {
+              "$ref": "#/$defs/datum"
+            },
+            "v_clamp": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/datum"
+              }
+            }
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
     "signed_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
     "notes": {"type": "string"}
   },

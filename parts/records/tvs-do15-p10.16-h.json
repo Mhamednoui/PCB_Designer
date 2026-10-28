@@ -43,5 +43,64 @@
   "notes": "ILLUSTRATIVE: lead size is the family-typical value, not read from a part datasheet. POLARISED, UNIDIRECTIONAL TVS (reflex D1 P6KE15A, drawn with the zener symbol). Pin 1 = cathode (band) goes to the protected rail, pin 2 = anode to GND. A bidirectional part (P6KE15CA) has no polarity: do not substitute blindly.",
   "status": "draft",
   "verification": "unverified",
+  "electrical": {
+   "role": "clamp",
+   "value_match": [
+    "P6KE15A"
+   ],
+   "clamp": {
+    "v_standoff": {
+     "max": 12.8,
+     "unit": "V",
+     "cond": "P6KE15A reverse stand-off voltage VWM",
+     "src": "https://www.vishay.com/docs/88369/p6ke.pdf (Vishay P6KE6.8A-P6KE540A, doc 88369) PDF p2"
+    },
+    "v_breakdown": {
+     "min": 14.3,
+     "max": 15.8,
+     "unit": "V",
+     "at": {
+      "it_ma": 1
+     },
+     "cond": "P6KE15A breakdown voltage",
+     "src": "https://www.vishay.com/docs/88369/p6ke.pdf (Vishay P6KE6.8A-P6KE540A, doc 88369) PDF p2"
+    },
+    "v_clamp": [
+     {
+      "max": 21.2,
+      "unit": "V",
+      "at": {
+       "ipp_a": 28.3,
+       "pulse": "10/1000us"
+      },
+      "cond": "P6KE15A maximum clamping voltage",
+      "src": "https://www.vishay.com/docs/88369/p6ke.pdf (Vishay P6KE6.8A-P6KE540A, doc 88369) PDF p2"
+     }
+    ]
+   },
+   "p_max_mw": {
+    "max": 600000,
+    "unit": "mW",
+    "cond": "peak pulse power PPPM 600 W, 10/1000 us waveform (pulse rating, not continuous)",
+    "src": "https://www.vishay.com/docs/88369/p6ke.pdf (Vishay P6KE6.8A-P6KE540A, doc 88369) PDF p1"
+   },
+   "theta_ja": [
+    {
+     "typ": 75,
+     "unit": "C/W",
+     "cond": "typical junction-to-ambient",
+     "src": "https://www.vishay.com/docs/88369/p6ke.pdf (Vishay P6KE6.8A-P6KE540A, doc 88369) PDF p3"
+    }
+   ],
+   "tj_max": {
+    "max": 175,
+    "unit": "C",
+    "cond": "operating junction and storage temperature range -55..+175 C",
+    "src": "https://www.vishay.com/docs/88369/p6ke.pdf (Vishay P6KE6.8A-P6KE540A, doc 88369) PDF p1"
+   },
+   "gaps": [
+    "unidirectional: this record's pin 1 = cathode"
+   ]
+  },
   "signed_hash": null
 }
