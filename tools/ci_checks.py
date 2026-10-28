@@ -191,13 +191,16 @@ def check_rules():
 def check_elec():
     """Electrical model tests (P2-T3): divider fixtures, blinky-555 hand calculations, synthetic LDO board, FET states,
     pull defaults, the ctx.model hook, reflex-machine counts."""
-    r = subprocess.run([sys.executable, "tests/elec/test_model.py"], cwd=ROOT, capture_output=True, text=True,
-                       encoding="utf-8", errors="replace")
-    lines = r.stdout.strip().splitlines() or ["(no output)"]
-    print("  tests/elec/test_model.py -> %s" % lines[-1])
-    if r.returncode != 0:
-        return ["tests/elec/test_model.py exited %d" % r.returncode] + ["    " + ln for ln in lines if "FAIL" in ln][:10]             + (["    " + r.stderr.strip().splitlines()[-1]] if r.stderr.strip() else []), []
-    return [], []
+    bad = []
+    for test in ("tests/elec/test_model.py", "tests/elec/test_budget.py"):
+        r = subprocess.run([sys.executable, test], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        lines = r.stdout.strip().splitlines() or ["(no output)"]
+        print("  %s -> %s" % (test, lines[-1]))
+        if r.returncode != 0:
+            bad += ["%s exited %d" % (test, r.returncode)] + ["    " + ln for ln in lines if "FAIL" in ln][:10]
+            if r.stderr.strip():
+                bad.append("    " + r.stderr.strip().splitlines()[-1])
+    return bad, []
 
 
 CHECKS = {"compile": check_compile, "schemas": check_schemas, "selftests": check_selftests, "rules": check_rules,

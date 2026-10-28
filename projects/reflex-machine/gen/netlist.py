@@ -229,8 +229,8 @@ _MEGA_PADS = {n: p for p, n in mega.items()}
 EXTERNAL = X.merge(
     X.pins("J1", [1], dir="supply", v=(10.8, 13.2), i=16.0,
            why="the single 12 V 16 A supply (DESIGN_BRIEF), +-10 % assumed; the 10 A blade fuse F1 is the protection"),
-    *[X.pins("J%d" % j, [1, 2], dir="out",
-             why="MAG%d electromagnet coil wired by the user (WIRING_GUIDE), sized <= 1.5 A, flyback diode D%d on board" % (j - 1, j + 9))
+    *[X.pins("J%d" % j, [1, 2], dir="out", i=1.5,
+             why="MAG%d electromagnet coil wired by the user (WIRING_GUIDE), sized <= 1.5 A (i = that design figure, continuous), flyback diode D%d on board" % (j - 1, j + 9))
       for j in range(2, 12)],
     X.pins("J12", [1], dir="out", why="12 V supply for the coin acceptor (WIRING_GUIDE J12)"),
     X.pins("J12", [3], dir="in", v=(0.0, 13.2),

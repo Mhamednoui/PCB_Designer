@@ -29,6 +29,12 @@ project synth-esp32s3 (7 parts)
   NOT_JUDGED (part, field, tier first needed, refs, pins):
     esp32-s3-wroom-1-n8 | pin.abs_max | pcba | U1 pins 3,27
 
+project synth-ldo (18 parts)
+  hand  required    9   present    9   NOT_JUDGED    0
+  pcba  required   64   present   59   NOT_JUDGED    5
+  NOT_JUDGED (part, field, tier first needed, refs, pins):
+    esp32-s3-wroom-1-n8 | pin.abs_max | pcba | U1 pins 3,12,17,23,27
+
 project uno-toggle (9 parts)
   hand  required    3   present    3   NOT_JUDGED    0
   pcba  required    7   present    6   NOT_JUDGED    1

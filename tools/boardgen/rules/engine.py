@@ -80,6 +80,17 @@ class Context:
             self._shared["model"] = build_model(self._raw_ir)
         return self._shared["model"]
 
+    @property
+    def budget(self):
+        """The current budget (boardgen.elec.budget.Budget) over the same model, built lazily once per run (P2-T6).
+        A rule must declare "electrical" in `needs` to use it."""
+        if "electrical" not in self.rule.needs:
+            raise KeyError("rule %s did not declare needs=('electrical',): it may not use ctx.budget" % self.rule.id)
+        if "budget" not in self._shared:
+            from boardgen.elec.budget import build_budget
+            self._shared["budget"] = build_budget(self._raw_ir, self.model)
+        return self._shared["budget"]
+
     def examined(self, n=1):
         self.n_examined += n
 

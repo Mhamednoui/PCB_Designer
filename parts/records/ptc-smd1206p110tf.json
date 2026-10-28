@@ -1,0 +1,66 @@
+{
+ "id": "ptc-smd1206p110tf",
+ "kind": "part",
+ "mpn": "SMD1206P110TF",
+ "manufacturer": "Ruilon",
+ "status": "draft",
+ "verification": "unverified",
+ "lcsc": {
+  "id": "C20801",
+  "class": "extended"
+ },
+ "package": {
+  "name": "1206 resettable fuse (PTC)",
+  "mount": "smd",
+  "lcsc_package": "1206"
+ },
+ "kicad": {
+  "symbol": "Device:Polyfuse",
+  "footprint": "Fuse:Fuse_1206_3216Metric"
+ },
+ "ratings": {
+  "t_op_c": [
+   -40,
+   85
+  ]
+ },
+ "pins": {
+  "1": {
+   "name": "~",
+   "class": "passive"
+  },
+  "2": {
+   "name": "~",
+   "class": "passive"
+  }
+ },
+ "evidence": [],
+ "signed_hash": null,
+ "notes": "DRAFT written by hand for the P2-T6 synthetic fixture (synth-ldo), from the ref-esp32 ARCHITECTURE section 2.4 (PTC DS p.3: Ihold 1.10 A, Itrip 2.20 A, Vmax 6 V, R1max 0.25 ohm). No EasyEDA/jlcsearch data, symbol/footprint are KiCad stock names that nobody has crosschecked. Tier unverified.",
+ "electrical": {
+  "role": "fuse",
+  "fuse": {
+   "i_hold_ma": {
+    "min": 1100,
+    "unit": "mA",
+    "cond": "hold current Ihold at 23 C (derates with temperature, chart on p.4 not extracted)",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/147b01ecd3cb8b8f5a5deee7c25b85b7.pdf?productCode=C20801 (Ruilon SMD1206 series SP-PTC-006 A6) PDF p3"
+   },
+   "i_trip_ma": {
+    "min": 2200,
+    "unit": "mA",
+    "cond": "trip current Itrip",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/147b01ecd3cb8b8f5a5deee7c25b85b7.pdf?productCode=C20801 (Ruilon SMD1206 series SP-PTC-006 A6) PDF p3"
+   },
+   "r_max_ohm": {
+    "max": 0.25,
+    "unit": "ohm",
+    "cond": "R1max, resistance one hour after trip/reflow",
+    "src": "https://datasheet.lcsc.com/datasheet/pdf/147b01ecd3cb8b8f5a5deee7c25b85b7.pdf?productCode=C20801 (Ruilon SMD1206 series SP-PTC-006 A6) PDF p3"
+   }
+  },
+  "gaps": [
+   "hold current vs temperature (derating chart) not extracted"
+  ]
+ }
+}

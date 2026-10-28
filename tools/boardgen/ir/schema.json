@@ -254,6 +254,15 @@
        "tristate": {
         "type": "boolean"
        },
+       "fuse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+         "i_hold_ma": {"$ref": "#/$defs/datum"},
+         "i_trip_ma": {"$ref": "#/$defs/datum"},
+         "r_max_ohm": {"$ref": "#/$defs/datum"}
+        }
+       },
        "regulator": {
         "type": "object",
         "additionalProperties": false,

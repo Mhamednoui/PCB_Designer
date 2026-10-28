@@ -149,7 +149,7 @@
     },
     {
       "name": "electrical",
-      "description": "Electrical rules (EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP) over out/design.json via the derived electrical model; NOT_JUDGED shown, never hidden.",
+      "description": "Electrical rules (EL-ABSMAX, EL-BUDGET, EL-CONN-PROT, EL-CONTENTION, EL-DROPOUT, EL-OD-PULLUP, EL-STRAP, EL-THERMAL) over out/design.json via the derived electrical model; NOT_JUDGED shown, never hidden.",
       "applies": "has_netlist",
       "interpreter": "system",
       "cwd": "root",

@@ -1,48 +1,65 @@
 {
-  "id": "fuseholder-blade-mini-keystone-3568",
-  "kind": "connector",
-  "footprint_aliases": ["Fuseholder_Blade_Mini"],
-  "package": {
-    "name": "Fuse holder, car blade mini (Keystone 3568)",
-    "mount": "tht"
+ "id": "fuseholder-blade-mini-keystone-3568",
+ "kind": "connector",
+ "footprint_aliases": [
+  "Fuseholder_Blade_Mini"
+ ],
+ "package": {
+  "name": "Fuse holder, car blade mini (Keystone 3568)",
+  "mount": "tht"
+ },
+ "kicad": {
+  "symbol": "Device:Fuse",
+  "footprint": "Fuse:Fuseholder_Blade_Mini_Keystone_3568",
+  "fp_pad_copies": {
+   "1": 2,
+   "2": 2
+  }
+ },
+ "pins": {
+  "1": {
+   "name": "~",
+   "class": "passive",
+   "also": "unnamed pin 1 (KiCad shows ~)"
   },
-  "kicad": {
-    "symbol": "Device:Fuse",
-    "footprint": "Fuse:Fuseholder_Blade_Mini_Keystone_3568",
-    "fp_pad_copies": {
-      "1": 2,
-      "2": 2
-    }
+  "2": {
+   "name": "~",
+   "class": "passive",
+   "also": "unnamed pin 2 (KiCad shows ~)"
+  }
+ },
+ "evidence": [
+  {
+   "section": "pins",
+   "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
+   "verified_by": "agent-P1-T7",
+   "date": "2026-10-27",
+   "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Pad multiset 1x2, 2x2 taken from the footprint file."
+  }
+ ],
+ "polarity": {
+  "polarised": false
+ },
+ "unverified_dims": [
+  "current_rating"
+ ],
+ "notes": "Reflex F1 (10 A mini blade). Each blade clip has TWO pads sharing one number (1,1,2,2), so pad checks must use a multiset. Unpolarised. The 10 A rating of the holder itself is NOT recorded: owner to confirm against the Keystone 3568 datasheet.",
+ "status": "draft",
+ "verification": "unverified",
+ "signed_hash": null,
+ "electrical": {
+  "role": "fuse",
+  "fuse": {
+   "i_hold_ma": {
+    "typ": 10000,
+    "unit": "mA",
+    "illustrative": true,
+    "cond": "ILLUSTRATIVE: the 10 A mini blade fuse this holder carries in reflex F1 (value field '10A mini blade'); a blade fuse holds its rated current, makers advise <= 75 % continuous (not applied here). The holder's own rating is NOT in this record"
+   }
   },
-  "pins": {
-    "1": {
-      "name": "~",
-      "class": "passive",
-      "also": "unnamed pin 1 (KiCad shows ~)"
-    },
-    "2": {
-      "name": "~",
-      "class": "passive",
-      "also": "unnamed pin 2 (KiCad shows ~)"
-    }
-  },
-  "evidence": [
-    {
-      "section": "pins",
-      "method": "agent-prepared: pin numbers/names and pad multiset diffed against the installed KiCad 10.0.6 symbol and footprint files; no datasheet read",
-      "verified_by": "agent-P1-T7",
-      "date": "2026-10-27",
-      "notes": "Scope: pad count, pad numbers and symbol pin numbers only. Pad multiset 1x2, 2x2 taken from the footprint file."
-    }
-  ],
-  "polarity": {
-    "polarised": false
-  },
-  "unverified_dims": [
-    "current_rating"
-  ],
-  "notes": "Reflex F1 (10 A mini blade). Each blade clip has TWO pads sharing one number (1,1,2,2), so pad checks must use a multiset. Unpolarised. The 10 A rating of the holder itself is NOT recorded: owner to confirm against the Keystone 3568 datasheet.",
-  "status": "draft",
-  "verification": "unverified",
-  "signed_hash": null
+  "gaps": [
+   "series resistance of fuse + holder not stated (EL-DROPOUT cannot subtract it)",
+   "holder current rating unverified (see notes)"
+  ]
+ }
 }
