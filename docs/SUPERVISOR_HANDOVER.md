@@ -2,7 +2,7 @@
 
 Written for: the next Claude session (after a compaction, a usage limit, or a new chat) continuing as
 SUPERVISOR of this repo. Everything needed is in files; nothing lives only in chat. Updated after every merge.
-**Last updated: 2026-10-28 (after P2-T8 merge).**
+**Last updated: 2026-10-28 (after P2-T8 merge; ROADMAP stale statuses fixed at 5fb903f; only P2-T6 + P2-T9 in flight).**
 
 ## 1. Where things are
 | What | Where |
