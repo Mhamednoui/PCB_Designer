@@ -165,7 +165,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 ### M4 Polish - docs + housekeeping
 | ID | Task | Files | Effort | Deps | Acceptance | St |
 |---|---|---|---|---|---|---|
-| M4-T1 | Slim CLAUDE.md: session log → `docs/SESSION_LOG.md`, keep rules/env/status/pointers | `CLAUDE.md`, `docs/SESSION_LOG.md` (new) | low | - | ≤120 lines, nothing lost | ⬜ |
+| M4-T1 ✅ (66 lines) | Slim CLAUDE.md: session log → `docs/SESSION_LOG.md`, keep rules/env/status/pointers | `CLAUDE.md`, `docs/SESSION_LOG.md` (new) | low | - | ≤120 lines, nothing lost | ⬜ |
 | M4-T2 | Fix stale/contradictory docs (§0, §C): webview README/ROADMAP, HANDOVER, LESSONS 21, LESSONS 11-12 vs guide dedupe, README setup + doctor + new stages | `README.md`, `docs/*.md`, `webview/*.md`, `projects/*/README.md`, `HANDOVER.md` | low | M1-M3 | every path/command in docs exists; 0 open doc items | ⬜ |
 | M4-T3 | Housekeeping (see D3): `CODES/` → `projects/reflex-machine/firmware/` + pinmap path; duplicate `reflex-machine/out/render_*.png`; `.mcp.json` konnect; stray `tools/skidl_REPL.*`; MANUFACTURING.md timestamp churn | as listed | low | M2-T1 | pinmap still 0 mismatches; tests green | ⬜ |
 **DoD:** G5 met; AGENT_NOTES has no open item without an owner or a "won't fix".

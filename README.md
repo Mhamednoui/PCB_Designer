@@ -28,20 +28,33 @@ python pipeline.py uno-toggle --skip route
 ```
 Stages run in this order, and any that don't apply to a project are skipped automatically:
 
-| Stage | Script | What it does |
-|---|---|---|
-| `sch` | `tools/boardgen/make_sch.py` | build the `.kicad_sch` from `gen/netlist.py` |
-| `sch-check` | `tools/boardgen/check_sch.py` | compare schematic back to the netlist, then run ERC |
-| `place` | `gen/make_pcb.py place` | footprints, board outline, silkscreen, any pre-routes |
-| `route` | `gen/make_pcb.py route` | export DSN -> Freerouting -> import SES |
-| `finish` | `gen/make_pcb.py finish` | GND fan-out vias + copper pours, write the final `.kicad_pcb` |
-| `check` | `gen/make_pcb.py check` | DRC incl. schematic parity + unconnected count |
-| `outputs` | `tools/boardgen/make_outputs.py` | JLCPCB gerbers/BOM/CPL, STEP, PDF, renders into `out/` |
-| `fabreport` | `tools/boardgen/make_fab_report.py` | **`MANUFACTURING.md`** in the project: size in mm/cm, layers, stackup, every hole (checked against the real drill file), parts, fab-limit checks, order-form answers |
-| `connections` | `tools/boardgen/make_connections.py` | **`CONNECTIONS.md`**: every pin of every part and where its copper goes, in words, cross-checked schematic vs board |
-| `pinmap` | `test/pinmap.py` | cross-check firmware pin numbers against the netlist |
-| `spice` | `tools/boardgen/make_spice.py` | LTspice transient of the whole board, measured vs the `expect` in `netlist.py` (only if it has a `SPICE` block) |
-| `webview` | `webview/tools/onboard.py` | export the GLB + manifest so the 3D platform can show it |
+| Stage | What it does |
+|---|---|
+| `lint` | Design-rule lint of netlist.py (decoupling, polarity, LED resistors, shorts, pad/pin existence, registry use). Pure Python, <1 s. |
+| `parts` | Registry parts vs live/cached LCSC + EasyEDA: MPN, footprint geometry, package, stock, freshness. |
+| `sch` | Generate the schematic from netlist.py. |
+| `sch-check` | Netlist compare (kicad-cli export vs netlist.py) plus ERC. |
+| `place` | Footprints, board outline, silkscreen and pre-routed links. |
+| `route` | Autoroute with Freerouting. |
+| `finish` | Ground pours and stitching vias. |
+| `check` | DRC including schematic parity - the gate before fab. |
+| `ir` | Design IR (out/design.json): parts, nets, board geometry from netlist.py + .kicad_pcb; netlist-vs-board net cross-check; JSON-Schema validated. |
+| `review` | Design review (kicad-happy schematic/PCB/EMC analyzers + waivers.json): decoupling distance, EMC, power tree. |
+| `outputs` | Gerbers, drill, BOM, CPL, STEP, schematic PDF and renders. |
+| `lvs` | Independent connectivity of the fab zip itself (gerbers + drill), diffed against netlist.py. |
+| `fabreport` | MANUFACTURING.md: size, layers, holes, parts, order-form answers. Read-only on the board. |
+| `connections` | CONNECTIONS.md: every pin of every part and where its copper goes, in plain words. |
+| `pinmap` | Firmware pin map vs netlist cross-check (enabled by a FIRMWARE block in netlist.py). |
+| `spice` | Transient LTspice run of the whole board plus expected-vs-measured (enabled by a SPICE block in netlist.py). |
+| `webview` | Export GLB, cache icons, build manifest, onboard to the viewer (works for any .kicad_pcb). |
+
+Useful flags and checks: `--no-cache` (ignore the stage cache), `--describe <stage>`, `--explain RULE-ID`.
+Each run writes a report to `projects/<id>/out/run/<ts>/report.html`.
+```bash
+python tools/ci_checks.py all
+python tests/mutations/run_mutations.py --tier fast --jobs 4
+python tools/parts.py            # parts registry CLI
+```
 
 `pipeline.py` **refuses to re-run design stages on a board that already has `out/fab`** — pass
 `--force` if you really mean to rebuild a board that has been sent to fab.
@@ -93,7 +106,7 @@ there's a local substitute. Nothing here needs a login except Wokwi.
 | ERC / DRC / schematic parity | `kicad-cli`, local |
 | Gerbers, drill, BOM, CPL, STEP, PDF, renders | `kicad-cli`, local |
 | The webview 3D platform | server binds `127.0.0.1`; three.js is **vendored** in `webview/app/vendor/` |
-| The `drc` service, `tools/sym_pins.py`, `test/pinmap.py` | pure local Python |
+| The `drc` service, `tools/sym_pins.py`, the `pinmap` stage | pure local Python |
 | LTspice + the `spice` skill | local simulator |
 | PlatformIO firmware builds | offline once the AVR + ESP32 toolchains are cached — they already are |
 

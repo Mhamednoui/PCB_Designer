@@ -26,3 +26,7 @@ InteractiveHtmlBom, Fabrication-Toolkit, awesome-kicad (big curated list)
 
 ## Also install from KiCad Plugin and Content Manager
 Fabrication Toolkit (JLCPCB outputs), Interactive Html Bom, Freerouting, KiKit
+
+## Added later
+- `gerbonara`, `shapely` - Python deps in `requirements.txt` (gerber LVS, geometry checks).
+- `.claude/agents/` - project agent types `pcb-light` (haiku, cheap lookups) and `pcb-worker` (sonnet, medium, implementation).
