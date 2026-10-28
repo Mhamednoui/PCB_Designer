@@ -112,7 +112,8 @@ def check_selftests():
     bad = []
     for cmd in ([sys.executable, "tools/boardgen/parts.py", "--selftest"],
                 [sys.executable, "tools/parts.py", "selftest"],
-                [sys.executable, "tools/boardgen/ir/build.py", "--selftest"]):
+                [sys.executable, "tools/boardgen/ir/build.py", "--selftest"],
+                [sys.executable, "tests/scaffold/test_scaffold.py"]):
         r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
         tail = (r.stdout.strip().splitlines() or ["(no output)"])[-1]
         print("  %s -> %s" % (" ".join(cmd[1:]), tail))

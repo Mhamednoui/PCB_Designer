@@ -373,9 +373,16 @@ def main():
                         help="explain one rule of the rule engine (doc, mutation, example finding), then exit")
     parser.add_argument("--force", action="store_true",
                         help="allow re-running design stages on a board that already has fab outputs")
+    parser.add_argument("--scaffold", nargs=2, metavar=("KIND", "NAME"),
+                        help="create a stub: rule|stage|mutation|part|block|project NAME (docs/CONTRIBUTING.md), then exit")
     parser.add_argument("--no-cache", action="store_true",
                         help="run every stage even if its inputs are unchanged since the last successful run")
     args = parser.parse_args()
+
+    if args.scaffold:
+        from boardgen import scaffold
+        scaffold.run_cli(*args.scaffold)
+        return
 
     if args.explain:
         from boardgen.rules import engine

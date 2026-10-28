@@ -1,0 +1,25 @@
+"""Pipeline stage @NAME@: TODO what it does (registry entry: tools/boardgen/stages.json).
+
+Usage: python tools/boardgen/@MOD@.py <project-id>      exit 0 = ok, 1 = the stage failed (message on stdout)
+"""
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+def main(argv):
+    if len(argv) != 1:
+        print("usage: @MOD@.py <project-id>")
+        return 2
+    project_dir = os.path.join(ROOT, "projects", argv[0])
+    if not os.path.isdir(project_dir):
+        print("no such project: %s" % project_dir)
+        return 1
+    # TODO: read the inputs listed in the stages.json entry, write the outputs listed there.
+    print("stage @NAME@ is a scaffold stub: nothing checked")
+    return 1                      # fail closed until implemented
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
