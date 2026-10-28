@@ -116,11 +116,25 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |
 | PA-5 parallel + tiered mutation runner | ✅ (fast tier 28 s, full 129 s @4 jobs) |
 | PA-6 run report + tool versions + determinism | ✅ (`out/run/<ts>/report.html`; 2 runs → git clean) |
-| PA-7 finding taxonomy, `--explain`, board markers | ⬜ |
+| PA-7 finding taxonomy, `--explain`, board markers | → folded into P2-T1 |
 | PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
 | PA-9 pre-commit + CI | ✅ (GitHub Actions green; found+fixed a 0x08-corrupted regex in check_sch.py) |
 | PA-10 ADRs + CHANGELOG + platform version | ✅ (docs/adr 0001-0012, VERSION 0.2.0) |
 | PA-11 KiCad-schematic input adapter (hand-drawn schematic → PCB) | ⬜ |
+
+### P2 Electrical analyzer + requirements - tasks P2-T1..T10 in `docs/design/P2_ELECTRICAL_ANALYZER.md` §6 (decisions §8)
+| ID | St |
+|---|---|
+| P2-T1 rule engine + Finding + waivers v2 + `--explain` (incl. PA-7) | 🔄 |
+| P2-T2 record `electrical` block + IR abs_max/EXTERNAL + fixture data | ⬜ |
+| P2-T3 electrical model v1 | ⬜ |
+| P2-T4 EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP | ⬜ |
+| P2-T5 EL-FLOAT, EL-LEVEL, EL-NETSPEC | ⬜ |
+| P2-T6 budget, dropout, thermal | ⬜ |
+| P2-T7 EL-CONN-PROT + EXTERNAL | ⬜ |
+| P2-T8 strap evaluator (ESP32-S3) | ⬜ |
+| P2-T9 requirements engine (IV-2) | ⬜ |
+| P2-T10 release coverage gate, RULES.md, lint migration | ⬜ |
 
 ### Independent verification (PLATFORM_PLAN §9) - queued
 | ID | Task | Phase | St |
