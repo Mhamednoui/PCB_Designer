@@ -126,6 +126,21 @@ SPICE = {
 }
 
 
+# Executable requirements (tools/boardgen/req/eval.py, judged by the `requirements` stage -> out/REQUIREMENTS.md).
+# Each line is design intent from the docstring / README, not a restatement of the wiring.
+REQUIREMENTS = [
+    {"id": "R1", "kind": "path", "from": "J1.1", "to": "U1.VCC", "through": {"ref": "D2"},
+     "text": "Supply reaches the 555 VCC pin (8) only through the reverse-polarity diode D2"},
+    {"id": "R2", "kind": "path_absent", "from": "U1.VCC", "to": "J1.1",
+     "text": "The board never back-feeds the supply connector (D2 blocks VCC -> VIN)"},
+    {"id": "R3", "kind": "path", "from": "U1.OUT", "to": "D1.A", "through": {"ref": "R3"},
+     "text": "The LED is driven from the 555 output through its current-limit resistor R3"},
+    {"id": "R4", "kind": "net_v", "net": "VIN", "min": 9.0, "max": 12.0,
+     "text": "Supply input stays inside the stated 9-12 V adapter range"},
+    {"id": "R5", "kind": "static_logic", "when": {"U1.OUT": [6.5, 10.5]}, "expect": {"D1": "on"},
+     "text": "D1 conducts at least 1 mA when OUT is high (assumed 6.5-10.5 V = VCC minus the 555 high-level drop)"},
+]
+
 def nets():
     out = {}
     for p in PARTS:

@@ -169,5 +169,6 @@ def build(project_id):
         "meta": {"project": project_id, "source": source, "git_commit": _git_commit(), "input_hashes": hashes},
         "parts": out_parts, "nets": out_nets, "external": _elec.parse_external(nl, out_parts),
         "assembly": {"mode": mode, "boards": boards},
+        "requirements": json.loads(json.dumps(getattr(nl, "REQUIREMENTS", None) or [])),   # P2-T9: judged by the `requirements` stage
         "fab_profile": {"name": str(fab) if fab else "jlcpcb", "declared": bool(fab)},
     }

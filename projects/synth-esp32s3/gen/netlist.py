@@ -41,3 +41,18 @@ NET_SPEC = {"3V3": {"v": (3.0, 3.6), "i_max": 0.5}, "GND": {"v": 0.0, "i_max": 0
 EXTERNAL = {"J1.1": {"v": (3.0, 3.6), "i": 0.5, "dir": "supply", "why": "fixture supply"},
             "J1.2": {"v": (0.0, 0.0), "dir": "supply", "why": "fixture ground"},
             "SW1": "none", "SW2": "none"}
+
+# Executable requirements R1-R5 from projects/ref-esp32/ARCHITECTURE.md (section 4 boot/EN, 3V3 rail); judged by the `requirements`
+# stage. ref-esp32 has no netlist yet, so this synthetic fixture carries them; ref-esp32 can copy them verbatim.
+REQUIREMENTS = [
+    {"id": "R1", "kind": "path", "from": "3V3", "to": "U1.EN", "through": {"ref": "R3"},
+     "text": "EN is pulled up to 3V3 through R3 (10k) so the module boots without the reset button"},
+    {"id": "R2", "kind": "path", "from": "U1.EN", "to": "GND", "with": {"SW2": "on"}, "through": {"ref": "SW2"},
+     "text": "Pressing RESET (SW2) pulls EN to GND"},
+    {"id": "R3", "kind": "path", "from": "3V3", "to": "U1.27", "through": {"ref": "R4"},
+     "text": "GPIO0 (BOOT, pin 27) is pulled up to 3V3 through R4 so the default boot is from flash"},
+    {"id": "R4", "kind": "path_absent", "from": "U1.27", "to": "GND",
+     "text": "GPIO0 has no hard path to GND while BOOT (SW1) is released (no strap cap or resistor to ground)"},
+    {"id": "R5", "kind": "net_v", "net": "3V3", "min": 3.0, "max": 3.6,
+     "text": "The 3V3 rail stays inside the module's 3.0-3.6 V operating range"},
+]

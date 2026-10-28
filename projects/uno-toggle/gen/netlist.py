@@ -126,6 +126,22 @@ FIRMWARE = {
 }
 
 
+# Executable requirements (judged by the `requirements` stage -> out/REQUIREMENTS.md); design intent from DESIGN_BRIEF.md.
+REQUIREMENTS = [
+    {"id": "R1", "kind": "path", "from": "SW1.1", "to": "A1.D2",
+     "text": "Button 1 reaches Uno pin D2"},
+    {"id": "R2", "kind": "path", "from": "SW2.1", "to": "A1.D3",
+     "text": "Button 2 reaches Uno pin D3"},
+    {"id": "R3", "kind": "path", "from": "A1.D8", "to": "D1.A", "through": {"ref": "R1"},
+     "text": "LED1 is driven from D8 through its 330R resistor R1"},
+    {"id": "R4", "kind": "path", "from": "A1.D9", "to": "D2.A", "through": {"ref": "R2"},
+     "text": "LED2 is driven from D9 through its 330R resistor R2"},
+    {"id": "R5", "kind": "path", "from": "SW1.2", "to": "A1.GND1",
+     "text": "A pressed button pulls its pin to the Uno ground (internal pull-up, pressed = LOW)"},
+    {"id": "R6", "kind": "path_absent", "from": "A1.D8", "to": "A1.D9",
+     "text": "The two LED outputs are not wired together"},
+]
+
 def nets():
     out = {}
     for p in PARTS:
