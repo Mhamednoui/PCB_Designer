@@ -308,6 +308,19 @@ def add_zone(board, net, layer, pts, priority=0, clearance=0.25, rule_area=False
 
 
 # ── stages ─────────────────────────────────────────────────
+def _stable_uuids(board):
+    """KiCad gives every item a random UUID and writes (and exports to Freerouting) items in UUID order, so
+    the same placement reached the router in a different order each build - and the router's result swings
+    with that order (the same board routed fully or left a net open depending on luck). Derive the UUIDs from
+    the item's reference / position so `place` is byte-reproducible."""
+    import uuid
+    ns = uuid.UUID("5b1d7a52-0000-4000-8000-000000000012")
+    for fp in board.GetFootprints():
+        fp.SetUuidDirect(pcbnew.KIID(str(uuid.uuid5(ns, "fp:" + fp.GetReference()))))
+    for i, t in enumerate(board.GetTracks()):
+        t.SetUuidDirect(pcbnew.KIID(str(uuid.uuid5(ns, "trk:%d" % i))))
+
+
 def stage_place():
     board = pcbnew.NewBoard(PCB) if hasattr(pcbnew, "NewBoard") else pcbnew.BOARD()
     nets = {}
@@ -425,6 +438,7 @@ def stage_place():
     if _hooks.get("post_place_report"):
         _hooks["post_place_report"](board)
 
+    _stable_uuids(board)
     pcbnew.SaveBoard(PCB, board)
     sync_routed_project()
     pcbnew.SaveBoard(ROUTED, board)
@@ -456,7 +470,10 @@ def _unconnected_nets(path):
     if not os.path.exists(rpt):
         raise SystemExit("route check: kicad-cli produced no DRC report for %s" % path)
     with open(rpt, encoding="utf-8") as f:
-        items = json.load(f).get("unconnected_items", [])
+        rep = json.load(f)
+    # a router-made short between two nets is as fatal as an open one, and a retry fixes it just the same
+    items = rep.get("unconnected_items", []) + [v for v in rep.get("violations", [])
+                                                if v.get("type") == "shorting_items"]
     nets = set()
     for v in items:
         for i in v.get("items", []):
@@ -482,7 +499,7 @@ def stage_route(passes=40):
             with open(ROUTED, "wb") as f:
                 f.write(start)
         print("=== route attempt %d/%d ===" % (attempt, ROUTE_ATTEMPTS))
-        left = _route_attempt(passes)
+        left = _route_attempt(passes, attempt)
         if not left:
             return
         print("attempt %d left %d net(s) unconnected: %s" % (attempt, len(left), ", ".join(left)))
@@ -490,7 +507,28 @@ def stage_route(passes=40):
                      % (len(left), ROUTE_ATTEMPTS, ", ".join(left)))
 
 
-def _route_attempt(passes):
+def _shuffle_dsn_nets(dsn, seed):
+    """Freerouting's result depends on the order of the DSN's (net ...) blocks, and a retry from the same
+    board gets the same order, so it repeats the same failure. Reorder the nets (seeded by the attempt
+    number, so it is reproducible) to give a retry a genuinely different start."""
+    import random
+    import re
+    with open(dsn, encoding="utf-8") as f:
+        text = f.read()
+    net_block = re.compile(r"^    \(net .*?^    \)$", re.M | re.S)
+    blocks = net_block.findall(text)
+    if len(blocks) < 2:
+        return
+    order = sorted(blocks)              # KiCad's export order follows its random UUIDs; start from a fixed one
+    if seed > 1:
+        random.Random(seed).shuffle(order)
+    it = iter(order)
+    with open(dsn, "w", encoding="utf-8") as f:
+        f.write(net_block.sub(lambda m: next(it), text))
+    print("DSN: %s %d net blocks for attempt %d" % ("shuffled" if seed > 1 else "sorted", len(blocks), seed))
+
+
+def _route_attempt(passes, attempt=1):
     """One Freerouting run from the board in ROUTED, imported back into ROUTED. -> unconnected net names."""
     board = pcbnew.LoadBoard(ROUTED)
     # Detach GND: every GND pad (+ its fan-out track/via) gets its own one-pad net, so the
@@ -519,6 +557,7 @@ def _route_attempt(passes):
         os.remove(ses)
     ok = pcbnew.ExportSpecctraDSN(board, dsn)
     print("DSN export:", ok, dsn)
+    _shuffle_dsn_nets(dsn, attempt)
     cmd = [FREEROUTING, "-de", dsn, "-do", ses, "-mp", str(passes), "--gui.enabled=false"]
     print("running:", " ".join(cmd), "(no seed option: result varies run to run)")
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=3600)

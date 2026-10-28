@@ -393,3 +393,9 @@ that text does not exist in the file.
   **anything with a backslash goes through the Edit tool, never a heredoc.**
 
 **Found again by CI (PA-9):** `tools/boardgen/check_sch.py` carried a raw 0x08 in a regex (a `BS-b` from a heredoc) for weeks; `python tools/ci_checks.py ctrlchars` now catches this class on every commit.
+### Freerouting results swing with the DSN item order, and KiCad's order is random (MD-T12)
+KiCad writes (and exports to Freerouting) footprints in random-UUID order, so the *same* placement reached the
+router in a different order each build and routed fully or left one net open ("flaky" reflex builds that failed
+identically on all retries). `place` now assigns UUIDs derived from the reference (`_stable_uuids`), the DSN net
+blocks start sorted (retries shuffle them with the attempt number), and the route check also treats a router-made
+short (`shorting_items`) as a failure. Check determinism with: run `place` twice, diff the files after stripping uuids.
