@@ -148,7 +148,7 @@ def extra_pours(board, nets, inset):
     pcb.add_zone(board, nets["+12V"], pcb.pcbnew.F_Cu,
                  [(inset, inset), (BW - inset, inset), (BW - inset, 66.0), (112.0, 66.0), (112.0, 13.2), (inset, 13.2)],
                  priority=1, clearance=0.4)
-    # +12V_IN pour around the 7.5 mm pre-route in extra_routes (J1 pad 1 -> fuse pad pair), so the pad
+    # +12V_IN pour over the 2.5 mm skeleton from extra_routes (J1 pad 1 -> fuse pad pair), so the pad
     # connections and any router stubs are copper of the same width; GND pad J1.2 stays 1.5 mm outside.
     pcb.add_zone(board, board.FindNet("/+12V_IN") or board.FindNet("+12V_IN"), pcb.pcbnew.F_Cu,
                  [(140.25, 72.5), (147.75, 72.5), (147.75, 87.75), (152.5, 87.75), (152.5, 95.25), (140.25, 95.25)],

@@ -391,3 +391,10 @@ that text does not exist in the file.
   heredoc became a raw 0x01 byte. Symptom: the output silently lost text ("RST" vanished), and the Edit
   tool could not match the line it displayed. `repr()` showed `\x01` at once. Rule, now twice-learned:
   **anything with a backslash goes through the Edit tool, never a heredoc.**
+
+### Freerouting results swing with the DSN item order, and KiCad's order is random (MD-T12)
+KiCad writes (and exports to Freerouting) footprints in random-UUID order, so the *same* placement reached the
+router in a different order each build and routed fully or left one net open ("flaky" reflex builds that failed
+identically on all retries). `place` now assigns UUIDs derived from the reference (`_stable_uuids`), the DSN net
+blocks start sorted (retries shuffle them with the attempt number), and the route check also treats a router-made
+short (`shorting_items`) as a failure. Check determinism with: run `place` twice, diff the files after stripping uuids.
