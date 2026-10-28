@@ -416,6 +416,9 @@ def rule_registry(M, reg_refs, rec_problems):
         k = rec["kicad"]
         for what, have, want in (("symbol", p["lib_id"], k["symbol"]), ("footprint", p["footprint"], k["footprint"])):
             if have != want:
+                if what == "footprint" and any(_parts._squash(a) in _parts._squash(have.split(":", 1)[-1])
+                                               for a in rec.get("footprint_aliases") or []):
+                    continue                                  # a declared alias of the record's footprint
                 M.add("ERROR", "PR-REF", ref, "%s %s differs from registry record %s (%s)" % (what, have, pid, want),
                       refs=[ref])
         # PR-SYM: KiCad symbol pins vs record pins
