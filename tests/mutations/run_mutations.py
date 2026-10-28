@@ -47,6 +47,7 @@ turn a mutation into a no-op):
     {"type": "replace", "file": "gen/netlist.py", "old": "..", "new": "..", "count": 1}
                                                                   exact text replace in any text file
                                                                   (netlist.py edits, make_pcb.py, .kicad_pcb ...)
+    {"type": "delete", "file": "{prj}.kicad_pcb"}                 remove a file from the copy
     {"type": "placements", "set": {"D1": [68.0, 24.0, 0]}}        rewrite entries of the dict literal in
                                                                   gen/make_pcb.py's placements() ("REF": (x, y, rot))
     {"type": "net_spec", "net": "OUT", "set": {"i_max": 2.0}}     merge keys into NET_SPEC[net] (appended to netlist.py)
@@ -166,6 +167,15 @@ def op_replace(dst, pid, op):
                    op.get("count", 1), op.get("regex", False), op["file"]))
 
 
+def op_delete(dst, pid, op):
+    """Remove a file from the copy (e.g. the .kicad_pcb, so a netlist-topology mutation reaches a stage after `ir`
+    instead of being stopped by the IR's netlist-vs-board cross-check)."""
+    p = _path(dst, op["file"], pid)
+    if not os.path.isfile(p):
+        raise SetupError("delete: %s does not exist" % op["file"])
+    os.remove(p)
+
+
 def op_placements(dst, pid, op):
     p = _path(dst, "gen/make_pcb.py", pid)
     s = _read(p)
@@ -233,7 +243,7 @@ def op_records(dst, pid, op):
     ENV_EXTRA[pid] = {"PARTS_RECORDS_DIR": os.path.join(dst, "records")}     # honoured by boardgen/parts.py
 
 
-OPS = {"none": lambda *a: None, "replace": op_replace, "placements": op_placements, "net_spec": op_net_spec,
+OPS = {"none": lambda *a: None, "replace": op_replace, "delete": op_delete, "placements": op_placements, "net_spec": op_net_spec,
        "json_set": op_json_set, "records": op_records, "zip_replace": op_zip_replace, "zip_append": op_zip_append}
 
 

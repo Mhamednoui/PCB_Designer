@@ -39,6 +39,7 @@ Stages run in this order, and any that don't apply to a project are skipped auto
 | `finish` | Ground pours and stitching vias. |
 | `check` | DRC including schematic parity - the gate before fab. |
 | `ir` | Design IR (out/design.json): parts, nets, board geometry from netlist.py + .kicad_pcb; netlist-vs-board net cross-check; JSON-Schema validated. |
+| `electrical` | Electrical rules EL-ABSMAX / EL-CONTENTION / EL-OD-PULLUP over out/design.json (runs after `ir`; NOT_JUDGED shown, never fails a hand board). |
 | `review` | Design review (kicad-happy schematic/PCB/EMC analyzers + waivers.json): decoupling distance, EMC, power tree. |
 | `outputs` | Gerbers, drill, BOM, CPL, STEP, schematic PDF and renders. |
 | `lvs` | Independent connectivity of the fab zip itself (gerbers + drill), diffed against netlist.py. |

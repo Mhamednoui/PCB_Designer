@@ -1,0 +1,273 @@
+{
+ "expected": [],
+ "ir": {
+  "assembly": {
+   "boards": null,
+   "mode": null
+  },
+  "external": {
+   "declared": true,
+   "none": [],
+   "pins": {
+    "J1.1": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      0.0,
+      5.0
+     ],
+     "why": "fixture"
+    },
+    "J1.2": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      0.0,
+      0.0
+     ],
+     "why": "fixture"
+    }
+   }
+  },
+  "fab_profile": {
+   "declared": false,
+   "name": "x"
+  },
+  "ir_version": 2,
+  "meta": {
+   "git_commit": null,
+   "input_hashes": {},
+   "project": "fixture",
+   "source": "netlist"
+  },
+  "nets": {
+   "DRAIN": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "J2.1",
+     "Q1.2"
+    ],
+    "v": [
+     0.0,
+     0.0
+    ]
+   },
+   "GATE": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "J1.1",
+     "Q1.1"
+    ],
+    "v": null
+   },
+   "GND": {
+    "class": "ground",
+    "i_max": null,
+    "pins": [
+     "J1.2",
+     "J2.2",
+     "Q1.3"
+    ],
+    "v": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "parts": {
+   "J1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "",
+    "group": null,
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector:Conn",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "GATE"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J1",
+    "registry": null,
+    "value": "J1"
+   },
+   "J2": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "",
+    "group": null,
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector:Conn",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "DRAIN"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J2",
+    "registry": null,
+    "value": "J2"
+   },
+   "Q1": {
+    "electrical": {
+     "gaps": [
+      "RDS(on) at 3.3 V gate drive not given (lowest condition is VGS=4.0 V): a 3.3 V logic gate is NOT_JUDGED",
+      "RDS(on) rises with temperature: the datasheet curve is not extracted, only the 25 C maxima"
+     ],
+     "p_max_mw": {
+      "at": {
+       "tc_c": 25
+      },
+      "cond": "PD at TC=25 C (derating 0.71 W/C)",
+      "max": 110000,
+      "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1",
+      "unit": "mW"
+     },
+     "rds_on": [
+      {
+       "at": {
+        "id_a": 25,
+        "tj_c": 25,
+        "vgs_v": 10
+       },
+       "cond": "static RDS(on), value in the Max column",
+       "max": 0.022,
+       "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2",
+       "unit": "ohm"
+      },
+      {
+       "at": {
+        "id_a": 25,
+        "tj_c": 25,
+        "vgs_v": 5
+       },
+       "cond": "static RDS(on), value in the Max column",
+       "max": 0.025,
+       "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2",
+       "unit": "ohm"
+      },
+      {
+       "at": {
+        "id_a": 21,
+        "tj_c": 25,
+        "vgs_v": 4
+       },
+       "cond": "static RDS(on), value in the Max column",
+       "max": 0.035,
+       "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2",
+       "unit": "ohm"
+      }
+     ],
+     "role": "mosfet",
+     "theta_ja": [
+      {
+       "cond": "junction-to-ambient, TO-220 free air, datasheet value (not this PCB)",
+       "max": 62,
+       "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1",
+       "unit": "C/W"
+      }
+     ],
+     "tj_max": {
+      "cond": "operating junction temperature range -55..+175 C",
+      "max": 175,
+      "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1",
+      "unit": "C"
+     },
+     "vth": {
+      "at": {
+       "id_ua": 250,
+       "vds_eq_vgs": 1
+      },
+      "cond": "VGS(th), TJ=25 C",
+      "max": 2.0,
+      "min": 1.0,
+      "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2",
+      "unit": "V"
+     }
+    },
+    "electrical_status": "ok",
+    "footprint": "",
+    "group": null,
+    "kind": "part",
+    "lcsc": "",
+    "lib_id": "Transistor_FET:IRLZ44N",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VGS +-16 V",
+       "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1",
+       "v_max": 16,
+       "v_min": -16
+      },
+      "class": "input",
+      "io": null,
+      "name": "G",
+      "net": "GATE"
+     },
+     "2": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 47000,
+       "note": "v_max = V(BR)DSS min 55 V (p2); ID 47 A at TC=25 C, VGS=10 V (p1; 33 A at TC=100 C)",
+       "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p2",
+       "v_max": 55,
+       "v_min": null
+      },
+      "class": "passive",
+      "io": null,
+      "name": "D",
+      "net": "DRAIN"
+     },
+     "3": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 47000,
+       "note": "ID 47 A at TC=25 C",
+       "src": "https://www.infineon.com/dgdl/irlz44npbf.pdf?fileId=5546d462533600a40153567217c32726 (IR PD-94831, 11/11/03) PDF p1",
+       "v_max": null,
+       "v_min": null
+      },
+      "class": "passive",
+      "io": null,
+      "name": "S",
+      "net": "GND"
+     }
+    },
+    "ref": "Q1",
+    "registry": "irlz44npbf-to220ab",
+    "value": "IRLZ44N"
+   }
+  },
+  "requirements": []
+ }
+}
