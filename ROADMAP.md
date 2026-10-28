@@ -113,11 +113,11 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | PA-2 stage registry + incremental runner | ✅ (`tools/boardgen/stages.json`; `--describe`; `--no-cache`) |
 | PA-3 port checks to the IR | ⬜ |
 | PA-4 layer-agnostic pcb.py + blinky-4L fixture | ⬜ |
-| PA-5 parallel + tiered mutation runner | ⬜ |
+| PA-5 parallel + tiered mutation runner | 🔄 |
 | PA-6 run report + tool versions + determinism | ✅ (`out/run/<ts>/report.html`; 2 runs → git clean) |
 | PA-7 finding taxonomy, `--explain`, board markers | ⬜ |
 | PA-8 scaffolds + templates + CONTRIBUTING.md | ⬜ |
-| PA-9 pre-commit + CI | ⬜ |
+| PA-9 pre-commit + CI | ✅ (GitHub Actions green; found+fixed a 0x08-corrupted regex in check_sch.py) |
 | PA-10 ADRs + CHANGELOG + platform version | ✅ (docs/adr 0001-0012, VERSION 0.2.0) |
 | PA-11 KiCad-schematic input adapter (hand-drawn schematic → PCB) | ⬜ |
 
