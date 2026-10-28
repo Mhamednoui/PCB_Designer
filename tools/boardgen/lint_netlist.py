@@ -19,8 +19,9 @@ from collections import Counter
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))                    # tools/
 from boardgen import project as _project                      # noqa: E402
-from boardgen import waivers as _waivers                      # noqa: E402
 from boardgen import parts as _parts                          # noqa: E402
+from boardgen.rules import engine as _engine                  # noqa: E402
+from boardgen.rules.finding import Finding as _Finding        # noqa: E402
 from boardgen.sexp import parse, find_all                      # noqa: E402
 from sym_pins import _block                                    # noqa: E402
 
@@ -44,16 +45,9 @@ FAMILY = [
 ]
 
 
-class Finding:
-    def __init__(self, sev, rule, target, msg, refs=(), nets=()):
-        self.sev, self.rule, self.target, self.msg = sev, rule, target, msg
-        self.refs, self.nets = set(refs), set(nets)
-        self.waiver = None
-
-    def line(self):
-        tag = "WAIVED" if self.waiver is not None else self.sev
-        tail = "  [waiver: %s]" % self.waiver["why"] if self.waiver is not None else ""
-        return "%s %s %s: %s%s" % (tag, self.rule, self.target, self.msg, tail)
+def Finding(sev, rule, target, msg, refs=(), nets=()):
+    """Legacy constructor (sev, rule, target, msg): builds the shared boardgen.rules Finding (PA-7 / P2-T1)."""
+    return _Finding(rule, sev, msg, target=target, refs=refs, nets=nets)
 
 
 # ── library data ────────────────────────────────────────────────────────────────────────────────
@@ -148,6 +142,18 @@ class Model:
         self.spec = getattr(NL, "NET_SPEC", {}) or {}
         self.findings = []
         self.reg_refs = {}                                    # ref -> registry record id (registry_part parts)
+        self.stats = {}                                       # engine rule id -> items-examined stats
+
+    def ir_view(self):
+        """The slice of the design IR the engine rules read (parts -> pins -> net, nets -> pins), built from the netlist
+        in memory: lint is the first stage, before any out/design.json exists."""
+        return {"parts": {r: {"pins": {pad: {"net": n} for pad, n in p["pins"].items()}} for r, p in self.parts.items()},
+                "nets": {n: {"pins": sorted("%s.%s" % rp for rp in members)} for n, members in self.nets.items()}}
+
+    def run_rule(self, rule_id):
+        found, st = _engine.run(self.ir_view(), only=[rule_id])
+        self.findings += found
+        self.stats.update(st)
 
     def add(self, *a, **k):
         self.findings.append(Finding(*a, **k))
@@ -320,11 +326,7 @@ def rule_led(M):
 
 
 def rule_short(M):
-    for ref, p in sorted(M.parts.items()):
-        if len(p["pins"]) >= 2 and len(set(p["pins"].values())) == 1:
-            net = next(iter(p["pins"].values()))
-            M.add("ERROR", "short", ref, "all %d connected pins are on net %s (part is shorted)"
-                  % (len(p["pins"]), net), refs=[ref], nets=[net])
+    M.run_rule("LINT-SHORT")                                  # rules/lint_short.py
 
 
 def rule_pads(M):
@@ -362,11 +364,7 @@ def rule_pads(M):
 
 
 def rule_single_pin(M):
-    for net, members in sorted(M.nets.items()):
-        if len(members) == 1:
-            ref, pin = next(iter(members))
-            M.add("ERROR", "single-pin", "%s/%s" % (ref, net),
-                  "net %s touches only %s.%s" % (net, ref, pin), refs=[ref], nets=[net])
+    M.run_rule("LINT-SINGLE-PIN")                             # rules/lint_single_pin.py
 
 
 # ── registry rules (PR-*) ───────────────────────────────────────────────────────────────────────
@@ -516,18 +514,8 @@ def judged_by_family(M, ref):
 
 
 # ── waivers ─────────────────────────────────────────────────────────────────────────────────────
-def apply_waivers(project_id, findings):
-    ws, problems = _waivers.load(project_id, "lint")
-    extra = [Finding("ERROR", "waiver", t, m) for t, m in problems]
-    for i, w in ws:
-        used = False
-        for f in findings:
-            if f.sev == "ERROR" and f.waiver is None and _waivers.matches(w, f.rule, f.refs, f.nets):
-                f.waiver, used = w, True
-        if not used:
-            extra.append(Finding("WARN", "waiver", "waivers.json[%d]" % i, "unused waiver (rule %r, %s)"
-                                 % (w.get("rule"), _waivers.describe(w))))
-    return extra
+def apply_waivers(project_id, findings, stats=None):
+    return _engine.apply_waivers(project_id, "lint", findings, stats)
 
 
 def main(argv):
@@ -553,11 +541,14 @@ def main(argv):
     if getattr(NL, "PARTS_STRICT", False):
         rule_strict(M, M.reg_refs)
         rule_byname(M, M.reg_refs)
-    M.findings += apply_waivers(pid, M.findings)
+    M.findings += apply_waivers(pid, M.findings, M.stats)
     for f in M.findings:
         print(f.line())
     fallback = [r for r in M.parts if r not in M.reg_refs and judged_by_family(M, r)]
     unjudged = [r for r in M.parts if r not in M.reg_refs and r not in fallback]
+    out_path = os.environ.get("PCB_FINDINGS_FILE")            # run-report hook (pipeline.py sets it per stage)
+    if out_path:
+        _engine.write_findings(out_path, M.findings, M.stats)
     print("parts examined: %d by registry, %d by FAMILY fallback, %d unjudged (no registry record, no family rule)"
           % (len(M.reg_refs), len(fallback), len(unjudged)))
     errors = [f for f in M.findings if f.sev == "ERROR" and f.waiver is None]

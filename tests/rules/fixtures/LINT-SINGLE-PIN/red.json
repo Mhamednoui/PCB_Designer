@@ -1,0 +1,36 @@
+{
+ "ir": {
+  "nets": {
+   "VCC": {
+    "pins": [
+     "J1.1",
+     "R1.1"
+    ]
+   },
+   "OUT": {
+    "pins": [
+     "R1.2"
+    ]
+   },
+   "GND": {
+    "pins": [
+     "J1.2",
+     "R2.2"
+    ]
+   }
+  }
+ },
+ "expected": [
+  {
+   "rule": "LINT-SINGLE-PIN",
+   "severity": "ERROR",
+   "target": "R1/OUT",
+   "where": {
+    "ref": "R1",
+    "pin": "2",
+    "net": "OUT"
+   },
+   "line": "ERROR single-pin R1/OUT: net OUT touches only R1.2"
+  }
+ ]
+}

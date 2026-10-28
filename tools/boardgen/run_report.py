@@ -11,8 +11,10 @@ The report is meant to make any failure reproducible from the report alone: the 
 every tool version, and for each stage its exact command, working directory, extra environment, and the
 sha256 of every declared input file.
 
-`findings` per stage is deliberately an empty list today: the error taxonomy (rule id / severity / location /
-measured vs limit / fix) is PA-7. The slot exists so PA-7 fills it without a schema change.
+`findings` per stage holds the structured findings (boardgen.rules.finding.Finding.to_dict: rule / severity / where /
+measured / limit / fix / waived / fingerprint) of a stage built on the rule engine, and `counts.rules` its per-rule
+items-examined stats; both come from the JSON file the stage writes to $PCB_FINDINGS_FILE (`load_findings`). Stages that
+do not use the engine still have an empty list.
 """
 import datetime
 import html
@@ -67,6 +69,16 @@ def parse_output(text):
     if failed and first_error and first_error not in failed:
         failed = "%s [first error: %s]" % (failed, first_error)
     return counts, failed, summary[:12]
+
+
+def load_findings(path):
+    """-> (findings list, per-rule stats dict) from the file a rule-engine stage wrote; ([], {}) when it wrote none."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        return data["findings"], data["rules"]
+    except (OSError, ValueError, KeyError):
+        return [], {}
 
 
 def tail_lines(text, n=TAIL_LINES):
@@ -167,7 +179,7 @@ def stage_record(entry, command, cwd, env_extra, inputs, cache_key):
         "failure": None,                   # the FAILED: line, else "exit code N: <last output line>"
         "log": None,                       # file name inside the run dir (full output)
         "tail": [],                        # last TAIL_LINES lines of the output
-        "findings": [],                    # reserved for PA-7 (rule id / severity / location / measured / fix)
+        "findings": [],                    # rule-engine findings (see load_findings)
     }
 
 
