@@ -5,6 +5,7 @@ All notable changes to the PCB platform. Format follows Keep a Changelog. The ve
 ## [Unreleased]
 
 ### Added
+- Design IR (PA-1): `tools/boardgen/ir/` (`schema.json` ir_version 1, `from_netlist.py`, `from_kicad_pcb.py`, `build.py`), pipeline stage `ir` -> `projects/<id>/out/design.json` (git-ignored, deterministic, schema-validated) with a netlist-vs-board net cross-check; `build.py --selftest` runs in `ci_checks.py`.
 - `tools/ci_checks.py` (compile, schemas, selftests, secrets, ctrlchars, ruff), `.github/workflows/ci.yml`, `.pre-commit-config.yaml`, `docs/CONTRIBUTING.md` (PA-9).
 - `tests/mutations/run_mutations.py`: `--jobs N` (threads; `route` entries serialised by a lock) and `--tier fast|full` (PA-5). Fast tier ~28 s, full ~129 s at 4 jobs (179 s serial).
 

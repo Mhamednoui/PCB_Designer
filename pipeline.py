@@ -23,7 +23,7 @@ is: one prompt writes those three files, then one command (this one) does all th
 STAGES - declared in tools/boardgen/stages.json (the registry). Array order is run order, and adding a
 stage means adding ONE entry there; this file is a generic runner and needs no edit. Each stage is skipped
 automatically when it doesn't apply to the project. Current stages (see `--list`, `--describe <stage>`):
-  lint, parts, sch, sch-check, place, route, finish, check, review, outputs, lvs, fabreport, connections,
+  lint, parts, sch, sch-check, place, route, finish, check, ir, review, outputs, lvs, fabreport, connections,
   pinmap (needs FIRMWARE in netlist.py), spice (needs SPICE in netlist.py), webview (works for any .kicad_pcb)
 
 A project that is only a .kicad_pcb (imported, drawn by hand, downloaded) simply has every design stage
