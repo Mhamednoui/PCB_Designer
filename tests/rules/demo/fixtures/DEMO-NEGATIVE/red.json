@@ -1,0 +1,36 @@
+{
+ "ir": {
+  "nets": {
+   "3V3": {
+    "v": [
+     3.0,
+     3.6
+    ]
+   },
+   "GND": {
+    "v": [
+     -5.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "expected": [
+  {
+   "rule": "DEMO-NEGATIVE",
+   "severity": "ERROR",
+   "target": "GND",
+   "measured": {
+    "value": -5.0,
+    "unit": "V",
+    "corner": "min"
+   },
+   "limit": {
+    "value": -0.3,
+    "unit": "V",
+    "source": "demo: logic floor -0.3 V"
+   },
+   "line": "ERROR DEMO-NEGATIVE GND: net minimum -5 V is below -0.3 V"
+  }
+ ]
+}

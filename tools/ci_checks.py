@@ -4,7 +4,7 @@
   python tools/ci_checks.py all
   python tools/ci_checks.py compile secrets ctrlchars     (the fast pre-commit set)
 
-Sub-checks: compile schemas selftests secrets ctrlchars ruff. Each prints PASS/FAIL; exit 1 on any FAIL.
+Sub-checks: compile schemas selftests rules secrets ctrlchars ruff. Each prints PASS/FAIL; exit 1 on any FAIL.
 Everything that needs KiCad, Freerouting, LTspice or the network (pipeline stages, mutation suite, fab
 output) is NOT covered here - it runs locally. See docs/CONTRIBUTING.md.
 """
@@ -175,7 +175,20 @@ def check_ruff():
     return errors, warns
 
 
-CHECKS = {"compile": check_compile, "schemas": check_schemas, "selftests": check_selftests,
+def check_rules():
+    """Rule-engine registry check (P2-T1): every registered rule has a doc, a fixture (green + red) and a mutation id that
+    exists in mutations.json, its fixtures behave, and the engine's own tests pass."""
+    bad = []
+    for cmd in ([sys.executable, "tools/boardgen/rules", "--check"], [sys.executable, "tests/rules/test_engine.py"]):
+        r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        lines = r.stdout.strip().splitlines() or ["(no output)"]
+        print("  %s -> %s" % (" ".join(cmd[1:]), lines[-1]))
+        if r.returncode != 0:
+            bad += ["%s exited %d" % (" ".join(cmd[1:]), r.returncode)] + ["    " + ln for ln in lines if "FAIL" in ln or ln.startswith("  ")][:10]
+    return bad, []
+
+
+CHECKS = {"compile": check_compile, "schemas": check_schemas, "selftests": check_selftests, "rules": check_rules,
           "secrets": check_secrets, "ctrlchars": check_ctrlchars, "ruff": check_ruff}
 
 

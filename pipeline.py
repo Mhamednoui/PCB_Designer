@@ -299,14 +299,16 @@ def cache_lookup(entry, project_id, cache):
 STAGE_ENV = {"PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8"}   # live, loss-free output for the report
 
 
-def run_stage(name, cwd, cmd, log_path=None):
+def run_stage(name, cwd, cmd, log_path=None, findings_path=None):
     """Run one stage, echoing its output live AND capturing it (stdout+stderr merged, in order).
     -> (ok, seconds, exit_code, full_text). The full text is also written to log_path when given."""
     print(f"\n=== {name} ===")
     started = time.time()
     chunks = []
-    proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                            env=dict(os.environ, **STAGE_ENV))
+    env = dict(os.environ, **STAGE_ENV)
+    if findings_path:                          # run-report hook: a stage built on the rule engine writes its findings here
+        env["PCB_FINDINGS_FILE"] = findings_path
+    proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
     for raw in proc.stdout:
         line = raw.decode("utf-8", "replace").replace("\r\n", "\n")
         chunks.append(line)
@@ -367,11 +369,21 @@ def main():
     parser.add_argument("--list", action="store_true", help="show what would run, then exit")
     parser.add_argument("--describe", metavar="STAGE",
                         help="explain one stage (what, interpreter, command, inputs/outputs, caching), then exit")
+    parser.add_argument("--explain", metavar="RULE-ID",
+                        help="explain one rule of the rule engine (doc, mutation, example finding), then exit")
     parser.add_argument("--force", action="store_true",
                         help="allow re-running design stages on a board that already has fab outputs")
     parser.add_argument("--no-cache", action="store_true",
                         help="run every stage even if its inputs are unchanged since the last successful run")
     args = parser.parse_args()
+
+    if args.explain:
+        from boardgen.rules import engine
+        try:
+            print(engine.explain(args.explain))
+        except engine.RuleError as e:
+            raise SystemExit("ERROR: %s" % e)
+        return
 
     registry = load_registry()
     names = [e["name"] for e in registry]
@@ -479,8 +491,12 @@ def main():
 
             rec_stage["status"] = "interrupted"          # stays so only if the run is killed mid-stage
             log_name = name + ".log"
-            ok, secs, code, text = run_stage(name, rec_stage["cwd"], command, os.path.join(run_dir, log_name))
+            fpath = os.path.join(run_dir, name + ".findings.json")
+            ok, secs, code, text = run_stage(name, rec_stage["cwd"], command, os.path.join(run_dir, log_name), fpath)
             counts, failed_line, summary = run_report.parse_output(text)
+            rec_stage["findings"], rule_stats = run_report.load_findings(fpath)
+            if rule_stats:
+                counts["rules"] = rule_stats
             rec_stage.update(status="ok" if ok else "FAILED", exit_code=code, duration_s=round(secs, 2),
                              counts=counts, summary=summary, log=log_name, tail=run_report.tail_lines(text))
             if not ok:

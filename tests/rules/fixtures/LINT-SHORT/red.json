@@ -1,0 +1,38 @@
+{
+ "ir": {
+  "parts": {
+   "R1": {
+    "pins": {
+     "1": {
+      "net": "VCC"
+     },
+     "2": {
+      "net": "OUT"
+     }
+    }
+   },
+   "R2": {
+    "pins": {
+     "1": {
+      "net": "OUT"
+     },
+     "2": {
+      "net": "OUT"
+     }
+    }
+   }
+  }
+ },
+ "expected": [
+  {
+   "rule": "LINT-SHORT",
+   "severity": "ERROR",
+   "target": "R2",
+   "where": {
+    "ref": "R2",
+    "net": "OUT"
+   },
+   "line": "ERROR short R2: all 2 connected pins are on net OUT (part is shorted)"
+  }
+ ]
+}
