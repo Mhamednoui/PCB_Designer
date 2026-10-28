@@ -1,0 +1,1434 @@
+{
+ "expected": [
+  {
+   "line": "ERROR EL-BUDGET 3V3: 3V3 peak 2366 mA > regulator U2 output rating 1200 mA; biggest: J2.1 2000 mA, U1 355 mA",
+   "rule": "EL-BUDGET",
+   "severity": "ERROR"
+  },
+  {
+   "line": "ERROR EL-BUDGET 3V3: 3V3 peak 2366 mA > net 3V3 i_max 1000 mA; biggest: J2.1 2000 mA, U1 355 mA",
+   "rule": "EL-BUDGET",
+   "severity": "ERROR"
+  },
+  {
+   "line": "ERROR EL-BUDGET VBUS: VBUS peak 2396 mA > supply J1.1 (EXTERNAL i) 1000 mA",
+   "rule": "EL-BUDGET",
+   "severity": "ERROR"
+  },
+  {
+   "line": "ERROR EL-BUDGET VBUS: VBUS peak 2396 mA > net VBUS i_max 1000 mA",
+   "rule": "EL-BUDGET",
+   "severity": "ERROR"
+  },
+  {
+   "line": "ERROR EL-BUDGET VBUS_F: VBUS_F peak 2396 mA > F1 hold current 1100 mA; biggest: J3.1 30 mA",
+   "rule": "EL-BUDGET",
+   "severity": "ERROR"
+  },
+  {
+   "line": "ERROR EL-BUDGET VBUS_F: VBUS_F peak 2396 mA > net VBUS_F i_max 1000 mA; biggest: J3.1 30 mA",
+   "rule": "EL-BUDGET",
+   "severity": "ERROR"
+  }
+ ],
+ "ir": {
+  "external": {
+   "declared": true,
+   "none": [
+    "SW1",
+    "SW2"
+   ],
+   "pins": {
+    "J1.1": {
+     "dir": "supply",
+     "i": 1.0,
+     "v": [
+      4.4,
+      5.25
+     ],
+     "why": "USB host VBUS at the device end, 500 mA default power"
+    },
+    "J1.2": {
+     "dir": "supply",
+     "i": null,
+     "v": [
+      0.0,
+      0.0
+     ],
+     "why": "USB ground"
+    },
+    "J2.1": {
+     "dir": "out",
+     "i": 2.0,
+     "v": null,
+     "why": "3V3 header: 100 mA external allowance (ARCHITECTURE 2.2)"
+    },
+    "J2.2": {
+     "dir": "out",
+     "i": null,
+     "v": null,
+     "why": "ground of the 3V3 header"
+    },
+    "J3.1": {
+     "dir": "out",
+     "i": 0.03,
+     "v": null,
+     "why": "5V header: 30 mA allowance (ARCHITECTURE 2.4 says 35; 5 mA less so the conservative pull-up count still fits the 500 mA cap)"
+    },
+    "J3.2": {
+     "dir": "out",
+     "i": null,
+     "v": null,
+     "why": "ground of the 5V header"
+    }
+   }
+  },
+  "meta": {},
+  "nets": {
+   "3V3": {
+    "class": "power",
+    "i_max": 1.0,
+    "pins": [
+     "J2.1",
+     "R3.1",
+     "R4.1",
+     "R5.1",
+     "R6.1",
+     "R7.1",
+     "U1.2",
+     "U2.2",
+     "U3.5"
+    ],
+    "v": [
+     3.0,
+     3.6
+    ]
+   },
+   "BOOT": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "R4.2",
+     "SW1.1",
+     "U1.27"
+    ],
+    "v": null
+   },
+   "EN": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "R3.2",
+     "SW2.1",
+     "U1.3"
+    ],
+    "v": null
+   },
+   "GND": {
+    "class": "ground",
+    "i_max": 0.6,
+    "pins": [
+     "J1.2",
+     "J2.2",
+     "J3.2",
+     "LED1.1",
+     "LED2.1",
+     "SW1.2",
+     "SW2.2",
+     "U1.1",
+     "U1.40",
+     "U1.41",
+     "U2.1",
+     "U3.2",
+     "U3.8",
+     "U3.9"
+    ],
+    "v": [
+     0.0,
+     0.0
+    ]
+   },
+   "I2C_SCL": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "R6.2",
+     "U1.17",
+     "U3.4"
+    ],
+    "v": null
+   },
+   "I2C_SDA": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "R5.2",
+     "U1.12",
+     "U3.1"
+    ],
+    "v": null
+   },
+   "LED1_A": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "LED1.2",
+     "R7.2"
+    ],
+    "v": null
+   },
+   "LED2_A": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "LED2.2",
+     "R8.2"
+    ],
+    "v": null
+   },
+   "LED_STATUS": {
+    "class": "signal",
+    "i_max": null,
+    "pins": [
+     "R8.1",
+     "U1.23"
+    ],
+    "v": null
+   },
+   "VBUS": {
+    "class": "power",
+    "i_max": 1.0,
+    "pins": [
+     "F1.1",
+     "J1.1"
+    ],
+    "v": [
+     4.4,
+     5.25
+    ]
+   },
+   "VBUS_F": {
+    "class": "power",
+    "i_max": 1.0,
+    "pins": [
+     "F1.2",
+     "J3.1",
+     "U2.3"
+    ],
+    "v": [
+     4.1,
+     5.25
+    ]
+   }
+  },
+  "parts": {
+   "F1": {
+    "electrical": {
+     "fuse": {
+      "i_hold_ma": {
+       "cond": "hold current Ihold at 23 C (derates with temperature, chart on p.4 not extracted)",
+       "min": 1100,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/147b01ecd3cb8b8f5a5deee7c25b85b7.pdf?productCode=C20801 (Ruilon SMD1206 series SP-PTC-006 A6) PDF p3",
+       "unit": "mA"
+      },
+      "i_trip_ma": {
+       "cond": "trip current Itrip",
+       "min": 2200,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/147b01ecd3cb8b8f5a5deee7c25b85b7.pdf?productCode=C20801 (Ruilon SMD1206 series SP-PTC-006 A6) PDF p3",
+       "unit": "mA"
+      },
+      "r_max_ohm": {
+       "cond": "R1max, resistance one hour after trip/reflow",
+       "max": 0.25,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/147b01ecd3cb8b8f5a5deee7c25b85b7.pdf?productCode=C20801 (Ruilon SMD1206 series SP-PTC-006 A6) PDF p3",
+       "unit": "ohm"
+      }
+     },
+     "gaps": [
+      "hold current vs temperature (derating chart) not extracted"
+     ],
+     "role": "fuse"
+    },
+    "electrical_status": "ok",
+    "footprint": "Fuse:Fuse_1206_3216Metric",
+    "group": "power",
+    "kind": "part",
+    "lcsc": "C20801",
+    "lib_id": "Device:Polyfuse",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "VBUS"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "VBUS_F"
+     }
+    },
+    "ref": "F1",
+    "registry": "ptc-smd1206p110tf",
+    "value": "1.1A PTC"
+   },
+   "J1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical",
+    "group": "power",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector_Generic:Conn_02x04_Odd_Even",
+    "nc": [
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8"
+    ],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "VBUS"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J1",
+    "registry": "hdr-2x04-p2.54-v",
+    "value": "USB 5V IN"
+   },
+   "J2": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical",
+    "group": "power",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector_Generic:Conn_02x04_Odd_Even",
+    "nc": [
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8"
+    ],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J2",
+    "registry": "hdr-2x04-p2.54-v",
+    "value": "3V3 OUT"
+   },
+   "J3": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical",
+    "group": "power",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Connector_Generic:Conn_02x04_Odd_Even",
+    "nc": [
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8"
+    ],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_1",
+      "net": "VBUS_F"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "Pin_2",
+      "net": "GND"
+     }
+    },
+    "ref": "J3",
+    "registry": "hdr-2x04-p2.54-v",
+    "value": "5V OUT"
+   },
+   "LED1": {
+    "electrical": {
+     "gaps": [
+      "GREEN (and any other colour) Vf: no datasheet read - NOT_JUDGED (the values on this record apply only to value RED)",
+      "the cited part is a representative 5 mm red LED; the actual purchased LED (LCSC C2895470 for blinky/uno D1) was not matched to its own datasheet"
+     ],
+     "i_f_max_ma": {
+      "cond": "DC forward current, super bright red",
+      "max": 30,
+      "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2",
+      "unit": "mA"
+     },
+     "p_max_mw": {
+      "cond": "power dissipation, super bright red",
+      "max": 100,
+      "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2",
+      "unit": "mW"
+     },
+     "role": "led",
+     "vf": [
+      {
+       "at": {
+        "if_ma": 20
+       },
+       "cond": "Kingbright L-53SRC-C super bright red (GaAlAs), Vf tolerance +-0.1 V; used as the RED-value family figure. Other colours: NOT covered",
+       "max": 2.5,
+       "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2",
+       "typ": 1.85,
+       "unit": "V"
+      }
+     ]
+    },
+    "electrical_status": "ok",
+    "footprint": "LED_THT:LED_D5.0mm",
+    "group": "leds",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:LED",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "K",
+      "net": "GND"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "A",
+      "net": "LED1_A"
+     }
+    },
+    "ref": "LED1",
+    "registry": "led-5mm",
+    "value": "RED"
+   },
+   "LED2": {
+    "electrical": {
+     "gaps": [
+      "GREEN (and any other colour) Vf: no datasheet read - NOT_JUDGED (the values on this record apply only to value RED)",
+      "the cited part is a representative 5 mm red LED; the actual purchased LED (LCSC C2895470 for blinky/uno D1) was not matched to its own datasheet"
+     ],
+     "i_f_max_ma": {
+      "cond": "DC forward current, super bright red",
+      "max": 30,
+      "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2",
+      "unit": "mA"
+     },
+     "p_max_mw": {
+      "cond": "power dissipation, super bright red",
+      "max": 100,
+      "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2",
+      "unit": "mW"
+     },
+     "role": "led",
+     "vf": [
+      {
+       "at": {
+        "if_ma": 20
+       },
+       "cond": "Kingbright L-53SRC-C super bright red (GaAlAs), Vf tolerance +-0.1 V; used as the RED-value family figure. Other colours: NOT covered",
+       "max": 2.5,
+       "src": "https://asset.conrad.com/media10/add/160267/c1/-/en/000143146DS01/datasheet-143146-kingbright-l-53-srcc-led-wired-red-circular-5-mm-1000-mcd-35-20-ma-185-v.pdf (Kingbright L-53SRC-C, DSAB5922 V.5, 2006-03-31) PDF p2",
+       "typ": 1.85,
+       "unit": "V"
+      }
+     ]
+    },
+    "electrical_status": "ok",
+    "footprint": "LED_THT:LED_D5.0mm",
+    "group": "leds",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:LED",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "K",
+      "net": "GND"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "A",
+      "net": "LED2_A"
+     }
+    },
+    "ref": "LED2",
+    "registry": "led-5mm",
+    "value": "RED"
+   },
+   "R3": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "boot",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "EN"
+     }
+    },
+    "ref": "R3",
+    "registry": "res-axial-0207-p10.16",
+    "value": "10k"
+   },
+   "R4": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "boot",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "BOOT"
+     }
+    },
+    "ref": "R4",
+    "registry": "res-axial-0207-p10.16",
+    "value": "10k"
+   },
+   "R5": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "sensor",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "I2C_SDA"
+     }
+    },
+    "ref": "R5",
+    "registry": "res-axial-0207-p10.16",
+    "value": "2.2k"
+   },
+   "R6": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "sensor",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "I2C_SCL"
+     }
+    },
+    "ref": "R6",
+    "registry": "res-axial-0207-p10.16",
+    "value": "2.2k"
+   },
+   "R7": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "leds",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "3V3"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "LED1_A"
+     }
+    },
+    "ref": "R7",
+    "registry": "res-axial-0207-p10.16",
+    "value": "1k"
+   },
+   "R8": {
+    "electrical": {
+     "gaps": [
+      "tolerance and temperature coefficient are per MPN: not stated in this family record",
+      "maximum working voltage per size not extracted unambiguously (columns scrambled)"
+     ],
+     "p_max_mw": {
+      "at": {
+       "ta_c": 70
+      },
+      "cond": "CFR-25 style (0207, 6.3x2.4 mm body) power rating 1/4 W at 70 C, derated linearly to 0 at 155 C (p1); assumes the purchased resistor is a 1/4 W CFR-25-class part",
+      "max": 250,
+      "src": "https://static.datasheets.com/doc/14857164-yageo-cfr-25jr-52-240r-ds.pdf (Yageo CFR series spec) PDF p2",
+      "unit": "mW"
+     },
+     "role": "resistor"
+    },
+    "electrical_status": "ok",
+    "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+    "group": "leds",
+    "kind": "generic",
+    "lcsc": "",
+    "lib_id": "Device:R",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "LED_STATUS"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "~",
+      "net": "LED2_A"
+     }
+    },
+    "ref": "R8",
+    "registry": "res-axial-0207-p10.16",
+    "value": "470R"
+   },
+   "SW1": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+    "group": "boot",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Switch:SW_Push",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "1",
+      "net": "BOOT"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "2",
+      "net": "GND"
+     }
+    },
+    "ref": "SW1",
+    "registry": "sw-push-6mm-tht",
+    "value": "BOOT"
+   },
+   "SW2": {
+    "electrical": null,
+    "electrical_status": "none",
+    "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+    "group": "boot",
+    "kind": "connector",
+    "lcsc": "",
+    "lib_id": "Switch:SW_Push",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "1",
+      "net": "EN"
+     },
+     "2": {
+      "abs_max": null,
+      "class": "passive",
+      "io": null,
+      "name": "2",
+      "net": "GND"
+     }
+    },
+    "ref": "SW2",
+    "registry": "sw-push-6mm-tht",
+    "value": "RESET"
+   },
+   "U1": {
+    "electrical": {
+     "gaps": [
+      "no absolute-maximum voltage/current for GPIO pins in the module datasheet (only VDD33 -0.3..3.6 V); pin ratings are in the ESP32-S3 series datasheet, not read here: EL-ABSMAX on GPIO nets is NOT_JUDGED (recommended VIH max = VDD+0.3 is a recommended-operating figure, not a rating)",
+      "pins 1,40,41 (GND) and the GPIO pins are classed from Table 3-1 type column (P / I/O/T): agent-read",
+      "strapping pins (IO0, IO3, IO45, IO46) electrical states belong to the P3 strap block, not this record",
+      "IO47/IO48 are 1.8 V on R16V variants, not on N8 (p12 note c)"
+     ],
+     "input_type": "cmos",
+     "load_ma": {
+      "peak": {
+       "cond": "Wi-Fi TX 802.11b 1 Mbps @20.5 dBm, 100 % duty (peak column); supply must deliver >= 0.5 A (p27)",
+       "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+       "typ": 355,
+       "unit": "mA"
+      },
+      "typ": {
+       "cond": "Wi-Fi RX 802.11b/g/n HT20 active, 3.3 V, 25 C (peak column)",
+       "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+       "typ": 95,
+       "unit": "mA"
+      }
+     },
+     "role": "mcu"
+    },
+    "electrical_status": "ok",
+    "footprint": "TODO",
+    "group": "mcu",
+    "kind": "part",
+    "lcsc": "C2913198",
+    "lib_id": "TODO",
+    "nc": [
+     "4",
+     "5",
+     "6",
+     "7",
+     "8",
+     "9",
+     "10",
+     "11",
+     "13",
+     "14",
+     "15",
+     "16",
+     "18",
+     "19",
+     "20",
+     "21",
+     "22",
+     "24",
+     "25",
+     "26",
+     "28",
+     "29",
+     "30",
+     "31",
+     "32",
+     "33",
+     "34",
+     "35",
+     "36",
+     "37",
+     "38",
+     "39"
+    ],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "GND",
+      "net": "GND"
+     },
+     "12": {
+      "abs_max": null,
+      "class": "bidirectional",
+      "io": {
+       "i_in_leak": {
+        "cond": "IIH/IIL",
+        "max": 50,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "nA"
+       },
+       "i_out_max_ma": {
+        "cond": "IOL 28 mA typ at VOL=0.495 V (PAD_DRIVER=3); IOH 40 mA typ at VOH>=2.64 V - typical, not guaranteed maxima",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "typ": 28,
+        "unit": "mA"
+       },
+       "supply_pin": "2",
+       "tristate": true,
+       "vih": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:1*vdd+0.3",
+        "min": "ratio:0.75*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vil": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:0.25*vdd",
+        "min": -0.3,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "voh": {
+        "cond": "measured with a high-impedance load",
+        "min": "ratio:0.8*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vol": {
+        "cond": "measured with a high-impedance load",
+        "max": "ratio:0.1*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       }
+      },
+      "name": "IO8",
+      "net": "I2C_SDA"
+     },
+     "17": {
+      "abs_max": null,
+      "class": "bidirectional",
+      "io": {
+       "i_in_leak": {
+        "cond": "IIH/IIL",
+        "max": 50,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "nA"
+       },
+       "i_out_max_ma": {
+        "cond": "IOL 28 mA typ at VOL=0.495 V (PAD_DRIVER=3); IOH 40 mA typ at VOH>=2.64 V - typical, not guaranteed maxima",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "typ": 28,
+        "unit": "mA"
+       },
+       "supply_pin": "2",
+       "tristate": true,
+       "vih": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:1*vdd+0.3",
+        "min": "ratio:0.75*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vil": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:0.25*vdd",
+        "min": -0.3,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "voh": {
+        "cond": "measured with a high-impedance load",
+        "min": "ratio:0.8*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vol": {
+        "cond": "measured with a high-impedance load",
+        "max": "ratio:0.1*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       }
+      },
+      "name": "IO9",
+      "net": "I2C_SCL"
+     },
+     "2": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VDD33 -0.3..3.6 V; recommended 3.0-3.6 V, supply must deliver >= 0.5 A (p27)",
+       "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+       "v_max": 3.6,
+       "v_min": -0.3
+      },
+      "class": "power_in",
+      "io": null,
+      "name": "3V3",
+      "net": "3V3"
+     },
+     "23": {
+      "abs_max": null,
+      "class": "bidirectional",
+      "io": {
+       "i_in_leak": {
+        "cond": "IIH/IIL",
+        "max": 50,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "nA"
+       },
+       "i_out_max_ma": {
+        "cond": "IOL 28 mA typ at VOL=0.495 V (PAD_DRIVER=3); IOH 40 mA typ at VOH>=2.64 V - typical, not guaranteed maxima",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "typ": 28,
+        "unit": "mA"
+       },
+       "supply_pin": "2",
+       "tristate": true,
+       "vih": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:1*vdd+0.3",
+        "min": "ratio:0.75*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vil": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:0.25*vdd",
+        "min": -0.3,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "voh": {
+        "cond": "measured with a high-impedance load",
+        "min": "ratio:0.8*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vol": {
+        "cond": "measured with a high-impedance load",
+        "max": "ratio:0.1*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       }
+      },
+      "name": "IO21",
+      "net": "LED_STATUS"
+     },
+     "27": {
+      "abs_max": null,
+      "class": "bidirectional",
+      "io": {
+       "i_in_leak": {
+        "cond": "IIH/IIL",
+        "max": 50,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "nA"
+       },
+       "i_out_max_ma": {
+        "cond": "IOL 28 mA typ at VOL=0.495 V (PAD_DRIVER=3); IOH 40 mA typ at VOH>=2.64 V - typical, not guaranteed maxima",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "typ": 28,
+        "unit": "mA"
+       },
+       "supply_pin": "2",
+       "tristate": true,
+       "vih": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:1*vdd+0.3",
+        "min": "ratio:0.75*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vil": {
+        "cond": "DC characteristics 3.3 V, 25 C",
+        "max": "ratio:0.25*vdd",
+        "min": -0.3,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "voh": {
+        "cond": "measured with a high-impedance load",
+        "min": "ratio:0.8*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       },
+       "vol": {
+        "cond": "measured with a high-impedance load",
+        "max": "ratio:0.1*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p27",
+        "unit": "V"
+       }
+      },
+      "name": "IO0",
+      "net": "BOOT"
+     },
+     "3": {
+      "abs_max": null,
+      "class": "input",
+      "io": {
+       "note": "EN: do not leave floating (p11)",
+       "supply_pin": "2",
+       "vih": {
+        "cond": "VIH_nRST chip reset release voltage",
+        "max": "ratio:1*vdd+0.3",
+        "min": "ratio:0.75*vdd",
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+        "unit": "V"
+       },
+       "vil": {
+        "cond": "VIL_nRST chip reset voltage",
+        "max": "ratio:0.25*vdd",
+        "min": -0.3,
+        "src": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf (ESP32-S3-WROOM-1 datasheet v1.8) PDF p28",
+        "unit": "V"
+       }
+      },
+      "name": "EN",
+      "net": "EN"
+     },
+     "40": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "GND",
+      "net": "GND"
+     },
+     "41": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "EPAD",
+      "net": "GND"
+     }
+    },
+    "ref": "U1",
+    "registry": "esp32-s3-wroom-1-n8",
+    "value": "ESP32-S3-WROOM-1-N8"
+   },
+   "U2": {
+    "electrical": {
+     "gaps": [
+      "theta_JA board description (copper area) not given: Tj estimates are the datasheet value only",
+      "no explicit input-voltage drop vs. current curve extracted (figure 12 graph)"
+     ],
+     "regulator": {
+      "dropout": [
+       {
+        "at": {
+         "i_ma": 1200
+        },
+        "cond": "IOUT=1.2 A, VOUT>2.5 V, -40<TJ<125 C; no other current point is tabulated (figure 12 is a graph)",
+        "max": 0.6,
+        "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9",
+        "typ": 0.35,
+        "unit": "V"
+       }
+      ],
+      "i_limit_ma": {
+       "cond": "output current limit ISC",
+       "min": 1500,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9",
+       "typ": 2000,
+       "unit": "mA"
+      },
+      "i_max_ma": {
+       "cond": "'1.2 A' in the datasheet title and electrical table",
+       "max": 1200,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p1",
+       "unit": "mA"
+      },
+      "iq_ma": {
+       "cond": "IOUT=0 to 1.2 A, -40<TJ<125 C",
+       "max": 0.5,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9",
+       "typ": 0.25,
+       "unit": "mA"
+      },
+      "topology": "ldo",
+      "vin": {
+       "cond": "operating input voltage",
+       "max": 18,
+       "min": 2.6,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9",
+       "unit": "V"
+      },
+      "vout": {
+       "cond": "LDL1117S33R = 3.3 V fixed (ordering table p18); accuracy +-3 % over -40<TJ<125 C at IOUT=10 mA (+-2 % at 25 C)",
+       "max": 3.399,
+       "min": 3.201,
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p9",
+       "typ": 3.3,
+       "unit": "V"
+      }
+     },
+     "role": "regulator",
+     "theta_ja": [
+      {
+       "cond": "junction-to-ambient; the datasheet does not describe the test board",
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8",
+       "typ": 120,
+       "unit": "C/W"
+      }
+     ],
+     "tj_max": {
+      "cond": "operating junction temperature TJ-OP -40..125 C; absolute maximum TJ-MAX 150 C",
+      "max": 125,
+      "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8",
+      "unit": "C"
+     }
+    },
+    "electrical_status": "ok",
+    "footprint": "TODO",
+    "group": "power",
+    "kind": "part",
+    "lcsc": "C435835",
+    "lib_id": "TODO",
+    "nc": [],
+    "pins": {
+     "1": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "GND",
+      "net": "GND"
+     },
+     "2": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VOUT -0.3..VIN+0.3 V; the SOT-223 tab is connected to VOUT (p6)",
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8",
+       "v_max": "pin:3+0.3",
+       "v_min": -0.3
+      },
+      "class": "power_out",
+      "io": null,
+      "name": "VOUT",
+      "net": "3V3"
+     },
+     "3": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VIN -0.3..20 V",
+       "src": "https://datasheet.lcsc.com/datasheet/pdf/29f4e8f2c569cb1b438995f2c8fccc58.pdf?productCode=C435835 (ST LDL1117 DocID030319 Rev 3) PDF p8",
+       "v_max": 20,
+       "v_min": -0.3
+      },
+      "class": "power_in",
+      "io": null,
+      "name": "VIN",
+      "net": "VBUS_F"
+     }
+    },
+    "ref": "U2",
+    "registry": "ldl1117s33r-sot2234",
+    "value": "3V3 LDO"
+   },
+   "U3": {
+    "electrical": {
+     "gaps": [
+      "VOH/ALERT output levels not stated except 'IOH 1.5 x VDD mA' text which is unreadable",
+      "theta_JA and junction temperature limit not stated (only -40..125 C operating temperature, p7)",
+      "VIH/VIL are for the I2C interface (p14), VDD = VDDmin..VDDmax"
+     ],
+     "input_type": "cmos",
+     "load_ma": {
+      "peak": {
+       "cond": "measuring state supply current IDD (600 uA typ, 1500 uA max)",
+       "max": 1.5,
+       "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p6",
+       "typ": 0.6,
+       "unit": "mA"
+      },
+      "typ": {
+       "cond": "average, one measurement per second at lowest repeatability, single-shot (1.7 uA)",
+       "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p6",
+       "typ": 0.0017,
+       "unit": "mA"
+      }
+     },
+     "role": "sensor"
+    },
+    "electrical_status": "ok",
+    "footprint": "TODO",
+    "group": "sensor",
+    "kind": "part",
+    "lcsc": "C77361",
+    "lib_id": "TODO",
+    "nc": [
+     "3",
+     "6",
+     "7"
+    ],
+    "pins": {
+     "1": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 100,
+       "note": "input current any pin +-100 mA",
+       "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7",
+       "v_max": "pin:5+0.3",
+       "v_min": -0.3
+      },
+      "class": "open_collector",
+      "io": {
+       "note": "SDA: open-drain I/O, external pull-up required (p8); bidirectional, drives low only",
+       "supply_pin": "5",
+       "vih": {
+        "max": "ratio:1*vdd",
+        "min": "ratio:0.7*vdd",
+        "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14",
+        "unit": "V"
+       },
+       "vil": {
+        "max": "ratio:0.3*vdd",
+        "min": 0,
+        "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14",
+        "unit": "V"
+       },
+       "vol": {
+        "at": {
+         "sink_ma": 3
+        },
+        "cond": "I2C low-level output",
+        "max": 0.4,
+        "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14",
+        "unit": "V"
+       }
+      },
+      "name": "SDA",
+      "net": "I2C_SDA"
+     },
+     "2": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 100,
+       "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7",
+       "v_max": "pin:5+0.3",
+       "v_min": -0.3
+      },
+      "class": "input",
+      "io": {
+       "note": "ADDR: connect to logic high or low, do not leave floating (p8)",
+       "supply_pin": "5"
+      },
+      "name": "ADDR",
+      "net": "GND"
+     },
+     "4": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": 100,
+       "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7",
+       "v_max": "pin:5+0.3",
+       "v_min": -0.3
+      },
+      "class": "open_collector",
+      "io": {
+       "note": "SCL: open-drain I/O (p8)",
+       "supply_pin": "5",
+       "vih": {
+        "max": "ratio:1*vdd",
+        "min": "ratio:0.7*vdd",
+        "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14",
+        "unit": "V"
+       },
+       "vil": {
+        "max": "ratio:0.3*vdd",
+        "min": 0,
+        "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14",
+        "unit": "V"
+       },
+       "vol": {
+        "at": {
+         "sink_ma": 3
+        },
+        "cond": "I2C low-level output",
+        "max": 0.4,
+        "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p14",
+        "unit": "V"
+       }
+      },
+      "name": "SCL",
+      "net": "I2C_SCL"
+     },
+     "5": {
+      "abs_max": {
+       "cited": true,
+       "i_ma": null,
+       "note": "VDD -0.3..6 V",
+       "src": "https://sensirion.com/media/documents/213E6A3B/63A5A569/Datasheet_SHT3x_DIS.pdf (Sensirion SHT3x-DIS v7, Dec 2022) PDF p7",
+       "v_max": 6,
+       "v_min": -0.3
+      },
+      "class": "power_in",
+      "io": null,
+      "name": "VDD",
+      "net": "3V3"
+     },
+     "8": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": null,
+      "name": "VSS",
+      "net": "GND"
+     },
+     "9": {
+      "abs_max": null,
+      "class": "power_in",
+      "io": {
+       "note": "die pad: connect to VSS (figure 11, p8)"
+      },
+      "name": "EPAD",
+      "net": "GND"
+     }
+    },
+    "ref": "U3",
+    "registry": "sht30-dis-b2.5ks-dfn8ep2.5x2.5",
+    "value": "SHT30"
+   }
+  }
+ }
+}

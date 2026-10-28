@@ -130,7 +130,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P2-T3 electrical model v1 | ✅ (`elec/model.py`, `ctx.model`, tests/elec) |
 | P2-T4 EL-ABSMAX, EL-CONTENTION, EL-OD-PULLUP | ✅ (`electrical` stage; follow-ups: `pull: external` in EXTERNAL → INFO; contention vs EXTERNAL drivers) |
 | P2-T5 EL-FLOAT, EL-LEVEL, EL-NETSPEC | ⬜ |
-| P2-T6 budget, dropout, thermal | 🔄 |
+| P2-T6 budget, dropout, thermal | ✅ (`elec/budget.py`, `elec/devices.py`, `rules/el_budget.py` / `el_dropout.py` / `el_thermal.py`; fixture `projects/synth-ldo`) |
 | P2-T7 EL-CONN-PROT + EXTERNAL (+T7b: RC-filter, direction severity, expansion class; blinky D2 reverse-polarity fix) | ✅ |
 | P2-T8 strap evaluator (ESP32-S3) | ✅ (`blocks/esp32s3.strap.json`, data-driven) |
 | P2-T9 requirements engine (IV-2) | ✅ (`requirements` stage, `req/eval.py`; kinds path/path_absent/net_v/rail_peak/static_logic; net_i + spice = NOT_EVALUATED; M-req/-bypass/-typo) |

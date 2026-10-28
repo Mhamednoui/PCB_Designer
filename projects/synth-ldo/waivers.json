@@ -1,0 +1,8 @@
+[
+  {"check": "electrical", "rule": "EL-CONN-PROT", "refs": ["J1"],
+   "why": "Synthetic power-path fixture: J1 stands in for the USB-C connector of ref-esp32, whose TVS and USBLC6 ESD part this fixture does not instantiate; supply protection is not what it tests.",
+   "by": "P2-T6", "date": "2026-10-28"},
+  {"check": "electrical", "rule": "EL-THERMAL", "refs": ["U2"],
+   "why": "ARCHITECTURE 2.3 verdict 2: the 465 mA peak is a 100 % duty Wi-Fi TX rating, the average sets Tj (65-69 C). The fixture keeps the peak on purpose so the 142 C figure of that document is reproduced; tests/elec/test_budget.py asserts the finding is raised.",
+   "by": "P2-T6", "date": "2026-10-28"}
+]

@@ -229,6 +229,7 @@
             "rectifier",
             "led",
             "resistor",
+            "fuse",
             "regulator",
             "mosfet",
             "optocoupler",
@@ -254,6 +255,16 @@
             }
           },
           "additionalProperties": false
+        },
+        "fuse": {
+          "type": "object",
+          "description": "Series protection element (fuse / PTC): i_hold_ma = current it carries indefinitely, r_max_ohm = maximum series resistance in the untripped state (P2-T6, EL-BUDGET / EL-DROPOUT).",
+          "additionalProperties": false,
+          "properties": {
+            "i_hold_ma": {"$ref": "#/$defs/datum"},
+            "i_trip_ma": {"$ref": "#/$defs/datum"},
+            "r_max_ohm": {"$ref": "#/$defs/datum"}
+          }
         },
         "regulator": {
           "type": "object",
