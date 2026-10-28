@@ -75,5 +75,6 @@
       "D20"
     ],
     "why": "P1-T9b: 1N5822 (C2476) is a DO-201AD axial diode that LCSC draws lying down (15.24 mm pitch); this board stands it up (5.08 mm pitch, record diode-do201ad-p5.08-v). Same part, different forming; leads are bent for vertical mounting. Hand-soldered, not a wrong part."
-  }
+  },
+  {"check": "electrical", "rule": "EL-BUDGET", "nets": ["+12V", "+12V_IN"], "match": "peak", "why": "Accepted design limit, not a pass: DESIGN_BRIEF B2 sizes the board for 10 A TOTAL magnet current (1.5 A per coil is a per-channel copper/MOSFET figure, not 10 coils at once). 10 coils fully on (15 A) is an overload that the 10 A fuse F1 clears before the 10 A-rated +12V copper is stressed, so it fails safe. Firmware drives coils at PWM_ON=100/255 (~5.9 A with all 10 on) but PWM_ON is runtime-settable, so firmware is NOT relied on. Real coil current is an open owner question (README bring-up step 3); re-judge when it is measured.", "by": "supervisor (P2-T6 merge)", "date": "2026-10-28", "expires": "2027-04-30"}
 ]

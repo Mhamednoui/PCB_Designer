@@ -53,3 +53,9 @@ DESIGN_BRIEF (section on the 12 V input) promised a P-MOSFET reverse-polarity st
 The protection is the P6KE15A TVS (D1) across `+12V` behind the 10 A blade fuse F1: a reversed supply forward-biases D1
 and blows the fuse (a crowbar). That is cheaper and survives, but it destroys a fuse on every wrong-way connection and
 the 10 A fuse is slow against a 1.5 A-per-channel load. Found by EL-CONN-PROT (P2-T7); not changed.
+
+## Known limit: total magnet current (EL-BUDGET, waived until 2027-04-30)
+All 10 coils on at their 1.5 A design figure is 15 A on `+12V`, over the 10 A fuse F1 and the 10 A copper rating.
+DESIGN_BRIEF B2 sizes the board for 10 A TOTAL; an overload blows F1 before the copper is stressed (fails safe).
+Firmware PWM_ON=100/255 averages ~5.9 A with all on, but it is runtime-settable, so it is not relied on.
+Measure the real coil current at bring-up (step 3) and re-judge; the waiver is in `waivers.json`.

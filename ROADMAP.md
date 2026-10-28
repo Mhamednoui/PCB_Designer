@@ -147,6 +147,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | IV-6 | AI design-review agent (advisory; confirmed findings → rule + mutation) | P6 | ⬜ |
 
 ## Backlog (after MV)
+- **EL-BUDGET simultaneity/duty**: EXTERNAL loads have no duty or "at most N on at once" field, so reflex's 10 coils sum to 15 A (waived, README). Add `duty`/`group_max` to the EXTERNAL grammar + budget.
 - **Watch: M-libpin-byname flake** - failed as a negative control in 2 of ~4 runs at `--jobs 4` (P2-T9 agent), clean at `--jobs 1` and in the supervisor rerun. Stages lint/sch/sch-check (KiCad processes in parallel). If it recurs, capture that entry's stage log before rerunning.
 ### M2 Test
 | ID | Task | Files | Effort | Deps | Acceptance | St |
