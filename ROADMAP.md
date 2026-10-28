@@ -81,7 +81,7 @@ New stages are registered in `pipeline.py` by the supervisor at merge time - age
 | P1-T7 generic/connector/mechanical records | ✅ |
 | P1-T8 crosschecked records for real parts | ✅ (PC817 → owner) |
 | P1-T9a API: pins-by-function, PARTS_RECORDS_DIR, registered-refs API, PR-HOLE severities, `parts new` MPN field | ✅ |
-| P1-T9b migrate fixtures to registry (pins by function, `nc=`), `PARTS_STRICT`, C_Polarized | 🔄 |
+| P1-T9b migrate fixtures to registry (pins by function, `nc=`), `PARTS_STRICT`, C_Polarized, PR-BYNAME | ✅ (M-libpin-swap now CAUGHT) |
 | P1-T10 stock source fix: JLCPCB assembly stock (smtGood) for `pcba`, LCSC detail endpoint fallback, jlcsearch last; covers modules + passives (from MV-T0) | ✅ |
 
 ### MP Production-ready outputs (both assembly modes) - MP-T1/T2 superseded by P1 above; MP-T3 remains (P5)
