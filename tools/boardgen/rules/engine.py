@@ -46,23 +46,39 @@ class Rule:
 
 
 class _View:
-    """Read-only access to the declared IR sections only."""
-    def __init__(self, rule, ir):
-        self._rule, self._ir = rule, ir
+    """Read-only access to the declared IR sections only. `derived` maps a section that is not stored in the IR (the
+    electrical model, "electrical") to a callable that builds it on first access."""
+    def __init__(self, rule, ir, derived=None):
+        self._rule, self._ir, self._derived = rule, ir, derived or {}
 
     def __getitem__(self, key):
         if key not in self._rule.needs:
             raise KeyError("rule %s did not declare needs=(%r,): it may read only %s" % (self._rule.id, key, self._rule.needs))
+        if key not in self._ir and key in self._derived:
+            return self._derived[key]()
         return self._ir[key]
 
     def get(self, key, default=None):
-        return self[key] if key in self._rule.needs and key in self._ir else default
+        return self[key] if key in self._rule.needs and (key in self._ir or key in self._derived) else default
 
 
 class Context:
-    def __init__(self, rule, ir):
-        self.rule, self.ir = rule, _View(rule, ir)
+    def __init__(self, rule, ir, shared=None):
+        self.rule, self._raw_ir = rule, ir
+        self._shared = shared if shared is not None else {}       # per-run cache, so the model is built once per run
+        self.ir = _View(rule, ir, {"electrical": lambda: self.model.to_dict()})
         self.n_examined = 0
+
+    @property
+    def model(self):
+        """The derived electrical model (boardgen.elec.model.ElecModel), built lazily once per run from the full IR.
+        A rule must declare "electrical" in `needs` to use it."""
+        if "electrical" not in self.rule.needs:
+            raise KeyError("rule %s did not declare needs=('electrical',): it may not use ctx.model" % self.rule.id)
+        if "model" not in self._shared:
+            from boardgen.elec.model import build_model
+            self._shared["model"] = build_model(self._raw_ir)
+        return self._shared["model"]
 
     def examined(self, n=1):
         self.n_examined += n
@@ -148,7 +164,7 @@ class Registry:
         waived, skipped}; examined = judged + not_judged, so a pass can never hide a skipped item. `only`: rule ids
         (or legacy names)."""
         self._require_valid()
-        findings, stats = [], {}
+        findings, stats, shared = [], {}, {}
         for rid in sorted(self.rules):
             r = self.rules[rid]
             if only is not None and rid not in only and r.legacy_id not in only:
@@ -158,7 +174,7 @@ class Registry:
             if not r.applies(ir):
                 stats[rid] = {"skipped": True}
                 continue
-            ctx = Context(r, ir)
+            ctx = Context(r, ir, shared)
             out = list(r.fn(ctx) or [])
             for f in out:
                 if not isinstance(f, Finding):

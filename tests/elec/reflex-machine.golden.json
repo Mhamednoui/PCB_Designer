@@ -1,0 +1,22 @@
+{
+ "counts": {
+  "NOT_JUDGED": 86,
+  "claimed-only": 13,
+  "conflict": 2,
+  "derived": 9
+ },
+ "nets": 110,
+ "reasons": {
+  "NOT_JUDGED": {
+   "divider": 15,
+   "driver": 1,
+   "external": 57,
+   "load": 1,
+   "no-vf": 12
+  },
+  "claimed-only": {
+   "external": 3,
+   "state-dependent": 10
+  }
+ }
+}

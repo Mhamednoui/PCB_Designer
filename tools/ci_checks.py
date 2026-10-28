@@ -4,7 +4,7 @@
   python tools/ci_checks.py all
   python tools/ci_checks.py compile secrets ctrlchars     (the fast pre-commit set)
 
-Sub-checks: compile schemas selftests rules secrets ctrlchars ruff. Each prints PASS/FAIL; exit 1 on any FAIL.
+Sub-checks: compile schemas selftests rules elec secrets ctrlchars ruff. Each prints PASS/FAIL; exit 1 on any FAIL.
 Everything that needs KiCad, Freerouting, LTspice or the network (pipeline stages, mutation suite, fab
 output) is NOT covered here - it runs locally. See docs/CONTRIBUTING.md.
 """
@@ -188,8 +188,20 @@ def check_rules():
     return bad, []
 
 
+def check_elec():
+    """Electrical model tests (P2-T3): divider fixtures, blinky-555 hand calculations, synthetic LDO board, FET states,
+    pull defaults, the ctx.model hook, reflex-machine counts."""
+    r = subprocess.run([sys.executable, "tests/elec/test_model.py"], cwd=ROOT, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
+    lines = r.stdout.strip().splitlines() or ["(no output)"]
+    print("  tests/elec/test_model.py -> %s" % lines[-1])
+    if r.returncode != 0:
+        return ["tests/elec/test_model.py exited %d" % r.returncode] + ["    " + ln for ln in lines if "FAIL" in ln][:10]             + (["    " + r.stderr.strip().splitlines()[-1]] if r.stderr.strip() else []), []
+    return [], []
+
+
 CHECKS = {"compile": check_compile, "schemas": check_schemas, "selftests": check_selftests, "rules": check_rules,
-          "secrets": check_secrets, "ctrlchars": check_ctrlchars, "ruff": check_ruff}
+          "elec": check_elec, "secrets": check_secrets, "ctrlchars": check_ctrlchars, "ruff": check_ruff}
 
 
 def main(argv):
