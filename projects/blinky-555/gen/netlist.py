@@ -29,6 +29,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(PRJ_DIR)), "tool
 from boardgen.kicad_paths import SHARE as KICAD_SHARE, SYMBOLS as KICAD_SYMBOLS, \
     FOOTPRINTS as KICAD_FOOTPRINTS  # noqa: E402
 from boardgen import parts as _parts  # noqa: E402
+from boardgen import netlist_ext as X  # noqa: E402
 PROJECT_LIBS = ()        # stock libraries only - nothing to vendor into projects/blinky-555/lib
 
 SCH_TITLE = "Blinky 555 - 1 Hz LED flasher"
@@ -102,6 +103,11 @@ NET_SPEC = {
     "OUT": {"v": (9.0, 12.0), "i_max": 0.025},      # high level ~ VCC
     "TRIG": {"v": (3.0, 8.0)},                      # 1/3 VCC .. 2/3 VCC
 }
+
+# What the outside world does to the board's connectors (P2 electrical analyzer, EL-CONN-PROT). J1 is the only connector:
+# the user's 9-12 V DC adapter. GND (J1.2) is a ground-class net and needs no entry.
+EXTERNAL = X.pins("J1", [1], dir="supply", v=(9.0, 12.0), i=0.05,
+                  why="9-12 V DC from the user's wall adapter or battery (README); ~15-21 mA drawn, NET_SPEC i_max 50 mA")
 
 # Transient SPICE run (tools/boardgen/make_spice.py) - this board's live simulation, since it has no
 # MCU for Wokwi to run. The expectations are the design intent from the docstring above:

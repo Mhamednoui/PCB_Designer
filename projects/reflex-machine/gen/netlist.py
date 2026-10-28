@@ -15,6 +15,7 @@ PRJ_NAME = "reflex-machine"
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(PRJ_DIR)), "tools"))
 from boardgen.kicad_paths import SHARE as KICAD_SHARE, SYMBOLS as KICAD_SYMBOLS, \
     FOOTPRINTS as KICAD_FOOTPRINTS  # noqa: E402
+from boardgen import netlist_ext as X  # noqa: E402
 from boardgen import parts as _parts  # noqa: E402
 PROJECT_LIBS = ("arduino-library", "reflex")
 
@@ -205,15 +206,63 @@ POWER_FLAG_NETS = ["+12V", "+12V_REG", "GND"]   # +5V is driven by the U1 module
 # each, with a 10 A blade fuse on the 12 V input (see DESIGN_BRIEF / HANDOVER).
 NET_SPEC = {
     "GND": {"v": 0.0, "i_max": 10.0},
-    "+12V_IN": {"v": 12.0, "i_max": 10.0},
-    "+12V": {"v": 12.0, "i_max": 10.0},
-    "+12V_REG": {"v": 12.0, "i_max": 1.0},          # only feeds the 5 V module (via D2)
+    "+12V_IN": {"v": (10.8, 13.2), "i_max": 10.0},   # 12 V +-10 % (the user's supply)
+    "+12V": {"v": (10.8, 13.2), "i_max": 10.0},
+    "+12V_REG": {"v": (9.8, 13.2), "i_max": 1.0},        # only feeds the 5 V module (via D2)
     "+5V": {"v": 5.0, "i_max": 2.0},                # K7805-2000R3 module, 2 A
     "+3V3": {"v": 3.3, "i_max": 0.5},
     "+3V3_ESP": {"v": 3.3, "i_max": 0.5},
 }
 for _i in range(1, 11):
     NET_SPEC["MAG%d_OUT" % _i] = {"v": 0.0, "i_max": 1.5}
+
+
+# What the outside world does to every connector pin (P2 electrical analyzer; EL-CONN-PROT reads this). Sources: DESIGN_BRIEF,
+# WIRING_GUIDE (one 12 V 16 A supply, off-board magnets/coin acceptor/buttons/LEDs/7-segment, Mega shield + ESP32 socket).
+# GND pins are ground-class nets and need no entry. A pin gets no `v` where NET_SPEC already holds a POINT claim for the
+# net (+3V3, +3V3_ESP, MAGn_OUT): declaring the honest range would only create a NET_SPEC conflict in the model.
+_MEGA_OUT = [n for n in ("MAG%d_PWM" % i for i in range(1, 11))] + ["SEG_DATA", "SEG_LATCH", "SEG_CLOCK", "LED1", "LED2",
+                                                                    "LED3", "LED4", "MEGA_TX1"]
+_MEGA_IN = ["BTN_S1", "BTN_S2", "BTN_S3", "BTN_RST", "COIN_IN", "ESP_TX2"]
+_MEGA_IO = ["I2C_SDA", "I2C_SCL"] + sorted(n for n in mega.values() if n.startswith("SPARE_"))
+_MEGA_PADS = {n: p for p, n in mega.items()}
+EXTERNAL = X.merge(
+    X.pins("J1", [1], dir="supply", v=(10.8, 13.2), i=16.0,
+           why="the single 12 V 16 A supply (DESIGN_BRIEF), +-10 % assumed; the 10 A blade fuse F1 is the protection"),
+    *[X.pins("J%d" % j, [1, 2], dir="out",
+             why="MAG%d electromagnet coil wired by the user (WIRING_GUIDE), sized <= 1.5 A, flyback diode D%d on board" % (j - 1, j + 9))
+      for j in range(2, 12)],
+    X.pins("J12", [1], dir="out", why="12 V supply for the coin acceptor (WIRING_GUIDE J12)"),
+    X.pins("J12", [3], dir="in", v=(0.0, 13.2),
+           why="coin acceptor open-collector SIG (pulls low per pulse), 12 V pull-up level, feeds the PC817 opto input"),
+    X.pins("J13", [1, 3, 5, 7], dir="in", v=(0.0, 5.25),
+           why="off-board push button to GND (dry contact), 5 V pull-up on the board side, long cable assumed"),
+    X.pins("J14", [1, 3, 5, 7], dir="out", why="off-board status LED anode (WIRING_GUIDE J14), 330R series resistor on board"),
+    X.pins("J15", [1, 2, 3, 4, 5, 6, 7], dir="out", why="7-segment common-cathode segment anode (470R series on board)"),
+    X.pins("J16", [1], dir="out", why="expansion header: 5 V rail offered to a user add-on"),
+    X.pins("J16", [3], dir="out", why="expansion header: Mega 3V3 rail offered to a user add-on"),
+    X.pins("J16", range(5, 21), dir="bidir", v=(0.0, 5.25),
+           why="expansion header: spare Mega I/O, 5 V logic, free for a user add-on (nothing is specified)"),
+    X.pins("J17", [1], dir="out", why="ESP32 spare header: DevKit 3V3 rail offered to a user add-on"),
+    X.pins("J17", range(3, 9), dir="bidir", v=(0.0, 3.465),
+           why="ESP32 spare header: spare ESP32 GPIO, 3.3 V logic, free for a user add-on (nothing is specified)"),
+    X.none("F1"),                  # blade fuse holder: a series element on +12V_IN, nothing is wired to it from outside
+    # The Mega shield socket A1: the Mega is the outside world (5 V logic, USB may also be plugged for programming).
+    X.pins("A1", [_MEGA_PADS[n] for n in _MEGA_OUT], dir="in", v=(0.0, 5.25), why="Mega 5 V push-pull output drives this board"),
+    X.pins("A1", [_MEGA_PADS[n] for n in _MEGA_IN if n != "ESP_TX2"], dir="out", v=(0.0, 5.25),
+           why="Mega input: this board drives it (5 V pull-up / opto collector)"),
+    X.pins("A1", [_MEGA_PADS["ESP_TX2"]], dir="out", v=(0.0, 3.465), why="Mega RX1 input, driven by the ESP32 TX2 (3.3 V logic)"),
+    X.pins("A1", [_MEGA_PADS[n] for n in _MEGA_IO], dir="bidir", v=(0.0, 5.25), why="Mega spare I/O, 5 V logic (also on J16)"),
+    X.pins("A1", ["5V1", "5V3", "5V4"], dir="bidir",
+           why="Mega 5V rail: fed by U1 on this board, also by the Mega USB when plugged in (DESIGN_BRIEF G2/G4)"),
+    X.pins("A1", ["3V3"], dir="supply", i=0.05, why="Mega 3V3 pin (onboard regulator, 50 mA max per Arduino spec)"),
+    # ESP32 DevKit socket A2 (pad numbers of the 30-pin socket; names in the record)
+    X.pins("A2", ["15"], dir="out", why="ESP32 VIN: this board feeds the DevKit with 5 V (WIRING_GUIDE)"),
+    X.pins("A2", ["30"], dir="supply", i=0.5, why="ESP32 DevKit 3V3 pin (onboard LDO); 0.5 A is the NET_SPEC +3V3_ESP budget"),
+    X.pins("A2", ["24"], dir="in", v=(0.0, 3.465), why="ESP32 TX2 push-pull output, 3.3 V logic"),
+    X.pins("A2", ["25"], dir="out", why="ESP32 RX2 input behind the 1k/2k divider from Mega TX1 (3.33 V)"),
+    X.pins("A2", ["6", "7", "8", "9", "10", "11"], dir="bidir", v=(0.0, 3.465), why="ESP32 spare GPIO, 3.3 V logic (also on J17)"),
+)
 
 
 FIRMWARE = {

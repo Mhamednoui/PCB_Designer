@@ -29,7 +29,7 @@ from boardgen.rules.finding import Finding, SEVERITIES
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))          # the workspace root
 ID_RE = re.compile(r"^[A-Z]{2,4}-[A-Z0-9-]+$")
-IR_SECTIONS = ("meta", "parts", "nets", "board", "assembly", "fab_profile", "requirements", "electrical")
+IR_SECTIONS = ("meta", "parts", "nets", "board", "assembly", "fab_profile", "requirements", "electrical", "external")
 TIERS = ("hand", "pcba")
 _NOT_RULES = {"engine", "finding", "__init__", "__main__"}
 

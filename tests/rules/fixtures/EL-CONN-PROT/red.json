@@ -1,0 +1,150 @@
+{
+ "ir": {
+  "parts": {
+   "J1": {
+    "kind": "connector",
+    "lib_id": "Connector:Screw_Terminal_01x02",
+    "value": "12V IN",
+    "pins": {
+     "1": {
+      "net": "VIN_RAW",
+      "name": "Pin_1",
+      "class": "passive"
+     },
+     "2": {
+      "net": "GND",
+      "name": "Pin_2",
+      "class": "passive"
+     }
+    }
+   },
+   "F1": {
+    "kind": "generic",
+    "lib_id": "Device:Fuse",
+    "value": "2A",
+    "pins": {
+     "1": {
+      "net": "VIN_RAW",
+      "name": "1",
+      "class": "passive"
+     },
+     "2": {
+      "net": "VIN",
+      "name": "2",
+      "class": "passive"
+     }
+    }
+   },
+   "J2": {
+    "kind": "connector",
+    "lib_id": "Connector:Conn_01x01",
+    "value": "SIG",
+    "pins": {
+     "1": {
+      "net": "SIG_X",
+      "name": "Pin_1",
+      "class": "passive"
+     }
+    }
+   },
+   "D2": {
+    "kind": "generic",
+    "lib_id": "Device:D_TVS",
+    "value": "PESD5V0",
+    "pins": {
+     "1": {
+      "net": "SIG_X",
+      "name": "K",
+      "class": "passive"
+     },
+     "2": {
+      "net": "GND",
+      "name": "A",
+      "class": "passive"
+     }
+    }
+   },
+   "U1": {
+    "kind": "part",
+    "lib_id": "Foo:MCU",
+    "value": "MCU",
+    "pins": {
+     "1": {
+      "net": "SIG_X",
+      "name": "IN",
+      "class": "input"
+     },
+     "2": {
+      "net": "VIN",
+      "name": "VCC",
+      "class": "power_in"
+     },
+     "3": {
+      "net": "GND",
+      "name": "GND",
+      "class": "power_in"
+     }
+    }
+   }
+  },
+  "nets": {
+   "VIN_RAW": {
+    "class": "power"
+   },
+   "VIN": {
+    "class": "power"
+   },
+   "GND": {
+    "class": "ground"
+   },
+   "SIG_X": {
+    "class": "signal"
+   }
+  },
+  "external": {
+   "declared": true,
+   "none": [],
+   "pins": {
+    "J1.1": {
+     "v": [
+      9.0,
+      15.0
+     ],
+     "i": 1.0,
+     "dir": "supply",
+     "why": "12 V adapter"
+    },
+    "J2.1": {
+     "v": null,
+     "i": null,
+     "dir": "in",
+     "why": "sensor cable"
+    }
+   }
+  }
+ },
+ "expected": [
+  {
+   "rule": "EL-CONN-PROT",
+   "severity": "ERROR",
+   "target": "J1.1",
+   "where": {
+    "ref": "J1",
+    "pin": "1",
+    "net": "VIN_RAW"
+   },
+   "line": "ERROR EL-CONN-PROT J1.1: external supply VIN_RAW, no surge/TVS clamp to GND on the supply input"
+  },
+  {
+   "rule": "EL-CONN-PROT",
+   "severity": "ERROR",
+   "target": "J1.1",
+   "where": {
+    "ref": "J1",
+    "pin": "1",
+    "net": "VIN_RAW"
+   },
+   "line": "ERROR EL-CONN-PROT J1.1: external supply VIN_RAW, no reverse-polarity protection (no series diode/P-FET, no TVS crowbar behind a fuse)"
+  }
+ ]
+}
